@@ -1,0 +1,33 @@
+#cloud-config
+
+# This is the user-data configuration file for cloud-init. By default this sets
+# up an initial user called "ubuntu" with password "ubuntu", which must be
+# changed at first login. However, many additional actions can be initiated on
+# first boot from this file. The cloud-init documentation has more details:
+#
+# https://cloudinit.readthedocs.io/
+#
+# Some additional examples are provided in comments below the default
+# configuration.
+
+
+hostname: ${HOSTNAME}
+timezone: Europe/Paris
+
+ssh_import_id: 
+  - gh:${GITHUB_USERNAME}
+
+users:
+  - default
+  - name: ubuntu
+    sudo: ALL=(ALL) NOPASSWD:ALL
+
+# Disable password authentication with the SSH daemon
+ssh_pwauth: false
+
+## Update apt database and upgrade packages on first boot
+# package_update: true
+# package_upgrade: true
+
+
+final_message: "The system is finally $(uptime --pretty)"
