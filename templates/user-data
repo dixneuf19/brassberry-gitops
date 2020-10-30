@@ -30,4 +30,4 @@ ssh_pwauth: false
 # package_upgrade: true
 
 
-final_message: "The system is finally $(uptime --pretty)"
+final_message: "The system is finally up"
