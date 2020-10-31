@@ -264,7 +264,7 @@ tlsOptions: {}
 # from.
 service:
   enabled: true
-  type: NodePort
+  type: LoadBalancer
   # Additional annotations (e.g. for cloud provider specific config)
   annotations: {}
   # Additional service labels (e.g. for filtering Service by custom labels)
