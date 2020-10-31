@@ -55,8 +55,8 @@ podDisruptionBudget:
 # Use ingressClass. Ignored if Traefik version < 2.3 / kubernetes < 1.18.x
 ingressClass:
   # true is not unit-testable yet, pending https://github.com/rancher/helm-unittest/pull/12
-  enabled: false
-  isDefaultClass: false
+  enabled: true
+  isDefaultClass: true
 
 # Activate Pilot integration
 pilot:
@@ -120,7 +120,7 @@ logs:
     # also ask for the json format in the format option
     # format: json
     # By default, the level is set to ERROR. Alternative logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
-    level: ERROR
+    level: WARN
   access:
     # To enable access logs
     enabled: false
@@ -155,7 +155,6 @@ logs:
 
 globalArguments:
   - "--global.checknewversion"
-  - "--global.sendanonymoususage"
 
 #
 # Configure Traefik static configuration
@@ -265,7 +264,7 @@ tlsOptions: {}
 # from.
 service:
   enabled: true
-  type: LoadBalancer
+  type: NodePort
   # Additional annotations (e.g. for cloud provider specific config)
   annotations: {}
   # Additional service labels (e.g. for filtering Service by custom labels)
@@ -361,7 +360,8 @@ affinity: {}
 #           values:
 #           - {{ template "traefik.name" . }}
 #       topologyKey: failure-domain.beta.kubernetes.io/zone
-nodeSelector: {}
+nodeSelector: 
+  node-role.kubernetes.io/master: ""
 tolerations: []
 
 # Pods can have priority.
