@@ -1,0 +1,22 @@
+#################################################
+# Setup Kubernetes
+#################################################
+---
+- hosts: all
+  become: true
+  # vars_files:
+  #   - vars/default.yml
+
+  tasks:
+    - name: Reset kubeadm
+      command: kubeadm reset -f
+
+    - name: Remove install files - master
+      file:
+        path: /root/cluster_initialized.txt
+        state: absent
+
+    - name: Remove install files - master
+      file:
+        path: /root/node_joined.txt
+        state: absent
