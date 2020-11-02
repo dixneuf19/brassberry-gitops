@@ -41,8 +41,10 @@ kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
   name: whoami
-  annotations: {}
-
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: leresolver
+    traefik.ingress.kubernetes.io/router.tls.domains.0.main: whoami.dixneuf19.me
 spec:
   ingressClassName: traefik
   rules:
