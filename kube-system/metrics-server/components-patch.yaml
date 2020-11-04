@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-server
+spec:
+  template:
+    spec:
+      containers:
+      - name: metrics-server
+        args:
+          - --cert-dir=/tmp
+          - --secure-port=4443
+          # https://serverfault.com/questions/951848/kubernetes-metrics-server-having-ssl-trouble
+          - --kubelet-insecure-tls
+          - --kubelet-preferred-address-types=InternalIP
