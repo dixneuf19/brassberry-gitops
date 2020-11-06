@@ -8,7 +8,7 @@ metadata:
 spec:
   destination:
     namespace: traefik
-    server: in-cluster
+    name: in-cluster
   project: default
   source:
     path: traefik/traefik
