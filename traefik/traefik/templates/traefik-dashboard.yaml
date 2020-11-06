@@ -1,3 +1,4 @@
+{{- if .Values.traefik.ports.traefik.expose }}
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -30,3 +31,4 @@ spec:
   redirectRegex:
     regex: ^https://traefik\.dixneuf19\.me(/?(dashboard)?)$
     replacement: https://traefik.dixneuf19.me/dashboard/
+{{- end }}

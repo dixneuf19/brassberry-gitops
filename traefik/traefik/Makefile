@@ -8,8 +8,8 @@ passwd:
 secret:
 	kubectl -n traefik create secret generic basic-auth --from-file=basic-auth.htpasswd
 
-helm-traefik:
-	helm -n traefik upgrade -i traefik traefik/traefik -f values.yaml
+helm-update:
+	helm dependency update
 
-dashboard:
-	kubectl -n traefik apply -f traefik-dashboard.yaml
+helm-traefik: helm-update
+	helm -n traefik upgrade -i traefik . -f values.yaml
