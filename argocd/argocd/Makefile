@@ -1,6 +1,6 @@
 .PHONY: get-stable-source
 get-stable-source:
-	wget https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+	wget -O source/install.yaml https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 .PHONY: kustomize
 kustomize:
