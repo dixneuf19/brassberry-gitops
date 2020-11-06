@@ -45,6 +45,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.tls: "true"
     traefik.ingress.kubernetes.io/router.tls.certresolver: leresolver
     traefik.ingress.kubernetes.io/router.tls.domains.0.main: whoami.dixneuf19.me
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-basic-auth@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:
