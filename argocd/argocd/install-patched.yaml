@@ -2388,6 +2388,10 @@ metadata:
     app.kubernetes.io/name: argocd-cm
     app.kubernetes.io/part-of: argocd
   name: argocd-cm
+data:
+  repositories: |
+    - type: git
+      url: https://github.com/dixneuf19/brassberry-kubernetes-cluster-state
 ---
 apiVersion: v1
 kind: ConfigMap
