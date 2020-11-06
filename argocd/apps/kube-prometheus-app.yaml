@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus
+spec:
+  destination:
+    namespace: monitoring
+    name: in-cluster
+  project: default
+  source:
+    path: monitoring/kube-prometheus
+    repoURL: 'https://github.com/dixneuf19/brassberry-kubernetes-cluster-state'
+    targetRevision: HEAD
+    directory:
+      jsonnet: {}
+      recurse: true
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
