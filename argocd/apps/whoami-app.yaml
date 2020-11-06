@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: whoami
+spec:
+  destination:
+    namespace: default
+    name: in-cluster
+  project: default
+  source:
+    path: default/whoami/
+    repoURL: 'https://github.com/dixneuf19/brassberry-kubernetes-cluster-state'
+    targetRevision: HEAD
+    directory:
+      jsonnet: {}
+      recurse: false
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
