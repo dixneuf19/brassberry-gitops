@@ -2392,6 +2392,9 @@ data:
   repositories: |
     - type: git
       url: https://github.com/dixneuf19/brassberry-kubernetes-cluster-state
+    - type: helm
+      name: dixneuf19
+      url: https://dixneuf19.github.io/helm-charts-repo/
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -2768,6 +2771,7 @@ spec:
         - --staticassets
         - /shared/app
         - --disable-auth
+        - --insecure
         image: dixneuf19/argocd:v1.7.8
         imagePullPolicy: Always
         name: argocd-server
