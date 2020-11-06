@@ -123,7 +123,7 @@ logs:
     level: INFO
   access:
     # To enable access logs
-    enabled: false
+    enabled: true
     # By default, logs are written using the Common Log Format (CLF).
     # To write logs in JSON, use json in the format option.
     # If the given format is unsupported, the default (CLF) is used instead.
@@ -216,7 +216,7 @@ ports:
     # You SHOULD NOT expose the traefik port on production deployments.
     # If you want to access it from outside of your cluster,
     # use `kubectl port-forward` or create a secure ingress
-    expose: false
+    expose: true
     # The exposed port for this service
     exposedPort: 9000
     # The port protocol (TCP/UDP)

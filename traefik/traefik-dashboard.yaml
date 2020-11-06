@@ -1,0 +1,32 @@
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: traefik-dashboard
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: leresolver
+    traefik.ingress.kubernetes.io/router.tls.domains.0.main: traefik.dixneuf19.me
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-basic-auth@kubernetescrd, traefik-dashboard-redirect@kubernetescrd
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: traefik.dixneuf19.me
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: traefik
+                port:
+                  number: 9000
+---
+# Redirect to dashboard/
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: dashboard-redirect
+spec:
+  redirectRegex:
+    regex: ^https://traefik\.dixneuf19\.me(/?(dashboard)?)$
+    replacement: https://traefik.dixneuf19.me/dashboard/
