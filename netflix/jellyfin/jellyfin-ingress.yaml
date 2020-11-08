@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: jellyfin
+spec:
+  rules:
+  - host: netflix.dixneuf19.me
+    http:
+      paths:
+      - backend:
+          serviceName: jellyfin
+          servicePort: http
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - netflix.dixneuf19.me
