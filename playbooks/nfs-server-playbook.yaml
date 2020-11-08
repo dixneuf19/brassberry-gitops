@@ -1,0 +1,16 @@
+#################################################
+# Setup Kubernetes
+#################################################
+---
+- hosts: all
+  become: true
+  # vars_files:
+  #   - vars/default.yml
+  tasks:
+    - name: Install required package
+      apt:
+        name:
+          - nfs-common 
+          - nfs-kernel-server
+        update_cache: yes
+        state: latest
