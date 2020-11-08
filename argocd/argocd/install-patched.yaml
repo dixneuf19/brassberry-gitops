@@ -2590,7 +2590,7 @@ spec:
         - "20"
         - --operation-processors
         - "10"
-        image: dixneuf19/argocd:v1.7.8
+        image: dixneuf19/argocd:master-202010071155
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
@@ -2646,7 +2646,7 @@ spec:
 #         - -n
 #         - /usr/local/bin/argocd-util
 #         - /shared
-#         image: dixneuf19/argocd:v1.7.8
+#         image: dixneuf19/argocd:master-202010071155
 #         imagePullPolicy: Always
 #         name: copyutil
 #         volumeMounts:
@@ -2715,7 +2715,7 @@ spec:
         - argocd-repo-server
         - --redis
         - argocd-redis:6379
-        image: dixneuf19/argocd:v1.7.8
+        image: dixneuf19/argocd:master-202010071155
         imagePullPolicy: Always
         name: argocd-repo-server
         ports:
@@ -2772,7 +2772,7 @@ spec:
         - /shared/app
         - --disable-auth
         - --insecure
-        image: dixneuf19/argocd:v1.7.8
+        image: dixneuf19/argocd:master-202010071155
         imagePullPolicy: Always
         name: argocd-server
         ports:
