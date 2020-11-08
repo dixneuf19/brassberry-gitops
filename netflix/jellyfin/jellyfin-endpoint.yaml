@@ -7,3 +7,4 @@ subsets:
     - ip: 192.168.1.26 # Node with jellyfin
     ports:
     - port: 8096
+      name: http

@@ -3,6 +3,9 @@ kind: Service
 metadata:
   name: jellyfin
 spec:
+  clusterIP: None
   ports:
-  - port: 80
+  - protocol: TCP
+    port: 8096
+    targetPort: 8096
     name: http
