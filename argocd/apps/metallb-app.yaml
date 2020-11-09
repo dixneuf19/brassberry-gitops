@@ -8,12 +8,12 @@ spec:
     name: in-cluster
   project: default
   source:
-    path: metallb-system/metallb/
-    repoURL: 'https://github.com/dixneuf19/brassberry-kubernetes-cluster-state'
-    targetRevision: HEAD
     directory:
       jsonnet: {}
       recurse: false
+    path: metallb-system/metallb/
+    repoURL: 'https://github.com/dixneuf19/brassberry-kubernetes-cluster-state'
+    targetRevision: HEAD
   syncPolicy:
     automated:
       prune: false
