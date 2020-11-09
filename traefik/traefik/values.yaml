@@ -161,16 +161,16 @@ traefik:  # Values for Traefik
   # Additional arguments to be passed at Traefik's binary
   # All available options available on https://docs.traefik.io/reference/static-configuration/cli/
   ## Use curly braces to pass values: `helm install --set="additionalArguments={--providers.kubernetesingress.ingressclass=traefik-internal,--log.level=DEBUG}"`
-  additionalArguments: 
-    - "--certificatesresolvers.leresolver.acme.email=julen@loudnaround.org"
-    - "--certificatesresolvers.leresolver.acme.storage=/data/acme.json"
+  additionalArguments: []
+    # - "--certificatesresolvers.leresolver.acme.email=julen@loudnaround.org"
+    # - "--certificatesresolvers.leresolver.acme.storage=/data/acme.json"
     # CA server to use.
     # Uncomment the line to use Let's Encrypt's staging server,
     # leave commented to go to prod.
     # Optional
     # Default: "https://acme-v02.api.letsencrypt.org/directory"
-    - "--certificatesresolvers.leresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory"
-    - "--certificatesresolvers.leresolver.acme.httpchallenge.entrypoint=web"
+    # - "--certificatesresolvers.leresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory"
+    # - "--certificatesresolvers.leresolver.acme.httpchallenge.entrypoint=web"
   #  - "--providers.kubernetesingress.ingressclass=traefik-internal"
   #  - "--log.level=DEBUG"
 
@@ -246,14 +246,14 @@ traefik:  # Values for Traefik
       # Set TLS at the entrypoint
       # https://doc.traefik.io/traefik/routing/entrypoints/#tls
       tls:
-        enabled: true
+        enabled: false
         # this is the name of a TLSOption definition
         options: ""
         certResolver: leresolver
         domains: 
-          - main: dixneuf19.me
-            sans:
-              - "*.dixneuf19.me"
+          # - main: dixneuf19.me
+          #   sans:
+          #     - "*.dixneuf19.me"
         # - main: example.com
         #   sans:
         #     - foo.example.com
@@ -316,7 +316,7 @@ traefik:  # Values for Traefik
   # - "--certificatesresolvers.le.acme.storage=/data/acme.json"
   # It will persist TLS certificates.
   persistence:
-    enabled: true
+    enabled: false
   #  existingClaim: ""
     accessMode: ReadWriteOnce
     size: 128Mi
