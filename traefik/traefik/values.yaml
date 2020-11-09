@@ -250,10 +250,10 @@ traefik:  # Values for Traefik
         # this is the name of a TLSOption definition
         options: ""
         certResolver: leresolver
-        # domains: 
-        #   - main: dixneuf19.me
-        #     sans:
-        #       - "*.dixneuf19.me"
+        domains: 
+          - main: dixneuf19.me
+            sans:
+              - "*.dixneuf19.me"
         # - main: example.com
         #   sans:
         #     - foo.example.com
@@ -316,11 +316,11 @@ traefik:  # Values for Traefik
   # - "--certificatesresolvers.le.acme.storage=/data/acme.json"
   # It will persist TLS certificates.
   persistence:
-    enabled: false
+    enabled: true
   #  existingClaim: ""
     accessMode: ReadWriteOnce
     size: 128Mi
-    # storageClass: ""
+    storageClass: "local-storage"
     path: /data
     annotations: {}
     # subPath: "" # only mount a subpath of the Volume into the pod
