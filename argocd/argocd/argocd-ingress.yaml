@@ -4,6 +4,7 @@ metadata:
   name: argocd
   namespace: argocd
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
     traefik.ingress.kubernetes.io/router.middlewares: traefik-basic-auth@kubernetescrd
 spec:
   ingressClassName: traefik
@@ -18,3 +19,7 @@ spec:
                 name: argocd-server
                 port:
                   number: 80
+  tls:
+    - hosts:
+      - argocd.dixneuf19.me
+      secretName: argocd-dixneuf19-me-tls

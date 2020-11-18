@@ -2,6 +2,8 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: jellyfin
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
 spec:
   rules:
   - host: netflix.dixneuf19.me
@@ -15,3 +17,4 @@ spec:
   tls:
   - hosts:
     - netflix.dixneuf19.me
+    secretName: netflix-dixneuf19-me-tls
