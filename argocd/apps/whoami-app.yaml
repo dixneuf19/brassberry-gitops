@@ -8,15 +8,15 @@ spec:
     name: in-cluster
   project: default
   source:
-    directory:
-      jsonnet: {}
-      recurse: false
+    # directory:
+    #   jsonnet: {}
+    #   recurse: false
     path: default/whoami/
     repoURL: 'https://github.com/dixneuf19/brassberry-kubernetes-cluster-state'
     targetRevision: HEAD
   syncPolicy:
-    automated:
-      prune: false
-      selfHeal: false
+    # automated:
+    #   prune: false
+    #   selfHeal: false
     syncOptions:
     - CreateNamespace=true
