@@ -88,8 +88,12 @@ traefik:  # Values for Traefik
   providers:
     kubernetesCRD:
       enabled: true
+      namespaces: []
+        # - "default"
     kubernetesIngress:
       enabled: true
+      namespaces: []
+        # - "default"
       # IP used for Kubernetes Ingress endpoints
       publishedService:
         enabled: true
@@ -111,6 +115,12 @@ traefik:  # Values for Traefik
   #   mountPath: "/config"
   #   type: configMap
 
+  # Additional volumeMounts to add to the Traefik container
+  additionalVolumeMounts: []
+    # For instance when using a logshipper for access logs
+    # - name: traefik-logs
+    #   mountPath: /var/log/traefik
+
   # Logs
   # https://docs.traefik.io/observability/logs/
   logs:
@@ -120,7 +130,7 @@ traefik:  # Values for Traefik
       # also ask for the json format in the format option
       # format: json
       # By default, the level is set to ERROR. Alternative logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
-      level: INFO
+      level: WARN
     access:
       # To enable access logs
       enabled: true
@@ -162,15 +172,6 @@ traefik:  # Values for Traefik
   # All available options available on https://docs.traefik.io/reference/static-configuration/cli/
   ## Use curly braces to pass values: `helm install --set="additionalArguments={--providers.kubernetesingress.ingressclass=traefik-internal,--log.level=DEBUG}"`
   additionalArguments: []
-    # - "--certificatesresolvers.leresolver.acme.email=julen@loudnaround.org"
-    # - "--certificatesresolvers.leresolver.acme.storage=/data/acme.json"
-    # CA server to use.
-    # Uncomment the line to use Let's Encrypt's staging server,
-    # leave commented to go to prod.
-    # Optional
-    # Default: "https://acme-v02.api.letsencrypt.org/directory"
-    # - "--certificatesresolvers.leresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory"
-    # - "--certificatesresolvers.leresolver.acme.httpchallenge.entrypoint=web"
   #  - "--providers.kubernetesingress.ingressclass=traefik-internal"
   #  - "--log.level=DEBUG"
 
@@ -216,7 +217,7 @@ traefik:  # Values for Traefik
       # You SHOULD NOT expose the traefik port on production deployments.
       # If you want to access it from outside of your cluster,
       # use `kubectl port-forward` or create a secure ingress
-      expose: true
+      expose: false
       # The exposed port for this service
       exposedPort: 9000
       # The port protocol (TCP/UDP)
@@ -246,14 +247,11 @@ traefik:  # Values for Traefik
       # Set TLS at the entrypoint
       # https://doc.traefik.io/traefik/routing/entrypoints/#tls
       tls:
-        enabled: false
+        enabled: true
         # this is the name of a TLSOption definition
         options: ""
-        certResolver: leresolver
-        domains: 
-          # - main: dixneuf19.me
-          #   sans:
-          #     - "*.dixneuf19.me"
+        certResolver: ""
+        domains: []
         # - main: example.com
         #   sans:
         #     - foo.example.com
@@ -320,7 +318,7 @@ traefik:  # Values for Traefik
   #  existingClaim: ""
     accessMode: ReadWriteOnce
     size: 128Mi
-    storageClass: "local-storage"
+    # storageClass: ""
     path: /data
     annotations: {}
     # subPath: "" # only mount a subpath of the Volume into the pod
