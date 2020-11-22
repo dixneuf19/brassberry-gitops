@@ -14,3 +14,19 @@
           - nfs-kernel-server
         update_cache: yes
         state: latest
+
+    - name: Enable service nfs-kernel-server
+      systemd:
+        name: nfs-kernel-server
+        enabled: yes
+
+    - name: Configure exposed disk
+      lineinfile:
+        line: "/mnt/{{item.name}} 192.168.1.0/24(rw,root_squash)"
+        path: /etc/exports
+      with_items: "{{disks}}"
+      
+    - name: Restart nfs-kernel-server
+      systemd:
+        name: nfs-kernel-server
+        state: restarted

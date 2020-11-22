@@ -1,6 +1,7 @@
 all:
   vars:
     ansible_ssh_user: ubuntu
+    disks: []
 
 master:
   hosts:
@@ -11,5 +12,13 @@ workers:
   hosts:
     brassberry-25:
       ansible_host: 192.168.1.25
+      disks:
+      - name: tuyhoa_2T
+        uuid: 2b0a49ce-d6c4-456d-a5a6-52850f9b0213
+        type: EXT4
     brassberry-26:
       ansible_host: 192.168.1.26
+      disks:
+      - name: magadi_3T
+        uuid: E6504EF8504ECECD
+        type: NTFS

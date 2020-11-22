@@ -1,21 +1,25 @@
 # fix-ssh-on-pi
 
-## Safely enabling ssh in the default Raspberry Pi OS (previously called Raspbian) Image
+## Scripts
 
-This script will make some small but necessary changes to a default [Raspberry Pi OS (previously called Raspbian)](https://www.raspbian.org/) image. 
+### fix-ssh-on-pi (to rename)
 
-In episode [hpr2356 :: Safely enabling ssh in the default Raspbian Image](http://hackerpublicradio.org/eps.php?id=2356) I walked through the first steps of automating the update of this base image. It will:
+Configuration: `fix-ssh-on-pi.ini`
 
-- Download the latest image zip file
-- Verify it is valid
-- Extract the image itself
-- Enable ssh for secure remote management
-- Change the default passwords for the root and pi user
-- Secure the ssh server on the Pi
+Then run `sudo fix-ssh-on-pi.bash`, it creates an image that you can burn on the SD card (with _balenaEtcher_ for example).
 
-Since then I improved the script to:
+## Playbooks
 
-- Enable connections to your WiFi network (wpa_supplicant.conf)
-- Load it's configuration from a ini file keeping sensitive information separate from the main script.
-- Using [losetup](http://man7.org/linux/man-pages/man8/losetup.8.html) to greatly simplify the mounting of the image.
-- Creation of a [First Boot](https://github.com/nmcclain/raspberian-firstboot) script.
+Configuration: `pie_hosts.yaml`
+
+You can run the playbooks in this order:
+
+- `ping-example-playbook.yaml` to check host connectivity
+- `upgrade-playbook.yaml` to update the hosts
+- `docker-playbook.yaml` to install docker
+- `kubeadm-playbook.yaml` to install kubeadm
+- `kubeadm-master-playbook.yaml` for the master of kubernetes
+- `kubeadm-workers-playbook.yaml` for the master of kubernetes
+- `mounts.yaml` for the disks
+- `nfs-server-playbook.yaml` to install nfs
+- `jellyfin.yaml`
