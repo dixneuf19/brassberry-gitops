@@ -10,6 +10,7 @@ spec:
         args:
           - --cert-dir=/tmp
           - --secure-port=4443
+          - --kubelet-use-node-status-port
           # https://serverfault.com/questions/951848/kubernetes-metrics-server-having-ssl-trouble
           - --kubelet-insecure-tls
           - --kubelet-preferred-address-types=InternalIP

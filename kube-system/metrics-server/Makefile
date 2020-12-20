@@ -1,6 +1,8 @@
-.PHONY: get-stable-source
-get-stable-source:
-	wget https://github.com/kubernetes-sigs/metrics-server/releases/stable/download/components.yaml
+NAMESPACE?=kube-system
+
+.PHONY: get-latest-source
+get-latest-source:
+	wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml -O components.yaml
 
 .PHONY: kustomize
 kustomize:
@@ -8,6 +10,6 @@ kustomize:
 
 .PHONY: deploy
 deploy:
-	kubectl apply -f components-patched.yaml
+	kubectl -n "${NAMESPACE}" apply -f components-patched.yaml
 
 
