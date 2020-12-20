@@ -11,11 +11,13 @@ traefik:  # Values for Traefik
   deployment:
     enabled: true
     # Number of pods of the deployment
-    replicas: 1
+    replicas: 3
     # Additional deployment annotations (e.g. for jaeger-operator sidecar injection)
     annotations: {}
     # Additional pod annotations (e.g. for mesh injection or prometheus scraping)
     podAnnotations: {}
+    # Additional Pod labels (e.g. for filtering Pod by custom labels)
+    podLabels: {}
     # Additional containers (e.g. for metric offloading sidecars)
     additionalContainers: []
       # https://docs.datadoghq.com/developers/dogstatsd/unix_socket/?tab=host
@@ -48,9 +50,9 @@ traefik:  # Values for Traefik
 
   # Pod disruption budget
   podDisruptionBudget:
-    enabled: false
-    # maxUnavailable: 1
-    # minAvailable: 0
+    enabled: true
+    # maxUnavailable: 
+    minAvailable: 1
 
   # Use ingressClass. Ignored if Traefik version < 2.3 / kubernetes < 1.18.x
   ingressClass:
@@ -350,26 +352,26 @@ traefik:  # Values for Traefik
   # Additional serviceAccount annotations (e.g. for oidc authentication)
   serviceAccountAnnotations: {}
 
-  resources: {}
-    # requests:
-    #   cpu: "100m"
-    #   memory: "50Mi"
-    # limits:
-    #   cpu: "300m"
-    #   memory: "150Mi"
-  affinity: {}
-  # # This example pod anti-affinity forces the scheduler to put traefik pods
-  # # on nodes where no other traefik pods are scheduled.
-  # # It should be used when hostNetwork: true to prevent port conflicts
-  #   podAntiAffinity:
-  #     requiredDuringSchedulingIgnoredDuringExecution:
-  #     - labelSelector:
-  #         matchExpressions:
-  #         - key: app
-  #           operator: In
-  #           values:
-  #           - {{ template "traefik.name" . }}
-  #       topologyKey: failure-domain.beta.kubernetes.io/zone
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "50Mi"
+    limits:
+      cpu: "300m"
+      memory: "150Mi"
+  affinity:
+  # This example pod anti-affinity forces the scheduler to put traefik pods
+  # on nodes where no other traefik pods are scheduled.
+  # It should be used when hostNetwork: true to prevent port conflicts
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app.kubernetes.io/name
+            operator: In
+            values:
+            - traefik
+        topologyKey: "kubernetes.io/hostname"
   nodeSelector: {}
   tolerations: []
 

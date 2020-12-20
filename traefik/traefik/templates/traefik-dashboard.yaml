@@ -4,6 +4,7 @@ apiVersion: networking.k8s.io/v1
 metadata:
   name: traefik-dashboard
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
     traefik.ingress.kubernetes.io/router.middlewares: traefik-basic-auth@kubernetescrd, traefik-dashboard-redirect@kubernetescrd
 spec:
   ingressClassName: traefik
@@ -18,6 +19,11 @@ spec:
                 name: traefik
                 port:
                   number: 9000
+  tls:
+  - hosts:
+    - traefik.dixneuf19.me
+    secretName: traefik-dixneuf19-me-tls
+
 ---
 # Redirect to dashboard/
 apiVersion: traefik.containo.us/v1alpha1
