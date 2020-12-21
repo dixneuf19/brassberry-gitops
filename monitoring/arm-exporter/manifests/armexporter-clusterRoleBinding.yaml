@@ -1,12 +1,12 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: resource-metrics:system:auth-delegator
+  name: arm-exporter
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: system:auth-delegator
+  name: arm-exporter
 subjects:
 - kind: ServiceAccount
-  name: prometheus-adapter
+  name: arm-exporter
   namespace: monitoring

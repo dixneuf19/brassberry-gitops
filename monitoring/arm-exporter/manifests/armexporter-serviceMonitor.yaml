@@ -2,21 +2,28 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    k8s-app: kube-scheduler
-  name: kube-scheduler
+    app: arm-exporter
+  name: arm-exporter
   namespace: monitoring
 spec:
   endpoints:
   - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
     interval: 30s
-    port: https-metrics
+    port: https
+    relabelings:
+    - action: replace
+      regex: (.*)
+      replacement: $1
+      sourceLabels:
+      - __meta_kubernetes_pod_node_name
+      targetLabel: instance
     scheme: https
     tlsConfig:
       insecureSkipVerify: true
-  jobLabel: k8s-app
+  jobLabel: arm-exporter-exporter
   namespaceSelector:
     matchNames:
-    - kube-system
+    - monitoring
   selector:
     matchLabels:
-      k8s-app: kube-scheduler
+      k8s-app: arm-exporter
