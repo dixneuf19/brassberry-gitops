@@ -18,7 +18,7 @@ spec:
               service:
                 name: traefik
                 port:
-                  number: 9000
+                  name: traefik
   tls:
   - hosts:
     - traefik.dixneuf19.me

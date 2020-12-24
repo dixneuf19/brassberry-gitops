@@ -11,5 +11,5 @@ secret:
 helm-update:
 	helm dependency update
 
-helm-traefik:
+deploy:
 	helm -n traefik upgrade -i traefik . -f values.yaml
