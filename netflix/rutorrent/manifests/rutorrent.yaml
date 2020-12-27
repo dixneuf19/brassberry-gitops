@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rutorrent
+spec:
+  selector:
+    matchLabels:
+      app: rutorrent
+  template:
+    metadata:
+      labels:
+        app: rutorrent
+    spec:
+      containers:
+      - name: rutorrent
+        image: linuxserver/rutorrent:version-v3.10
+        env:
+          - name: PUID
+            value: "1000"
+          - name: PGID
+            value: "1000"
+        volumeMounts:
+        - name: rutorrent-config
+          mountPath: /config
+          subPath: config
+        - name: rutorrent-downloads
+          mountPath: /downloads
+        
+      volumes:
+      - name: rutorrent-downloads
+        persistentVolumeClaim:
+          claimName: rutorrent-downloads
+      - name: rutorrent-config
+        persistentVolumeClaim:
+          claimName: rutorrent-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rutorrent
+spec:
+  selector:
+    app: rutorrent
+  ports:
+  - port: 80
+    targetPort: 80
+    name: web
+  - port: 5000
+    targetPort: 5000
+    name: scgi
+  - port: 51419
+    targetPort: 51419
+    name: "bit-torrent-tcp"
+  - port: 6881
+    targetPort: 6881
+    protocol: UDP
+    name: "bit-torrent-udp"
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rutorrent
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-basic-auth@kubernetescrd
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: rutorrent.dixneuf19.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rutorrent
+            port:
+              name: web
+  tls:
+  - hosts:
+    - rutorrent.dixneuf19.me
+    secretName: rutorrent-dixneuf19-me-tls
+
+
