@@ -582,7 +582,16 @@ grafana:
   ##
   defaultDashboardsEnabled: true
 
-  adminPassword: prom-operator
+  admin:
+    existingSecret: grafana-admin       
+
+  plugins:
+    - grafana-piechart-panel
+
+  persistence:
+    enabled: true
+    storageClassName: nfs-client
+  
 
   ingress:
     ## If true, Grafana Ingress will be created
