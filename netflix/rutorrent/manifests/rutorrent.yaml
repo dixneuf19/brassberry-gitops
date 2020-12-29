@@ -63,9 +63,10 @@ metadata:
   name: rutorrent
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    traefik.ingress.kubernetes.io/router.middlewares: traefik-basic-auth@kubernetescrd
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
 spec:
-  ingressClassName: traefik
+  ingressClassName: nginx
   rules:
   - host: rutorrent.dixneuf19.me
     http:

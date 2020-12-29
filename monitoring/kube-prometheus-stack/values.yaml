@@ -198,11 +198,12 @@ alertmanager:
 
     # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
     # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
-    ingressClassName: traefik
+    ingressClassName: ngninx
 
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt
-      traefik.ingress.kubernetes.io/router.middlewares: traefik-basic-auth@kubernetescrd
+      nginx.ingress.kubernetes.io/auth-type: basic
+      nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
 
     labels: {}
 
@@ -598,13 +599,15 @@ grafana:
     ##
     enabled: true
 
+    ingressClassName: nginx
+
     ## Annotations for Grafana Ingress
     ##
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt
-      traefik.ingress.kubernetes.io/router.middlewares: traefik-basic-auth@kubernetescrd
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/auth-type: basic
+      nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
 
     ## Labels to be added to the Ingress
     ##
@@ -1589,11 +1592,12 @@ prometheus:
 
     # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
     # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
-    ingressClassName: traefik
+    ingressClassName: nginx
 
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt
-      traefik.ingress.kubernetes.io/router.middlewares: traefik-basic-auth@kubernetescrd
+      nginx.ingress.kubernetes.io/auth-type: basic
+      nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
     labels: {}
 
     ## Hostnames.
