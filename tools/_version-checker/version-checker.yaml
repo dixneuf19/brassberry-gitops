@@ -1,0 +1,101 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: version-checker
+  namespace: tools
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: version-checker
+  name: version-checker
+  namespace: monitoring
+spec:
+  endpoints:
+  - interval: 30s
+    port: web
+    relabelings:
+    - action: replace
+      regex: (.*)
+      replacement: $1
+      sourceLabels:
+      - __meta_kubernetes_pod_node_name
+      targetLabel: instance
+    scheme: http
+  jobLabel: version-checker-exporter
+  namespaceSelector:
+    matchNames:
+    - tools
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: version-checker
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: version-checker
+  namespace: tools
+  labels:
+    app.kubernetes.io/name: version-checker
+spec:
+  selector:
+    app.kubernetes.io/name: version-checker
+  ports:
+    - protocol: TCP
+      name: web
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: version-checker
+  name: version-checker
+  namespace: tools
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: version-checker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: version-checker
+      annotations:
+        enable.version-checker.io/version-checker: "true"
+    spec:
+      serviceAccountName: version-checker
+      containers:
+      - image: dixneuf19/jetstack-version-checker:v0.2.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        name: version-checker
+        args:
+          - "--image-cache-timeout=24h"
+          - "--test-all-containers=true"
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: version-checker
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: version-checker
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: version-checker
+subjects:
+- kind: ServiceAccount
+  name: version-checker
+  namespace: tools
