@@ -16,7 +16,7 @@ spec:
     solvers:
     - http01:
         ingress:
-          class: traefik
+          class: nginx
           # ingressTemplate:
           #   metadata:
           #     annotations:
