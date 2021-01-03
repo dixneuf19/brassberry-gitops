@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transmission
+spec:
+  selector:
+    matchLabels:
+      app: transmission
+  template:
+    metadata:
+      labels:
+        app: transmission
+    spec:
+      containers:
+      - name: transmission
+        image: linuxserver/transmission:version-3.00-r0
+        # env:
+        #   - name: PUID
+        #     value: "1000"
+        #   - name: PGID
+        #     value: "1000"
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: downloads
+          mountPath: /downloads
+        - name: watch
+          mountPath: /watch
+        
+      volumes:
+      - name: watch
+        persistentVolumeClaim:
+          claimName: transmission-watch
+      - name: config
+        persistentVolumeClaim:
+          claimName: transmission-config
+      - name: downloads
+        persistentVolumeClaim:
+          claimName: transmission-downloads
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transmission
+spec:
+  selector:
+    app: transmission
+  ports:
+  - port: 9091
+    targetPort: 9091
+    name: web
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transmission-torrent-tcp
+spec:
+  type: LoadBalancer
+  selector:
+    app: transmission
+  ports:
+  - port: 51413
+    targetPort: 51413
+    protocol: TCP
+    name: torrent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transmission-torrent-udp
+spec:
+  type: LoadBalancer
+  selector:
+    app: transmission
+  ports:
+  - port: 51413
+    targetPort: 51413
+    protocol: UDP
+    name: torrent-udp
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: transmission
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: transmission.dixneuf19.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: transmission
+            port:
+              name: web
+  tls:
+  - hosts:
+    - transmission.dixneuf19.me
+    secretName: transmission-dixneuf19-me-tls
+
+

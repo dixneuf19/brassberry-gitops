@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deluge
+spec:
+  selector:
+    matchLabels:
+      app: deluge
+  template:
+    metadata:
+      labels:
+        app: deluge
+    spec:
+      containers:
+      - name: deluge
+        image: linuxserver/deluge:version-2.0.3-2201906121747ubuntu18.04.1
+        # env:
+        #   - name: PUID
+        #     value: "1000"
+        #   - name: PGID
+        #     value: "1000"
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: downloads
+          mountPath: /downloads
+        
+      volumes:
+      - name: downloads
+        persistentVolumeClaim:
+          claimName: deluge-downloads
+      - name: config
+        persistentVolumeClaim:
+          claimName: deluge-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: deluge
+spec:
+  selector:
+    app: deluge
+  ports:
+  - port: 80
+    targetPort: 8112
+    name: web
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: deluge
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: deluge.dixneuf19.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: deluge
+            port:
+              name: web
+  tls:
+  - hosts:
+    - deluge.dixneuf19.me
+    secretName: deluge-dixneuf19-me-tls
+
+
