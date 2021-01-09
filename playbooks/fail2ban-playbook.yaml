@@ -1,0 +1,22 @@
+#################################################
+# Setup Kubernetes
+#################################################
+---
+- hosts: all
+  become: true
+
+  tasks:
+    - name: Update apt and install docker packages
+      apt:
+        name:
+          - fail2ban
+        update_cache: yes
+        state: latest
+
+    - name: override the basic fail2ban configuration with .local file
+      copy:
+        src: ./files/jail.local
+        dest: /etc/fail2ban/jail.local
+        owner: root
+        group: root
+        mode: 0644
