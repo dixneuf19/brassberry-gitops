@@ -40,4 +40,4 @@
       register: command_result
       failed_when: 
         - '"taint \"node-role.kubernetes.io/master\" not found" not in command_result.stderr'
-        - result.rc != 0
+        - command_result.rc != 0
