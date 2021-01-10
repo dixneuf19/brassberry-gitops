@@ -19,8 +19,8 @@ spec:
             value: "1000"
           - name: PGID  
             value: "1000"
-          - name: TR_CURL_VERBOSE
-            value: "0"
+          # - name: TR_CURL_VERBOSE
+          #   value: "1"
           # - name: "CURL_CA_BUNDLE"
           #   value: "/etc/ssl/certs/ca-certificates.crt"
         volumeMounts:
