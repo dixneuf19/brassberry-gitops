@@ -1,0 +1,38 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: librespeed
+spec:
+  selector:
+    app: librespeed
+  ports:
+  - port: 80
+    targetPort: 80
+    name: web
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: librespeed
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    # nginx.ingress.kubernetes.io/auth-type: basic
+    # nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: speedtest.dixneuf19.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: librespeed
+            port:
+              name: web
+  tls:
+  - hosts:
+    - speedtest.dixneuf19.me
+    secretName: speedtest-dixneuf19-me-tls

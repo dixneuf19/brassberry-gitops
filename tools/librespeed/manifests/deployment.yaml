@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: librespeed
+spec:
+  selector:
+    matchLabels:
+      app: librespeed
+  template:
+    metadata:
+      labels:
+        app: librespeed
+    spec:
+      containers:
+      - name: librespeed
+        image: ghcr.io/linuxserver/librespeed:version-5.2.2
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+        volumeMounts:
+        - name: librespeed-config
+          mountPath: /config
+      volumes:
+      - name: librespeed-config
+        persistentVolumeClaim:
+            claimName: librespeed-config
