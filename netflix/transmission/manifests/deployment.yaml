@@ -14,11 +14,15 @@ spec:
       containers:
       - name: transmission
         image: linuxserver/transmission:version-3.00-r0
-        # env:
-        #   - name: PUID
-        #     value: "1000"
-        #   - name: PGID
-        #     value: "1000"
+        env:
+          - name: PUID
+            value: "1000"
+          - name: PGID  
+            value: "1000"
+          - name: TR_CURL_VERBOSE
+            value: "0"
+          # - name: "CURL_CA_BUNDLE"
+          #   value: "/etc/ssl/certs/ca-certificates.crt"
         volumeMounts:
         - name: config
           mountPath: /config
