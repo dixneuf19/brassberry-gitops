@@ -5,9 +5,10 @@ metadata:
   namespace: argocd
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    traefik.ingress.kubernetes.io/router.middlewares: traefik-basic-auth@kubernetescrd
+    nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
+    nginx.ingress.kubernetes.io/auth-type: basic
 spec:
-  ingressClassName: traefik
+  ingressClassName: ngninx
   rules:
     - host: argocd.dixneuf19.me
       http:

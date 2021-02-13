@@ -6,7 +6,8 @@ spec:
   template:
     spec:
       containers:
-      - command:
+      - name: argocd-server
+        command:
         - argocd-server
         - --staticassets
         - /shared/app
