@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cd-lna
+spec:
+  selector:
+    matchLabels:
+      app: cd-lna
+  template:
+    metadata:
+      labels:
+        app: cd-lna
+    spec:
+      containers:
+      - name: cd-lna
+        image: dixneuf19/miniserve:v0.10.3-aarch64
+        args:
+          - "--enable-tar"
+          - "--qrcode"
+          - "--verbose"
+          - "/tmp"
+        volumeMounts:
+        - name: cd-lna
+          mountPath: /tmp/cd-lna
+          readOnly: true
+      volumes:
+      - name: cd-lna
+        persistentVolumeClaim:
+            claimName: cd-lna-files
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cd-lna
+spec:
+  selector:
+    app: cd-lna
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: web
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cd-lna
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: cd-lna-auth
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: cd-lna.dixneuf19.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: cd-lna
+            port:
+              name: web
+  tls:
+  - hosts:
+    - cd-lna.dixneuf19.me
+    secretName: cd-lna-dixneuf19-me-tls
