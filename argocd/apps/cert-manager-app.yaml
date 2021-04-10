@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+spec:
+  destination:
+    namespace: cert-manager
+    name: in-cluster
+  project: default
+  source:
+    # directory:
+    #   jsonnet: {}
+    #   recurse: false
+    path: cert-manager/cert-manager/
+    repoURL: 'https://github.com/dixneuf19/brassberry-kubernetes-cluster-state'
+    targetRevision: HEAD
+  syncPolicy:
+    # automated:
+    #   prune: false
+    #   selfHeal: false
+    syncOptions:
+    - CreateNamespace=true
