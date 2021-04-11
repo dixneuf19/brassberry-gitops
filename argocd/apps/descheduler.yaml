@@ -14,7 +14,7 @@ spec:
     helm: {}
   # Destination cluster and namespace to deploy the application
   destination:
-    server: in-cluster
+    name: in-cluster
     namespace: kube-system
 
   # Sync policy
