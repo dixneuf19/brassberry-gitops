@@ -9,9 +9,6 @@ spec:
     repoURL: https://github.com/kubernetes-sigs/descheduler.git
     targetRevision: v0.20.0
     path: charts/descheduler
-
-    # helm specific config
-    helm: {}
   # Destination cluster and namespace to deploy the application
   destination:
     name: in-cluster
