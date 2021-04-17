@@ -1,0 +1,11 @@
+apiVersion: v2
+name: whats-on-fip
+version: 1.0.0
+description: "What's on FIP ? API chart" 
+appVersion: "1.0.0"
+home: https://github.com/dixneuf19/whatsOnFIP
+dependencies:
+  - name: base-helm-chart
+    alias: generic
+    version: 0.3.1
+    repository: https://dixneuf19.github.io/helm-charts-repo/
