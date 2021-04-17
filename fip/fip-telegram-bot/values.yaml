@@ -1,0 +1,39 @@
+generic:
+  replicaCount: 2
+  image:
+    repository: dixneuf19/fip-telegram-bot
+    tag: a550decc2637b3007377ce21f71e93677be570d6
+    pullPolicy: Always
+  container:
+    port: 80
+    probe: 
+  resources:
+    limits:
+      memory: '128Mi'
+      cpu: '300m'
+    requests:
+      memory: '64Mi'
+      cpu: '100m'
+  service:
+    type: ClusterIP
+    port: 80
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations: 
+      cert-manager.io/cluster-issuer: letsencrypt
+    hosts: 
+    - host: "fip-telegram-bot.dixneuf19.me"
+      paths:
+        - path: "/"
+    tls:
+      - hosts:
+        - "fip-telegram-bot.dixneuf19.me"
+        secretName: fip-telegram-bot-dixneuf19-me-tls
+  configmap: 
+  FIP_API_HOST: "whats-on-fip"
+  FIP_API_PORT: 1919
+  BOT_WEBHOOK_PATH: some_random_path
+  secrets:
+    - name: fip-telegram-bot
+      key: BOT_TELEGRAM_TOKEN
