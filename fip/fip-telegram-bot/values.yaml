@@ -33,7 +33,7 @@ generic:
   configmap:
     FIP_API_HOST: whats-on-fip
     FIP_API_PORT: 1919
-    BOT_WEBHOOK_PATH: $(uuidgen)
+    BOT_WEBHOOK_PATH: 43c3bddf-25f5-4b1c-8619-b8bc09d67bcc
   secrets:
     - name: fip-telegram-bot
       key: BOT_TELEGRAM_TOKEN
