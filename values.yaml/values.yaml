@@ -1,0 +1,32 @@
+replicaCount: 2
+image:
+  repository: dixneuf19/whatsonfip
+  tag: 8948b0e137cd152c0344d3e026573757b3df9787
+  pullPolicy: Always
+container:
+  port: 80
+  probe:
+    liveness:
+      path: /health
+    readiness:
+      path: /health
+resources:
+  limits:
+    memory: 128Mi
+    cpu: 300m
+  requests:
+    memory: 64Mi
+    cpu: 100m
+service:
+  type: ClusterIP
+  port: 1919
+ingress:
+  enabled: false
+configmap:
+  RADIO_FRANCE_API_HOST: 'https://openapi.radiofrance.fr/v1/graphql'
+  RADIO_FRANCE_API_HEALTHCHECK: 'https://openapi.radiofrance.fr/v1/.well-known/apollo/server-health'
+  SPOTIFY_API_HOST: spotify-api
+  SPOTIFY_API_PORT: 1919
+secrets:
+  - name: radio-france-api-token
+    key: RADIO_FRANCE_API_TOKEN
