@@ -1,0 +1,38 @@
+generic:
+  replicaCount: 2
+
+  image:
+    repository: dixneuf19/spotify-api
+    tag: ec8b04dac7109cee673bb9e17bb3c434d7d3dc15
+    pullPolicy: Always
+
+  container:
+    port: 80
+    probe:
+      liveness:
+        path: /health
+      readiness:
+        path: /health
+
+  resources:
+    limits:
+      memory: '128Mi'
+      cpu: '300m'
+    requests:
+      memory: '64Mi'
+      cpu: '100m'
+
+  service:
+    type: ClusterIP
+    port: 1919
+
+  ingress:
+    enabled: false
+
+  configmap: {}
+
+  secrets:
+    - name: spotify-api-access
+      key: SPOTIPY_CLIENT_ID
+    - name: spotify-api-access
+      key: SPOTIPY_CLIENT_SECRET
