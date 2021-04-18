@@ -1,6 +1,7 @@
 HELM_RELEASE=kube-prometheus-stack
 HELM_REPOSITORY=prometheus-community
 HELM_CHART=kube-prometheus-stack
+CHART_VERSION=13.13.1
 
 NAMESPACE=monitoring
 
@@ -15,4 +16,4 @@ template:
 
 deploy:
 	kubectl create namespace "${NAMESPACE}" || echo "Namespace ${NAMESPACE} already exists"
-	helm upgrade --install -n "${NAMESPACE}" "${HELM_RELEASE}" "${HELM_REPOSITORY}/${HELM_CHART}" -f values.yaml
+	helm upgrade --install --version "${CHART_VERSION}" -n "${NAMESPACE}" "${HELM_RELEASE}" "${HELM_REPOSITORY}/${HELM_CHART}" -f values.yaml
