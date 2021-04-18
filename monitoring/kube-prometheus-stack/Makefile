@@ -12,8 +12,8 @@ secret:
 	kubectl -n "${NAMESPACE}" create secret generic grafana-admin --from-env-file=grafana-admin.secret
 
 template:
-	helm template -n "${NAMESPACE}" "${HELM_RELEASE}" "${HELM_REPOSITORY}/${HELM_CHART}" -f values.yaml > manifests.yaml
+	helm template -n "${NAMESPACE}" "${HELM_RELEASE}" . -f values.yaml > manifests.yaml
 
-# deploy:
-# 	kubectl create namespace "${NAMESPACE}" || echo "Namespace ${NAMESPACE} already exists"
-# 	helm upgrade --install --version "${CHART_VERSION}" -n "${NAMESPACE}" "${HELM_RELEASE}" "${HELM_REPOSITORY}/${HELM_CHART}" -f values.yaml
+deploy:
+	kubectl create namespace "${NAMESPACE}" || echo "Namespace ${NAMESPACE} already exists"
+	helm upgrade --install -n "${NAMESPACE}" "${HELM_RELEASE}" . -f values.yaml

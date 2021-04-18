@@ -1,127 +1,128 @@
-alertmanager:
-  ingress:
-    enabled: true
-    ingressClassName: nginx
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt
-      nginx.ingress.kubernetes.io/auth-type: basic
-      nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
-    labels: {}
-    hosts:
-      - alertmanager.dixneuf19.me
-    paths:
-      - /
-    pathType: ImplementationSpecific
-    tls:
-    - secretName: alertmanager-dixneuf19-me-tls
+kube-prometheus-stack:
+  alertmanager:
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt
+        nginx.ingress.kubernetes.io/auth-type: basic
+        nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
+      labels: {}
       hosts:
-      - alertmanager.dixneuf19.me
-
-  alertmanagerSpec:
-    storage: {}
-    volumeClaimTemplate:
-      spec:
-        storageClassName: nfs-client
-        accessModes: ["ReadWriteOnce"]
-        resources:
-          requests:
-            storage: 1Mi
-      selector: {}
-
-    externalUrl: "https://alertmanager.dixneuf19.me"
-
-grafana:
-  enabled: true
-  admin:
-    existingSecret: grafana-admin       
-  plugins:
-    - grafana-piechart-panel
-
-  persistence:
-    enabled: true
-    storageClassName: nfs-client
-  
-  ingress:
-    enabled: true
-    ingressClassName: nginx
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt
-      kubernetes.io/ingress.class: nginx
-      nginx.ingress.kubernetes.io/auth-type: basic
-      nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
-    labels: {}
-    hosts:
-      - grafana.dixneuf19.me
-    path: /
-    tls:
-      - secretName: grafana-dixneuf19-me-tls
+        - alertmanager.dixneuf19.me
+      paths:
+        - /
+      pathType: ImplementationSpecific
+      tls:
+      - secretName: alertmanager-dixneuf19-me-tls
         hosts:
+        - alertmanager.dixneuf19.me
+
+    alertmanagerSpec:
+      storage: {}
+      volumeClaimTemplate:
+        spec:
+          storageClassName: nfs-client
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 1Mi
+        selector: {}
+
+      externalUrl: "https://alertmanager.dixneuf19.me"
+
+  grafana:
+    enabled: true
+    admin:
+      existingSecret: grafana-admin       
+    plugins:
+      - grafana-piechart-panel
+
+    persistence:
+      enabled: true
+      storageClassName: nfs-client
+    
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt
+        kubernetes.io/ingress.class: nginx
+        nginx.ingress.kubernetes.io/auth-type: basic
+        nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
+      labels: {}
+      hosts:
         - grafana.dixneuf19.me
+      path: /
+      tls:
+        - secretName: grafana-dixneuf19-me-tls
+          hosts:
+          - grafana.dixneuf19.me
 
-kubeControllerManager:
-  enabled: false
+  kubeControllerManager:
+    enabled: false
 
-kubeEtcd:
-  enabled: false
+  kubeEtcd:
+    enabled: false
 
-kubeScheduler:
-  enabled: false
+  kubeScheduler:
+    enabled: false
 
-kubeProxy:
-  enabled: false
+  kubeProxy:
+    enabled: false
 
-kubeStateMetrics:
-  enabled: true
-
-nodeExporter:
-  enabled: true
-
-prometheusOperator:
-  enabled: true
-  resources:
-    limits:
-      cpu: 200m
-      memory: 200Mi
-    requests:
-      cpu: 100m
-      memory: 100Mi
-
-prometheus:
-  enabled: true
-
-  ingress:
+  kubeStateMetrics:
     enabled: true
-    ingressClassName: nginx
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt
-      nginx.ingress.kubernetes.io/auth-type: basic
-      nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
-    labels: {}
-    hosts:
-      - prometheus.dixneuf19.me
-    paths:
-      - /
-    pathType: ImplementationSpecific
-    tls:
-      - secretName: prometheus-dixneuf19-me-tls
-        hosts:
-          - prometheus.dixneuf19.me
 
-  prometheusSpec:
-    externalUrl: "https://prometheus.dixneuf19.me"
-    ruleSelectorNilUsesHelmValues: false
-    serviceMonitorSelectorNilUsesHelmValues: false
-    podMonitorSelectorNilUsesHelmValues: false
-    probeSelectorNilUsesHelmValues: false
+  nodeExporter:
+    enabled: true
+
+  prometheusOperator:
+    enabled: true
     resources:
+      limits:
+        cpu: 200m
+        memory: 200Mi
       requests:
-        memory: 400Mi
-    storageSpec:
-        volumeClaimTemplate:
-          spec:
-            storageClassName: nfs-client
-            accessModes: ["ReadWriteOnce"]
-            resources:
-              requests:
-                storage: 1Mi
-          # selector: {}
+        cpu: 100m
+        memory: 100Mi
+
+  prometheus:
+    enabled: true
+
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt
+        nginx.ingress.kubernetes.io/auth-type: basic
+        nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
+      labels: {}
+      hosts:
+        - prometheus.dixneuf19.me
+      paths:
+        - /
+      pathType: ImplementationSpecific
+      tls:
+        - secretName: prometheus-dixneuf19-me-tls
+          hosts:
+            - prometheus.dixneuf19.me
+
+    prometheusSpec:
+      externalUrl: "https://prometheus.dixneuf19.me"
+      ruleSelectorNilUsesHelmValues: false
+      serviceMonitorSelectorNilUsesHelmValues: false
+      podMonitorSelectorNilUsesHelmValues: false
+      probeSelectorNilUsesHelmValues: false
+      resources:
+        requests:
+          memory: 400Mi
+      storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: nfs-client
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 1Mi
+            # selector: {}
