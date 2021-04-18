@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: librespeed
+spec:
+  destination:
+    namespace: default
+    name: in-cluster
+  project: default
+  source:
+    # directory:
+    #   jsonnet: {}
+    #   recurse: false
+    path: tools/librespeed/manifests
+    repoURL: 'https://github.com/dixneuf19/brassberry-kubernetes-cluster-state'
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+    syncOptions:
+    - CreateNamespace=true
