@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: personal-website
+spec:
+  destination:
+    namespace: default
+    name: in-cluster
+  project: default
+  source:
+    # directory:
+    #   jsonnet: {}
+    #   recurse: false
+    path: manifests
+    repoURL: 'https://github.com/dixneuf19/personal-website'
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
