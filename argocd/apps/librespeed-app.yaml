@@ -4,7 +4,7 @@ metadata:
   name: librespeed
 spec:
   destination:
-    namespace: default
+    namespace: tools
     name: in-cluster
   project: default
   source:
@@ -16,7 +16,7 @@ spec:
     targetRevision: HEAD
   syncPolicy:
     automated:
-      prune: false
-      selfHeal: false
+      prune: true
+      selfHeal: true
     syncOptions:
     - CreateNamespace=true
