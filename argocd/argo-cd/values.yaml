@@ -13,15 +13,38 @@ argo-cd:
           prometheus: kube-prometheus
         namespace: monitoring
         additionalLabels: {}
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 250m
+        memory: 256Mi
   ## Dex
   dex:
     enabled: false
+
+  redis:
+    resources:
+      limits:
+        cpu: 200m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 64Mi
 
   server:
     extraArgs:
       - --disable-auth
     #  - --insecure
 
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
     metrics:
       enabled: true
       serviceMonitor:
@@ -67,6 +90,13 @@ argo-cd:
 
   ## Repo Server
   repoServer:
+    resources:
+      limits:
+        cpu: 50m
+        memory: 128Mi
+      requests:
+        cpu: 10m
+        memory: 64Mi
     metrics:
       enabled: true
       serviceMonitor:
