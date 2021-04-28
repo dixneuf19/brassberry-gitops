@@ -15,11 +15,11 @@ argo-cd:
         additionalLabels: {}
     resources:
       limits:
-        cpu: 500m
-        memory: 512Mi
+        cpu: 1000m
+        memory: 1512Mi
       requests:
-        cpu: 250m
-        memory: 256Mi
+        cpu: 500m
+        memory: 1Gi
   ## Dex
   dex:
     enabled: false
@@ -92,11 +92,11 @@ argo-cd:
   repoServer:
     resources:
       limits:
+        cpu: 100m
+        memory: 256Mi
+      requests:
         cpu: 50m
         memory: 128Mi
-      requests:
-        cpu: 10m
-        memory: 64Mi
     metrics:
       enabled: true
       serviceMonitor:
