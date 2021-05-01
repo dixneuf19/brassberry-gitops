@@ -63,7 +63,7 @@ argo-cd:
         # GRPC, so the CLI won't work
         nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
       labels: {}
-
+      ingressClassName: nginx
       hosts:
         - argocd.dixneuf19.me
       paths:
