@@ -1,0 +1,15 @@
+apiVersion: v2
+name: ingress-nginx
+version: 3.30.0
+appVersion: 0.46.0
+home: https://github.com/kubernetes/ingress-nginx
+description: OTS Nginx ingress controller chart
+icon: https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Nginx_logo.svg/500px-Nginx_logo.svg.png
+sources:
+  - https://github.com/kubernetes/ingress-nginx
+type: application
+kubeVersion: ">=1.16.0-0"
+dependencies:
+  - name: ingress-nginx
+    version: 3.30.0
+    repository: https://kubernetes.github.io/ingress-nginx
