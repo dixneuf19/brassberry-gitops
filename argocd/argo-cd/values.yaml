@@ -20,6 +20,13 @@ argo-cd:
       requests:
         cpu: 500m
         memory: "1.5Gi"
+    extraArgs:
+      - --repo-server-timeout-seconds
+      - "500"
+      - --status-processors
+      - "10"
+      - --operation-processors
+      - "5"
   ## Dex
   dex:
     enabled: false
@@ -130,3 +137,6 @@ argo-cd:
           prometheus: kube-prometheus
         namespace: monitoring
         additionalLabels: {}
+    env:
+      - name: "ARGOCD_EXEC_TIMEOUT"
+        value: "5m"
