@@ -16,10 +16,10 @@ argo-cd:
     resources:
       limits:
         cpu: 1000m
-        memory: 1512Mi
+        memory: 2Gi
       requests:
         cpu: 500m
-        memory: 1Gi
+        memory: "1.5Gi"
   ## Dex
   dex:
     enabled: false
