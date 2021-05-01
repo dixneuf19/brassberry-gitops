@@ -87,7 +87,7 @@ argo-cd:
     config:
       # Argo CD's externally facing base URL (optional). Required when configuring SSO
       url: https://argocd.dixneuf19.me
-      repositories:
+      repositories: |
         - type: helm
           name: argo
           url: https://argoproj.github.io/argo-helm
