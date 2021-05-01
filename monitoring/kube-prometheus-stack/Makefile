@@ -1,7 +1,6 @@
 HELM_RELEASE=kube-prometheus-stack
 HELM_REPOSITORY=prometheus-community
 HELM_CHART=kube-prometheus-stack
-CHART_VERSION=14.9.0
 
 NAMESPACE=monitoring
 
@@ -13,6 +12,9 @@ secret:
 
 template:
 	helm template -n "${NAMESPACE}" "${HELM_RELEASE}" . -f values.yaml > manifests.yaml
+
+dependency:
+	helm dependency update
 
 deploy:
 	kubectl create namespace "${NAMESPACE}" || echo "Namespace ${NAMESPACE} already exists"
