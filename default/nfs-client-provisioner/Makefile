@@ -8,7 +8,7 @@ dependency:
 	helm repo add "${HELM_REPOSITORY_NAME}" "${HELM_REPOSITORY_URL}"
 
 template:
-	helm -n "${NAMESPACE}"  template "${HELM_RELEASE}" "${HELM_REPOSITORY_NAME}/${HELM_CHART}" -f values.yaml
+	helm -n "${NAMESPACE}"  template "${HELM_RELEASE}" . -f values.yaml
 
 deploy:
-	helm -n "${NAMESPACE}" upgrade -i "${HELM_RELEASE}" "${HELM_REPOSITORY_NAME}/${HELM_CHART}" -f values.yaml
+	helm -n "${NAMESPACE}" upgrade -i "${HELM_RELEASE}" . -f values.yaml

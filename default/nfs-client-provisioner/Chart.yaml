@@ -2,6 +2,7 @@ apiVersion: v2
 name: nfs-client-provisioner
 version: 1.0.0
 dependencies:
-- name: nfs-client-provisioner
-  version: ~1.2.11
-  repository: https://charts.helm.sh/stable
+- name: nfs-subdir-external-provisioner
+  alias: nfs-client-provisioner
+  version: 4.0.10
+  repository: https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
