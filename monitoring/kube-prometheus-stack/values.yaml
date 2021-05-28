@@ -116,7 +116,11 @@ kube-prometheus-stack:
       probeSelectorNilUsesHelmValues: false
       resources:
         requests:
-          memory: 400Mi
+          memory: 1Gi
+          cpu: 1
+        limits:
+          memory: 2Gi
+          cpu: 1
       storageSpec:
           volumeClaimTemplate:
             spec:
