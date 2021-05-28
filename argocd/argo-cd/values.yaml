@@ -3,6 +3,7 @@ argo-cd:
   global:
     image:
       repository: alinbalutoiu/argocd
+      tag: linux-arm64-v2.0.2
 
   controller:
     metrics:
