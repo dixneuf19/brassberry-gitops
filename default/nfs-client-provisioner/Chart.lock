@@ -1,0 +1,6 @@
+dependencies:
+- name: nfs-client-provisioner
+  repository: https://charts.helm.sh/stable
+  version: 1.2.11
+digest: sha256:760c9e0d244bcb49f958035018dedb29365434808193f79435e82a73f18795b1
+generated: "2020-11-22T20:32:21.622296862+01:00"
