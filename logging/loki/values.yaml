@@ -13,7 +13,7 @@ loki:
     #      - chart-example.local
 
   persistence:
-    enabled: false
+    enabled: true
     accessModes:
     - ReadWriteOnce
     size: 10Gi
