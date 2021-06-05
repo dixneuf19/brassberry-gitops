@@ -3,4 +3,4 @@ dependencies:
   repository: https://dixneuf19.github.io/helm-charts-repo/
   version: 0.3.1
 digest: sha256:12e8b9455eac47d433fa26778dd51190dbe6ad9b33b2a197351873b0ca4c34ba
-generated: "2021-04-17T22:57:04.007638576+02:00"
+generated: "2021-04-18T22:57:04.007638576+02:00"
