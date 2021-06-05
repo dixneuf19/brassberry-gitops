@@ -1,0 +1,28 @@
+name: Helm Dependency Build
+on: pull_request
+jobs:
+  helm_dependency_build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{ github.event.issue }}
+      - name: Install helm
+        uses: azure/setup-helm@v1
+
+      - name: Check out repository code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.GH_REPO_PAT}}
+
+      - name: Run helm dependency build on all modified charts
+        run: ./hacks/helm_build_dependency.sh
+
+      - name: Commit if necessary
+        run: |
+          git status --porcelain | grep "**/charts/**" || exit 0
+          git config user.name "Github Actions - $GITHUB_WORKFLOW"
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "chore(helm): run helm dep build on upgraded charts"
+          git push
