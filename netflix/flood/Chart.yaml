@@ -1,0 +1,7 @@
+apiVersion: v2
+name: flood
+version: 1.0.0
+dependencies:
+- name: flood
+  version: 5.1.0
+  repository: https://k8s-at-home.com/charts/

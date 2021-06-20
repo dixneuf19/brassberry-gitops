@@ -1,0 +1,6 @@
+dependencies:
+- name: flood
+  repository: https://k8s-at-home.com/charts/
+  version: 5.1.0
+digest: sha256:803938dd100ded6e631f6778cda088c91ebea6383ea4e034a96fb95016036010
+generated: "2021-06-20T21:46:42.817847165+02:00"

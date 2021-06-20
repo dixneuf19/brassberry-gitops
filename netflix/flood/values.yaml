@@ -1,0 +1,8 @@
+flood:
+  ingress:
+    main:
+      enabled: false
+
+  persistence:
+    data:
+      enabled: false
