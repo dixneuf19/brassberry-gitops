@@ -2,7 +2,7 @@ generic:
   replicaCount: 2
   image:
     repository: dixneuf19/spotify-api
-    tag: a94f4d3fd03a1d1a7aa266e2f7f2f8e1d5e8b391
+    tag: 52f797d19627084164f158575a4c383114f06437
     pullPolicy: Always
   container:
     port: 80
@@ -32,12 +32,12 @@ generic:
   affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        podAffinityTerm:
-          labelSelector:
-            matchExpressions:
-            - key: app.kubernetes.io/name
-              operator: In
-              values:
-              - spotify-api
-          topologyKey: kubernetes.io/hostname
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - spotify-api
+            topologyKey: kubernetes.io/hostname
