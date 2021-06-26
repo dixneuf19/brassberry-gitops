@@ -2,7 +2,7 @@ generic:
   replicaCount: 2
   image:
     repository: dixneuf19/fip-telegram-bot
-    tag: 5d21666d93bd4d54cf93aef463482fd30ea9a964
+    tag: 8bab4aee7f845645e2947eef70b40c7fbd38386e
     pullPolicy: Always
   container:
     port: 80
@@ -40,12 +40,12 @@ generic:
   affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        podAffinityTerm:
-          labelSelector:
-            matchExpressions:
-            - key: app.kubernetes.io/name
-              operator: In
-              values:
-              - fip-telegram-bot
-          topologyKey: kubernetes.io/hostname
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - fip-telegram-bot
+            topologyKey: kubernetes.io/hostname
