@@ -29,3 +29,15 @@ generic:
       key: SPOTIPY_CLIENT_ID
     - name: spotify-api-access
       key: SPOTIPY_CLIENT_SECRET
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+              - spotify-api
+          topologyKey: kubernetes.io/hostname

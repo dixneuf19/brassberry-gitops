@@ -59,3 +59,15 @@ generic:
     - name: credentials
       persistentVolumeClaim:
         claimName: slack-oauth-credentials
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+              - fip-slack-bot
+          topologyKey: kubernetes.io/hostname

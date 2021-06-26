@@ -31,3 +31,15 @@ generic:
   secrets:
     - name: radio-france-api-token
       key: RADIO_FRANCE_API_TOKEN
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+              - whats-on-fip
+          topologyKey: kubernetes.io/hostname

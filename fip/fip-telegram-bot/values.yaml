@@ -37,3 +37,15 @@ generic:
   secrets:
     - name: fip-telegram-bot
       key: BOT_TELEGRAM_TOKEN
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+              - fip-telegram-bot
+          topologyKey: kubernetes.io/hostname
