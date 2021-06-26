@@ -2,7 +2,7 @@ generic:
   replicaCount: 2
   image:
     repository: dixneuf19/whatsonfip
-    tag: a7d1cc59d0ca5582bba19cb0103e6ec32b0247cf
+    tag: 504448475e8da4d561587f458d3d4e2b6bfe884b
     pullPolicy: Always
   container:
     port: 80
@@ -34,12 +34,12 @@ generic:
   affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        podAffinityTerm:
-          labelSelector:
-            matchExpressions:
-            - key: app.kubernetes.io/name
-              operator: In
-              values:
-              - whats-on-fip
-          topologyKey: kubernetes.io/hostname
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - whats-on-fip
+            topologyKey: kubernetes.io/hostname
