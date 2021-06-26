@@ -2,7 +2,7 @@ generic:
   replicaCount: 2
   image:
     repository: dixneuf19/spotify-api
-    tag: 52f797d19627084164f158575a4c383114f06437
+    tag: d9303a7803e4a3a510443c7bfc736623749f3f12
     pullPolicy: Always
   container:
     port: 80
