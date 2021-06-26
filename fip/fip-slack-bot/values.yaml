@@ -2,7 +2,7 @@ generic:
   replicaCount: 2
   image:
     repository: dixneuf19/fip-slack-bot
-    tag: 1002ef68bf1bb16c811da9e56e229f76bdf1f629
+    tag: 5c56402994a1e9f251b62a545ef6c4a7331b5016
     pullPolicy: Always
   container:
     port: 3000
@@ -62,12 +62,12 @@ generic:
   affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        podAffinityTerm:
-          labelSelector:
-            matchExpressions:
-            - key: app.kubernetes.io/name
-              operator: In
-              values:
-              - fip-slack-bot
-          topologyKey: kubernetes.io/hostname
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - fip-slack-bot
+            topologyKey: kubernetes.io/hostname
