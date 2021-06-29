@@ -4,5 +4,5 @@ version: 1.0.0
 dependencies:
 - name: nfs-subdir-external-provisioner
   alias: nfs-client-provisioner
-  version: 4.0.11
+  version: 4.0.12
   repository: https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
