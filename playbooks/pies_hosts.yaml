@@ -22,3 +22,6 @@ workers:
       - name: magadi_3T
         uuid: E6504EF8504ECECD
         type: NTFS
+    brassberry-27:
+      ansible_host: 192.168.1.27
+      disks: []
