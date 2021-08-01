@@ -18,6 +18,7 @@ loki:
     - ReadWriteOnce
     size: 10Gi
     annotations: {}
+    storageClassName: nfs-client
     # selector:
     #   matchLabels:
     #     app.kubernetes.io/name: loki
