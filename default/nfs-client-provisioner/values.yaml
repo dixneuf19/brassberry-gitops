@@ -19,7 +19,7 @@ nfs-client-provisioner:
 
     # Set a StorageClass name
     # Ignored if storageClass.create is false
-    name: nfs-storage
+    name: nfs-client
 
     # Allow volume to be expanded dynamically
     allowVolumeExpansion: true
