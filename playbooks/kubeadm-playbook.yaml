@@ -40,8 +40,8 @@
     - name: Update apt and install Kubernetes packages
       apt:
         name:
-          - kubelet=1.19.3-00
-          - kubeadm=1.19.3-00
-          - kubectl=1.19.3-00
+          - kubelet=1.21.0-00
+          - kubeadm=1.21.0-00
+          - kubectl=1.21.0-00
         update_cache: yes
         state: present
