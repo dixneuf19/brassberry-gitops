@@ -2,7 +2,7 @@
 # Setup Kubernetes
 #################################################
 ---
-- hosts: brassberry-26
+- hosts: all
   become: true
 
   tasks:
