@@ -2,7 +2,7 @@ generic:
   replicaCount: 2
   image:
     repository: dixneuf19/fip-telegram-bot
-    tag: ea9c7b91e8082a2f83a4121dc2cd0985d3f0af59
+    tag: 8dd4d2a19477fb950fb3c1b9a785c7cff26d3703
     pullPolicy: Always
   container:
     port: 80
