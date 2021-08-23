@@ -2,7 +2,7 @@ generic:
   replicaCount: 2
   image:
     repository: dixneuf19/fip-slack-bot
-    tag: b501d99e3f8d66f0e0ed107ac8ff65dc9b11e1ca
+    tag: a302fc44eba3ba9b3004a6ec2f9239fab7b26d4a
     pullPolicy: Always
   container:
     port: 3000
