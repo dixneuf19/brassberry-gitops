@@ -1,0 +1,22 @@
+#################################################
+# Setup kernel modules
+#################################################
+---
+- hosts: all
+  become: true
+  # vars_files:
+  #   - vars/default.yml
+
+  tasks:
+    - name: Enable kernel modules
+      # source: https://docs.k0sproject.io/v1.21.3+k0s.0/raspberry-pi4/#kernel-modules
+      blockinfile:
+          path: /etc/modules-load.d/modules.conf
+          create: false
+          block: |
+            overlay
+            nf_conntrack
+            br_netfilter
+
+    - name: Reboot
+      reboot: {}
