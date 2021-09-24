@@ -26,8 +26,8 @@ users:
 ssh_pwauth: false
 
 ## Update apt database and upgrade packages on first boot
-# package_update: true
-# package_upgrade: true
+package_update: true
+package_upgrade: true
 
 
-final_message: "The system is finally up"
+final_message: "The system is finally up, after $UPTIME seconds"
