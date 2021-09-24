@@ -56,3 +56,5 @@
 
 
     ## Add actual mounting to avoid rebooting
+    - name: Reboot
+      reboot: {}
