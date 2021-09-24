@@ -11,14 +11,22 @@
       apt:
         name:
           - nfs-common 
+        update_cache: yes
+        state: latest
+
+    - name: Install required package
+      apt:
+        name:
           - nfs-kernel-server
         update_cache: yes
         state: latest
+      when: "{{disks}} | length > 0"
 
     - name: Enable service nfs-kernel-server
       systemd:
         name: nfs-kernel-server
         enabled: yes
+      when: "{{disks}} | length > 0"
 
     - name: Configure access rights
       file:
@@ -38,3 +46,4 @@
       systemd:
         name: nfs-kernel-server
         state: restarted
+      when: "{{disks}} | length > 0"
