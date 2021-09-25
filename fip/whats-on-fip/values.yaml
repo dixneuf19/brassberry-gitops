@@ -2,7 +2,7 @@ generic:
   replicaCount: 2
   image:
     repository: dixneuf19/whatsonfip
-    tag: 18be570409162951596bbbd01f4696f1b3d13a3a
+    tag: c1b07d18175c4ce7e9a574de256eb73aa7ed7ab5
     pullPolicy: Always
   container:
     port: 80
