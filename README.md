@@ -10,16 +10,18 @@ Then run `sudo fix-ssh-on-pi.bash`, it creates an image that you can burn on the
 
 ## Playbooks
 
-Configuration: `pie_hosts.yaml`
+Configuration: `pie_hosts.yaml` (or `pie_hosts_remote.yaml`)
 
 You can run the playbooks in this order:
 
 - `ping-example-playbook.yaml` to check host connectivity
+- `kerner-modules.yaml` to install module needed for k0s
 - `upgrade-playbook.yaml` to update the hosts
-- `docker-playbook.yaml` to install docker
-- `kubeadm-playbook.yaml` to install kubeadm
-- `kubeadm-master-playbook.yaml` for the master of kubernetes
-- `kubeadm-workers-playbook.yaml` for the master of kubernetes
 - `mounts.yaml` for the disks
 - `nfs-server-playbook.yaml` to install nfs
-- `jellyfin.yaml`
+
+## K0s
+
+```bash
+k0sctl apply --config k0sctl.yaml
+```
