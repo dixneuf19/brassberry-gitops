@@ -32,3 +32,5 @@ spec:
           address: 192.168.1.24
           sans:
            - brassberry.dixneuf19.me
+        telemetry:
+          enabled: false

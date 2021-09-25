@@ -3,3 +3,4 @@
 SHA256*
 *.part
 *.kubeconfig.yaml
+**/k0s_backup*
