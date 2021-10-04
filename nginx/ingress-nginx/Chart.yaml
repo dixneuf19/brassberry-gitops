@@ -11,5 +11,5 @@ type: application
 kubeVersion: ">=1.16.0-0"
 dependencies:
   - name: ingress-nginx
-    version: 3.38.0
+    version: 3.39.0
     repository: https://kubernetes.github.io/ingress-nginx
