@@ -40,3 +40,6 @@ ingress-nginx:
       serviceMonitor:
         enabled: true
         namespace: "monitoring"
+    
+  defaultBackend:
+    enabled: true
