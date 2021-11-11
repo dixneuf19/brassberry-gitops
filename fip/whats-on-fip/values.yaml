@@ -29,7 +29,7 @@ generic:
     SPOTIFY_API_HOST: spotify-api
     SPOTIFY_API_PORT: 1919
     OTEL_EXPORTER: otlp_span
-    OTEL_EXPORTER_OTLP_ENDPOINT: "tempo.tracing.svc.cluster.local"
+    OTEL_EXPORTER_OTLP_ENDPOINT: "tempo.tracing.svc.cluster.local:4317"
     OTEL_EXPORTER_OTLP_INSECURE: true
     OTEL_RESOURCE_ATTRIBUTES: "service.name=whatsonfip"
   secrets:
