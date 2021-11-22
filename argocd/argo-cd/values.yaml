@@ -3,7 +3,7 @@ argo-cd:
   global:
     image:
       repository: alinbalutoiu/argocd
-      tag: v2.1.6
+      tag: v2.1.7
 
   controller:
     metrics:
