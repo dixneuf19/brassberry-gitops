@@ -2,7 +2,7 @@ generic:
   replicaCount: 2
   image:
     repository: dixneuf19/whatsonfip
-    tag: 6003c68cc0fccddb455266b7c90723fc647ed11e
+    tag: 22d07927f2e36256e6ede59e8322c4ae415ff87d
     pullPolicy: Always
   container:
     port: 80
@@ -29,9 +29,9 @@ generic:
     SPOTIFY_API_HOST: spotify-api
     SPOTIFY_API_PORT: 1919
     OTEL_EXPORTER: otlp_span
-    OTEL_EXPORTER_OTLP_ENDPOINT: "tempo.tracing.svc.cluster.local:4317"
+    OTEL_EXPORTER_OTLP_ENDPOINT: 'tempo.tracing.svc.cluster.local:4317'
     OTEL_EXPORTER_OTLP_INSECURE: true
-    OTEL_RESOURCE_ATTRIBUTES: "service.name=whatsonfip"
+    OTEL_RESOURCE_ATTRIBUTES: service.name=whatsonfip
   secrets:
     - name: radio-france-api-token
       key: RADIO_FRANCE_API_TOKEN
