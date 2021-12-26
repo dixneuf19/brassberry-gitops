@@ -1,0 +1,11 @@
+apiVersion: v2
+name: dank-face-bot
+version: 1.0.0
+description: "Get you dank faces from pics posted on Telegram" 
+appVersion: "1.0.0"
+home: https://github.com/dixneuf19/dank-face-bot
+dependencies:
+  - name: base-helm-chart
+    alias: generic
+    version: 0.3.1
+    repository: https://dixneuf19.github.io/helm-charts-repo/

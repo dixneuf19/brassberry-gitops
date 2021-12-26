@@ -1,28 +1,19 @@
 generic:
-  replicaCount: 2
+  replicaCount: 1
   image:
-    repository: ghcr.io/dixneuf19/fuzzy-octo-disco
-    tag: 9e3ab545f49e9585bc80c107363d40772aad5f65
+    repository: ghcr.io/dixneuf19/dank-face-bot
+    tag: "1d0c6e0fc8e016eb2f45d888fb462a53321e4b2d"
   container:
-    port: 80
-    probe:
-      liveness:
-        path: /health
-      readiness:
-        path: /health
+    probe: null
   resources:
     limits:
-      memory: 512Mi
+      memory: 128Mi
       cpu: 300m
     requests:
-      memory: 256Mi
+      memory: 64Mi
       cpu: 100m
-  service:
-    type: ClusterIP
   ingress:
     enabled: false
-  configmap:
-    FACE_CROP_MARGIN: "-0.075"
   affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
@@ -33,9 +24,18 @@ generic:
                 - key: app.kubernetes.io/name
                   operator: In
                   values:
-                    - fuzzy-octo-disco
+                    - dank-face-bot
             topologyKey: kubernetes.io/hostname
-
+  configmap:
+    # INSULT_JMK_HOST:
+    # INSULT_JMK_PORT:
+    FUZZY_OCTO_DISCO_HOST: "http://fuzzy-octo-disco"
+    FUZZY_OCTO_DISCO_PORT: "80"
+    FIND_FACES_PIC_FOLDER: "/tmp/pics"
+    HONK_FILE_ID: "CQADBAAD6wcAAnjc4FJqI-mRCqD8nRYE"
+  secrets:
+    - name: telegram-token
+      key: TELEGRAM_TOKEN
   volumeMounts:
   - name: dank-face-bot-pics
     mountPath: /tmp/pics
@@ -43,10 +43,3 @@ generic:
   - name: dank-face-bot-pics
     persistentVolumeClaim:
       claimName: dank-face-bot-pics
-  persistence:
-    enabled: true
-    pvc:
-      name: dank-face-bot-pics
-      storageClassName: nfs-client
-      accessModes: ["ReadWriteMany"]
-      storageRequest: 1Mi # not relevant for NFS
