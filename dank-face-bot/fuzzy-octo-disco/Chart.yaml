@@ -1,0 +1,11 @@
+apiVersion: v2
+name: fuzzy-octo-disco
+version: 1.0.0
+description: "fuzzy-octo-disco is the dank face bot face recognition backend" 
+appVersion: "1.0.0"
+home: https://github.com/dixneuf19/fuzzy-octo-disco
+dependencies:
+  - name: base-helm-chart
+    alias: generic
+    version: 0.3.1
+    repository: https://dixneuf19.github.io/helm-charts-repo/
