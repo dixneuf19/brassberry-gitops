@@ -1,0 +1,51 @@
+generic:
+  replicaCount: 2
+  image:
+    repository: ghcr.io/dixneuf19/fuzzy-octo-disco
+    tag: 9e3ab545f49e9585bc80c107363d40772aad5f65
+  container:
+    port: 80
+    probe:
+      liveness:
+        path: /health
+      readiness:
+        path: /health
+  resources:
+    limits:
+      memory: 512Mi
+      cpu: 300m
+    requests:
+      memory: 256Mi
+      cpu: 100m
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: false
+  configmap:
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - fuzzy-octo-disco
+            topologyKey: kubernetes.io/hostname
+
+  volumeMounts:
+  - name: dank-face-bot-pics
+    mountPath: /tmp/pics
+  volumes:
+  - name: dank-face-bot-pics
+    persistentVolumeClaim:
+      claimName: dank-face-bot-pics
+  persistence:
+    enabled: true
+    pvc:
+      name: dank-face-bot-pics
+      storageClassName: nfs-client
+      accessModes: ["ReadWriteMany"]
+      storageRequest: 1Mi # not relevant for NFS
