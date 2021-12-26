@@ -1,0 +1,45 @@
+generic:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/dixneuf19/dank-face-bot
+    tag: "1d0c6e0fc8e016eb2f45d888fb462a53321e4b2d"
+  container:
+    probe: null
+  resources:
+    limits:
+      memory: 128Mi
+      cpu: 300m
+    requests:
+      memory: 64Mi
+      cpu: 100m
+  ingress:
+    enabled: false
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - dank-face-bot
+            topologyKey: kubernetes.io/hostname
+  configmap:
+    # INSULT_JMK_HOST:
+    # INSULT_JMK_PORT:
+    FUZZY_OCTO_DISCO_HOST: "http://fuzzy-octo-disco"
+    FUZZY_OCTO_DISCO_PORT: "80"
+    FIND_FACES_PIC_FOLDER: "/tmp/pics"
+    HONK_FILE_ID: "CQADBAAD6wcAAnjc4FJqI-mRCqD8nRYE"
+  secrets:
+    - name: telegram-token
+      key: TELEGRAM_TOKEN
+  volumeMounts:
+  - name: dank-face-bot-pics
+    mountPath: /tmp/pics
+  volumes:
+  - name: dank-face-bot-pics
+    persistentVolumeClaim:
+      claimName: dank-face-bot-pics
