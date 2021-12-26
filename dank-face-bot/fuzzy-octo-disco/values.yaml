@@ -22,6 +22,7 @@ generic:
   ingress:
     enabled: false
   configmap:
+    FACE_CROP_MARGIN: "-0.075"
   affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
