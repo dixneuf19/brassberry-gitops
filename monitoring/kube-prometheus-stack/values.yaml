@@ -130,8 +130,3 @@ kube-prometheus-stack:
                 requests:
                   storage: 1Mi
             # selector: {}
-
-  prometheus-node-exporter:
-    prometheus:
-      monitor:
-        enabled: true
