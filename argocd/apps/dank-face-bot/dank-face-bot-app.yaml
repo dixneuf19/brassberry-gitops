@@ -2,6 +2,12 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: dank-face-bot
+  annotations:
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/argocd-image-updater-git-creds
+    argocd-image-updater.argoproj.io/image-list: dank-face-bot=ghcr.io/dixneuf19/dank-face-bot:master
+    argocd-image-updater.argoproj.io/dank-face-bot.update-strategy: digest
+    argocd-image-updater.argoproj.io/dank-face-bot.helm.image-name: generic.image.name
+    argocd-image-updater.argoproj.io/dank-face-bot.helm.image-tag: generic.image.tag
 spec:
   project: default
   source:
