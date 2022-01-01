@@ -1,0 +1,14 @@
+apiVersion: v2
+description: OTS chart for ArgoCD Image Updater
+name: argo-cd
+version: 1.0.0
+home: https://github.com/argoproj-labs/argocd-image-updater
+icon: https://argocd-image-updater.readthedocs.io/en/stable/assets/logo.png
+keywords:
+  - argoproj
+  - argocd
+  - gitops
+dependencies:
+  - name: argocd-image-updater
+    version: 0.6.0
+    repository: https://argoproj.github.io/argo-helm

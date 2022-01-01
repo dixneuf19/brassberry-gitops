@@ -1,0 +1,6 @@
+dependencies:
+- name: argocd-image-updater
+  repository: https://argoproj.github.io/argo-helm
+  version: 0.6.0
+digest: sha256:be396a18c48d6c56ba64781a0c90da7731fed2bc011cf40d423b17eeb36955af
+generated: "2022-01-01T22:37:33.902600494+01:00"
