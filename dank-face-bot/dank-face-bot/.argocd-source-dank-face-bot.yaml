@@ -1,0 +1,8 @@
+helm:
+  parameters:
+  - name: generic.image.name
+    value: ghcr.io/dixneuf19/dank-face-bot
+    forcestring: true
+  - name: generic.image.tag
+    value: master@sha256:a9dfa977f33fef0f1f4a3540a465029121cb90f076334c76c720f06ae0f253ce
+    forcestring: true
