@@ -10,7 +10,7 @@ spec:
   source:
     path: argocd/apps/
     repoURL: 'https://github.com/dixneuf19/brassberry-kubernetes-cluster-state'
-    targetRevision: HEAD
+    targetRevision: main
     directory:
       recurse: true
   syncPolicy:

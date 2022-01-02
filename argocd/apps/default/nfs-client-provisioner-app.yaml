@@ -7,7 +7,7 @@ spec:
   source:
     path: default/nfs-client-provisioner
     repoURL: 'https://github.com/dixneuf19/brassberry-kubernetes-cluster-state'
-    targetRevision: HEAD
+    targetRevision: main
     helm:
       valueFiles:
       - values.yaml

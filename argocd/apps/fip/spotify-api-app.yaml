@@ -7,7 +7,7 @@ spec:
   source:
     path: fip/spotify-api
     repoURL: 'https://github.com/dixneuf19/brassberry-kubernetes-cluster-state'
-    targetRevision: HEAD
+    targetRevision: main
     helm:
       valueFiles:
       - values.yaml
