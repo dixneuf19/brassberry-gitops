@@ -2,7 +2,6 @@ generic:
   replicaCount: 2
   image:
     repository: ghcr.io/dixneuf19/fuzzy-octo-disco
-    tag: 9e3ab545f49e9585bc80c107363d40772aad5f65
   container:
     port: 80
     probe:
