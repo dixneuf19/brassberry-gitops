@@ -7,7 +7,7 @@ spec:
   source:
     path: default/http-echo
     repoURL: 'https://github.com/dixneuf19/brassberry-kubernetes-cluster-state'
-    targetRevision: HEAD
+    targetRevision: main
     helm:
       valueFiles:
       - values.yaml

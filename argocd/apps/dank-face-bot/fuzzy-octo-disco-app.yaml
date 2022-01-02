@@ -7,7 +7,7 @@ spec:
   source:
     path: dank-face-bot/fuzzy-octo-disco
     repoURL: 'https://github.com/dixneuf19/brassberry-kubernetes-cluster-state'
-    targetRevision: HEAD
+    targetRevision: main
     helm:
       valueFiles:
       - values.yaml

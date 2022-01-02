@@ -13,7 +13,7 @@ spec:
     #   recurse: false
     path: manifests
     repoURL: 'https://github.com/dixneuf19/gandi-livedns-updater'
-    targetRevision: HEAD
+    targetRevision: main
   syncPolicy:
     automated:
       prune: false

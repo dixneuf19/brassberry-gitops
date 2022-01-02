@@ -13,7 +13,7 @@ spec:
   source:
     path: dank-face-bot/dank-face-bot
     repoURL: 'https://github.com/dixneuf19/brassberry-kubernetes-cluster-state'
-    targetRevision: HEAD
+    targetRevision: main
     helm:
       valueFiles:
       - values.yaml
