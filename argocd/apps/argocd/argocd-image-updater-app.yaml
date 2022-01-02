@@ -1,28 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: dank-face-bot
-  annotations:
-    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/argocd-image-updater-git-creds
-    argocd-image-updater.argoproj.io/image-list: dank-face-bot=ghcr.io/dixneuf19/dank-face-bot:master
-    argocd-image-updater.argoproj.io/dank-face-bot.update-strategy: digest
-    argocd-image-updater.argoproj.io/dank-face-bot.helm.image-name: generic.image.name
-    argocd-image-updater.argoproj.io/dank-face-bot.helm.image-tag: generic.image.tag
+  name: argocd-image-updater
 spec:
   project: default
   source:
-    path: dank-face-bot/dank-face-bot
+    path: argocd/argocd-image-updater/
     repoURL: 'https://github.com/dixneuf19/brassberry-kubernetes-cluster-state'
     targetRevision: HEAD
     helm:
       valueFiles:
       - values.yaml
   destination:
-    namespace: dank-face-bot
+    namespace: argocd
     name: in-cluster
   syncPolicy:
     automated: # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
       prune: false # Specifies if resources should be pruned during auto-syncing ( false by default ).
       selfHeal: false # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+      allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
     syncOptions:     # Sync options which modifies sync behavior
     - CreateNamespace=true # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
