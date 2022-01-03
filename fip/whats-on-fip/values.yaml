@@ -1,8 +1,8 @@
 generic:
   replicaCount: 2
   image:
-    repository: dixneuf19/whatsonfip
-    tag: 7c62d66c857b653ab4819292996da1daa7c06976
+    repository: ghcr.io/dixneuf19/whats-on-fip
+    tag: master
     pullPolicy: Always
   container:
     port: 80
@@ -28,10 +28,6 @@ generic:
     RADIO_FRANCE_API_HEALTHCHECK: 'https://openapi.radiofrance.fr/v1/.well-known/apollo/server-health'
     SPOTIFY_API_HOST: spotify-api
     SPOTIFY_API_PORT: 1919
-    OTEL_EXPORTER: otlp_span
-    OTEL_EXPORTER_OTLP_ENDPOINT: 'tempo.tracing.svc.cluster.local:4317'
-    OTEL_EXPORTER_OTLP_INSECURE: true
-    OTEL_RESOURCE_ATTRIBUTES: service.name=whatsonfip
   secrets:
     - name: radio-france-api-token
       key: RADIO_FRANCE_API_TOKEN
