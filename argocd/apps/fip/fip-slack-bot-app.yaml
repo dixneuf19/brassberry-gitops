@@ -2,6 +2,12 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: fip-slack-bot
+  annotations:
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/argocd-image-updater-git-creds
+    argocd-image-updater.argoproj.io/image-list: fip-slack-bot=ghcr.io/dixneuf19/fip-slack-bot:main
+    argocd-image-updater.argoproj.io/fip-slack-bot.update-strategy: digest
+    argocd-image-updater.argoproj.io/fip-slack-bot.helm.image-name: generic.image.name
+    argocd-image-updater.argoproj.io/fip-slack-bot.helm.image-tag: generic.image.tag
 spec:
   project: default
   source:
