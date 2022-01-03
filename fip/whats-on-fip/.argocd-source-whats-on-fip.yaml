@@ -1,0 +1,8 @@
+helm:
+  parameters:
+  - name: generic.image.name
+    value: ghcr.io/dixneuf19/whats-on-fip
+    forcestring: true
+  - name: generic.image.tag
+    value: master@sha256:81466007ecf70a81de483471eed56db5aaf523c8a7dc421fdade8f7829c5c5f1
+    forcestring: true
