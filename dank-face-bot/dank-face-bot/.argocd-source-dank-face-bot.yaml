@@ -4,5 +4,5 @@ helm:
     value: ghcr.io/dixneuf19/dank-face-bot
     forcestring: true
   - name: generic.image.tag
-    value: master@sha256:7bb18dca21f82fb85b6da77956ac2bc6c5b4889355f391e98de74288c803794a
+    value: master@sha256:1dceaf296e5ab4da94963df5e3fea90078e5fd8110815b43db75b5565b45416d
     forcestring: true
