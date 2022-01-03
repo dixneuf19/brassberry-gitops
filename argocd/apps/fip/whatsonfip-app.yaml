@@ -2,6 +2,12 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: whats-on-fip
+  annotations:
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/argocd-image-updater-git-creds
+    argocd-image-updater.argoproj.io/image-list: whats-on-fip=ghcr.io/dixneuf19/whats-on-fip:master
+    argocd-image-updater.argoproj.io/whats-on-fip.update-strategy: digest
+    argocd-image-updater.argoproj.io/whats-on-fip.helm.image-name: generic.image.name
+    argocd-image-updater.argoproj.io/whats-on-fip.helm.image-tag: generic.image.tag
 spec:
   project: default
   source:
