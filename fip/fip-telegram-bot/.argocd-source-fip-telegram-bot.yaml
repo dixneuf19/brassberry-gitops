@@ -1,0 +1,8 @@
+helm:
+  parameters:
+  - name: generic.image.name
+    value: ghcr.io/dixneuf19/fip-telegram-bot
+    forcestring: true
+  - name: generic.image.tag
+    value: master@sha256:62afc2b138e0266a8ae945da71203520f9e33877abcd02fd958f292fd9fa1653
+    forcestring: true
