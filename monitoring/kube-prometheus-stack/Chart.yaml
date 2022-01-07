@@ -11,5 +11,5 @@ kubeVersion: ">=1.16.0-0"
 home: https://github.com/prometheus-operator/kube-prometheus
 dependencies:
 - name: kube-prometheus-stack
-  version: "27.0.1"
+  version: "28.0.1"
   repository: https://prometheus-community.github.io/helm-charts
