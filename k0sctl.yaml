@@ -21,7 +21,7 @@ spec:
       address: 192.168.1.27
       user: ubuntu
   k0s:
-    version: v1.21.5+k0s.0
+    version: v1.21.8+k0s.0
     config:
       apiVersion: k0s.k0sproject.io/v1beta1
       kind: Cluster
