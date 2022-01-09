@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: 'https://kubernetes-sigs.github.io/descheduler/'
-    targetRevision: 0.20.0
+    targetRevision: 0.22.1
     chart: descheduler
   destination:
     name: in-cluster
