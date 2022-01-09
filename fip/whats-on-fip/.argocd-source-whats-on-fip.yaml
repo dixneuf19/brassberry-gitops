@@ -4,5 +4,5 @@ helm:
     value: ghcr.io/dixneuf19/whats-on-fip
     forcestring: true
   - name: generic.image.tag
-    value: master@sha256:e176f7b3de7b0cf5465aca9eca1cf3ab97f1b552d70546a80e05b6f3db4607e2
+    value: master@sha256:2dd91344c40d4d1c358e1f777998c122aedb9be4919be8a5d636ef0baa0e8fd4
     forcestring: true
