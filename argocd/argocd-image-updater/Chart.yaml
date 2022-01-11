@@ -10,5 +10,5 @@ keywords:
   - gitops
 dependencies:
   - name: argocd-image-updater
-    version: 0.6.0
+    version: 0.6.1
     repository: https://argoproj.github.io/argo-helm
