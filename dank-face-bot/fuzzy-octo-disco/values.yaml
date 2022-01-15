@@ -38,7 +38,7 @@ generic:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
-          matchFields:
+          - matchExpressions:
             - key: "kubernetes.io/hostname"
               operator: NotIn
               values: ["brassberry-25"]
