@@ -1,5 +1,5 @@
 generic:
-  replicaCount: 2
+  replicaCount: 1
   image:
     repository: ghcr.io/dixneuf19/fuzzy-octo-disco
   container:
@@ -34,7 +34,14 @@ generic:
                   values:
                     - fuzzy-octo-disco
             topologyKey: kubernetes.io/hostname
-
+    # App currently not working only on this node
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          matchFields:
+            - key: "kubernetes.io/hostname"
+              operator: NotIn
+              values: ["brassberry-25"]
   volumeMounts:
   - name: dank-face-bot-pics
     mountPath: /tmp/pics
