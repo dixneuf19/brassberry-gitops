@@ -4,5 +4,5 @@ helm:
     value: ghcr.io/dixneuf19/fip-slack-bot
     forcestring: true
   - name: generic.image.tag
-    value: main@sha256:3d37379c478de1417c17860e5f72646359074efa90ac33fa3878c75423534a2e
+    value: main@sha256:9da8a7fbc42acb0cc37f6bf928a22c951072c604fc815c1d8a326bde33a9b306
     forcestring: true
