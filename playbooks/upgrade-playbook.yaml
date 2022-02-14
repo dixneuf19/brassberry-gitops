@@ -21,7 +21,23 @@
       delegate_to: 127.0.0.1
       failed_when: false
       changed_when: false
-    
+
+    - name: Update apt cache
+      become: true
+      apt:
+       update_cache: yes
+
+    - name: Check for available updates
+      become: true
+      command: apt list --upgradable
+      register: updates
+
+    - name: End the play for hosts whithout any upgrade
+      meta: end_host
+      when:
+      # Only one line with "Listing... Done"
+      - (updates.stdout_lines | length) == 1
+
     # cordon the node
     - name: Cordon node
       command: >-
@@ -56,7 +72,6 @@
       become: true
       apt:
         upgrade: dist
-        update_cache: true
         force_apt_get: true
 
     - name: Check if reboot is required
@@ -76,15 +91,3 @@
         {{ bin_dir }}/kubectl uncordon
         {{ kube_override_hostname|default(inventory_hostname) }}
       delegate_to: 127.0.0.1
-
-    - name: Wait for node to uncordon
-      command: >-
-        {{ bin_dir }}/kubectl get node
-        {{ kube_override_hostname|default(inventory_hostname) }}
-        -o json
-      register: wait_for_uncordon
-      retries: 10
-      delay: 30
-      delegate_to: 127.0.0.1
-      changed_when: false
-      until: not (kubectl_get_node['stdout'] | from_json).spec.unschedulable is defined
