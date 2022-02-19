@@ -1,4 +1,5 @@
 kyverno:
+  replicaCount: 3 # for HA
   serviceMonitor:
     enabled: true
     namespace: monitoring
