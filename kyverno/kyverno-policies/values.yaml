@@ -11,6 +11,15 @@ kyverno-policies:
           selector:
             matchLabels:
               app.kubernetes.io/name: promtail
+      # Exception for node-exporter
+      - resources:
+          kinds:
+          - Pod
+          namespaces:
+          - monitoring
+          selector:
+            matchLabels:
+              app: prometheus-node-exporter
     disallow-host-ports:
       any:
       # Exception for metallb
@@ -23,6 +32,24 @@ kyverno-policies:
             matchLabels:
               app: metallb
               component: speaker
+      # Exception for node-exporter
+      - resources:
+          kinds:
+          - Pod
+          namespaces:
+          - monitoring
+          selector:
+            matchLabels:
+              app: prometheus-node-exporter
+      # Exception for arm-exporter
+      - resources:
+          kinds:
+          - Pod
+          namespaces:
+          - monitoring
+          selector:
+            matchLabels:
+              k8s-app: arm-exporter
     disallow-capabilities:
       any:
         # Exception for metallb
@@ -47,4 +74,23 @@ kyverno-policies:
               matchLabels:
                 app: metallb
                 component: speaker
-      
+        # Exception for node-exporter
+        - resources:
+            kinds:
+            - Pod
+            namespaces:
+            - monitoring
+            selector:
+              matchLabels:
+                app: prometheus-node-exporter
+    disallow-privileged-containers:
+      any:
+        # Exception for arm-exporter
+        - resources:
+            kinds:
+            - Pod
+            namespaces:
+            - monitoring
+            selector:
+              matchLabels:
+                k8s-app: arm-exporter
