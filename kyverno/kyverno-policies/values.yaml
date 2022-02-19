@@ -1,0 +1,13 @@
+kyverno-policies:
+  policyExclude:
+    disallow-host-path: 
+      any:
+      # Exception for promtail logging
+      - resources:
+          kinds:
+          - Pod
+          namespaces:
+          - logging
+          selector:
+            matchLabels:
+              app.kubernetes.io/name: promtail
