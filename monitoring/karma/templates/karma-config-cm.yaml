@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: karma-config
+data:
+  # https://github.com/prymitive/karma/blob/main/docs/CONFIGURATION.md
+  karma.yaml: |  
+    alertmanager:
+      servers:
+        - name: brassberry
+          uri: http://kube-prometheus-stack-alertmanager:9093
+          external_uri: https://alertmanager.dixneuf19.me
+          proxy: true
+          readonly: false
+    debug: false
+    log:
+      config: true
+      level: info
+

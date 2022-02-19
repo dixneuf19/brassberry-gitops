@@ -1,0 +1,49 @@
+generic:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/prymitive/karma
+    tag: v0.98
+    pullPolicy: Always
+  container:
+    port: 8080
+    probe:
+      liveness:
+        path: /health
+      readiness:
+        path: /health
+  resources:
+    limits:
+      memory: 128Mi
+      cpu: 300m
+    requests:
+      memory: 64Mi
+      cpu: 100m
+  service:
+    type: ClusterIP
+    port: 8080
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+      nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
+      nginx.ingress.kubernetes.io/auth-type: basic
+    hosts:
+      - host: karma.dixneuf19.me
+        paths:
+          - path: /
+    tls:
+      - hosts:
+          - karma.dixneuf19.me
+        secretName: karma-dixneuf19-me-tls
+  configmap:
+    CONFIG_FILE: "/etc/karma-config/karma.yaml"
+  secrets: []
+  affinity: {}
+  volumeMounts:
+    - name: karma-config-volume
+      mountPath: /etc/karma-config
+  volumes:
+  - name: karma-config-volume
+    configMap:
+      name: karma-config
