@@ -11,3 +11,40 @@ kyverno-policies:
           selector:
             matchLabels:
               app.kubernetes.io/name: promtail
+    disallow-host-ports:
+      any:
+      # Exception for metallb
+      - resources:
+          kinds:
+          - Pod
+          namespaces:
+          - metallb-system
+          selector:
+            matchLabels:
+              app: metallb
+              component: speaker
+    disallow-capabilities:
+      any:
+        # Exception for metallb
+        - resources:
+            kinds:
+            - Pod
+            namespaces:
+            - metallb-system
+            selector:
+              matchLabels:
+                app: metallb
+                component: speaker
+    disallow-host-namespaces:
+      any:
+        # Exception for metallb
+        - resources:
+            kinds:
+            - Pod
+            namespaces:
+            - metallb-system
+            selector:
+              matchLabels:
+                app: metallb
+                component: speaker
+      
