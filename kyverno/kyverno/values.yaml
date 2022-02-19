@@ -1,0 +1,4 @@
+kyverno:
+  serviceMonitor:
+    enabled: true
+    namespace: monitoring
