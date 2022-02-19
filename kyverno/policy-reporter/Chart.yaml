@@ -1,0 +1,10 @@
+apiVersion: v2
+name: policy-reporter
+description: policy-reporter OTS
+version: 0.1.0
+appVersion: 0.1.0
+home: https://github.com/kyverno/policy-reporter
+dependencies:
+- name: policy-reporter
+  version: "2.2.6"
+  repository: https://kyverno.github.io/policy-reporter

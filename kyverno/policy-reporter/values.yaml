@@ -1,0 +1,25 @@
+policy-reporter:
+  ui:
+    enabled: true
+    plugins:
+      kyverno: true
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt
+        nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
+        nginx.ingress.kubernetes.io/auth-type: basic
+      hosts:
+        - host: policy-reporter.dixneuf19.me
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - hosts:
+            - policy-reporter.dixneuf19.me
+          secretName: policy-reporter-dixneuf19-me-tls
+  kyvernoPlugin:
+    enabled: true
+
+
