@@ -1,0 +1,135 @@
+{
+  "id": 14,
+  "name": "My weather MS23",
+  "nodes": [
+    {
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "disabled": true,
+      "position": [
+        280,
+        280
+      ],
+      "parameters": {},
+      "typeVersion": 1
+    },
+    {
+      "name": "OpenWeatherMap",
+      "type": "n8n-nodes-base.openWeatherMap",
+      "position": [
+        1180,
+        220
+      ],
+      "parameters": {
+        "cityName": "Bologna",
+        "language": "it"
+      },
+      "credentials": {
+        "openWeatherMapApi": {
+          "id": "11",
+          "name": "OpenWeatherMap account"
+        }
+      },
+      "typeVersion": 1
+    },
+    {
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "notes": "\"ascolta\" la chat del bot su telegram",
+      "position": [
+        840,
+        220
+      ],
+      "webhookId": "706332ee-aa53-4ca6-96f5-e1dcca3246b6",
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "10",
+          "name": "Telegram account"
+        }
+      },
+      "typeVersion": 1
+    },
+    {
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        1420,
+        220
+      ],
+      "parameters": {
+        "text": "=The weather right now in  {{$node[\"OpenWeatherMap\"].parameter[\"cityName\"]}}  is {{$json[\"weather\"][0][\"description\"]}} \nThe temperature is {{$json[\"main\"][\"temp\"]}} (MIN - MAX : {{$json[\"main\"][\"temp_min\"]}} - {{$json[\"main\"][\"temp_max\"]}})",
+        "chatId": "={{$node[\"Telegram Trigger\"].json[\"message\"][\"chat\"][\"id\"]}}",
+        "additionalFields": {}
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "10",
+          "name": "Telegram account"
+        }
+      },
+      "typeVersion": 1
+    },
+    {
+      "name": "Cron",
+      "type": "n8n-nodes-base.cron",
+      "position": [
+        840,
+        40
+      ],
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 15,
+              "minute": 35
+            }
+          ]
+        }
+      },
+      "typeVersion": 1
+    }
+  ],
+  "active": true,
+  "settings": {},
+  "connections": {
+    "Cron": {
+      "main": [
+        [
+          {
+            "node": "OpenWeatherMap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenWeatherMap": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpenWeatherMap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

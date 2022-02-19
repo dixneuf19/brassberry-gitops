@@ -1,0 +1,58 @@
+generic:
+  replicaCount: 1
+  image:
+    repository: docker.io/n8nio/n8n
+    tag: 0.163.1
+  container:
+    port: 5678
+    probe:
+      liveness:
+        path: /healthz
+      readiness:
+        path: /healthz
+  resources:
+    limits:
+      memory: 512Mi
+      cpu: 2000m
+    requests:
+      memory: 256Mi
+      cpu: 300m
+  service:
+    type: ClusterIP
+    port: 5678
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+      nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
+      nginx.ingress.kubernetes.io/auth-type: basic
+    hosts:
+      - host: n8n.dixneuf19.me
+        paths:
+          - path: /
+    tls:
+      - hosts:
+          - n8n.dixneuf19.me
+        secretName: n8n-dixneuf19-me-tls
+  configmap:
+    N8N_PORT: "5678"
+    N8N_HOST: n8n.dixneuf19.me
+    NODE_ENV: production
+  secrets: []
+  affinity: {}
+  persistence:
+    enabled: true
+    pvc:
+      name: n8n-persistence
+      storageClassName: nfs-client
+      accessModes:
+        - ReadWriteMany
+      storageRequest: 1Mi
+  volumeMounts:
+    - mountPath: /home/node/.n8n
+      name: credentials
+  volumes:
+    - name: credentials
+      persistentVolumeClaim:
+        claimName: n8n-persistence
