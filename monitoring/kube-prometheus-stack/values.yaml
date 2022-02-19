@@ -37,6 +37,10 @@ kube-prometheus-stack:
       existingSecret: grafana-admin       
     plugins:
       - grafana-piechart-panel
+    sidecar:
+      dashboards:
+        provider:
+          foldersFromFilesStructure: true
 
     persistence:
       enabled: true
