@@ -2,7 +2,7 @@ generic:
   replicaCount: 1
   image:
     repository: ghcr.io/prymitive/karma
-    tag: v0.98
+    tag: v0.99
     pullPolicy: Always
   container:
     port: 8080
