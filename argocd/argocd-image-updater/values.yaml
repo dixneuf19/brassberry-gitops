@@ -1,7 +1,4 @@
 argocd-image-updater:  
-  image:
-    repository: dixneuf19/argocd-image-updater
-
   # -- Extra arguments for argocd-image-updater not defined in `config.argocd`.
   # If a flag contains both key and value, they need to be split to a new entry
   extraArgs: []
