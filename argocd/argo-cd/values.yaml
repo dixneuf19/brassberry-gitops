@@ -1,10 +1,4 @@
 argo-cd:  
-  installCRDs: false
-  global:
-    image:
-      repository: alinbalutoiu/argocd
-      # tag: v2.1.7
-
   controller:
     metrics:
       enabled: true
