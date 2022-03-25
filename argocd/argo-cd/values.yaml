@@ -135,3 +135,7 @@ argo-cd:
     env:
       - name: "ARGOCD_EXEC_TIMEOUT"
         value: "5m"
+
+  applicationSet:
+    # No use for now + no arm image
+    enabled: false
