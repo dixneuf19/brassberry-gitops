@@ -4,5 +4,5 @@ helm:
     value: ghcr.io/dixneuf19/fuzzy-octo-disco
     forcestring: true
   - name: generic.image.tag
-    value: master@sha256:1939fc84638853cdd1ce8bcfdc0025b998bf9267de9ff86f24e66942beb5fa23
+    value: master@sha256:20b5fce94225f053464436e1e27cd9e57fae8936eedbee53fb245012361a93db
     forcestring: true
