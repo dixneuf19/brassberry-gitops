@@ -1,5 +1,12 @@
 {
   "extends": [
-    "config:base"
+    "config:base",
+    ":automergeMinor"
+  ],
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["kube-prometheus-stack"],
+      "automerge": false
+    }
   ]
 }
