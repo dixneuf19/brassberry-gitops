@@ -12,7 +12,7 @@ spec:
     #   jsonnet: {}
     #   recurse: false
     path: tools/librespeed/manifests
-    repoURL: 'https://github.com/dixneuf19/brassberry-kubernetes-cluster-state'
+    repoURL: 'https://github.com/dixneuf19/brassberry-gitops'
     targetRevision: main
   syncPolicy:
     automated:

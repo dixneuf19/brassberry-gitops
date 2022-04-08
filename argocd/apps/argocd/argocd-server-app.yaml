@@ -6,7 +6,7 @@ spec:
   project: default
   source:
     path: argocd/argo-cd/
-    repoURL: 'https://github.com/dixneuf19/brassberry-kubernetes-cluster-state'
+    repoURL: 'https://github.com/dixneuf19/brassberry-gitops'
     targetRevision: main
     helm:
       valueFiles:

@@ -1,5 +1,5 @@
-# The state of my kubernetes cluster
+# brassberry-gitops: The state of my kubernetes cluster
 
 ## GitOps with ArgoCD
 
-The goal is to synchronize the state of this repo with argocd !
+This is the current state of my home kubernetes cluster, running on Raspberry Pis. It uses ArgoCD, Renovate and ArgoCD Image Updater for a simple and automatic update process!

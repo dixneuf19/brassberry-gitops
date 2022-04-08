@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     path: argocd/apps/
-    repoURL: 'https://github.com/dixneuf19/brassberry-kubernetes-cluster-state'
+    repoURL: 'https://github.com/dixneuf19/brassberry-gitops'
     targetRevision: main
     directory:
       recurse: true
