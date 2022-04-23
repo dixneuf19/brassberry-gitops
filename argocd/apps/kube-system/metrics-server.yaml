@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/kubernetes-sigs/metrics-server'
-    path: manifests/overlays/release/
+    path: /manifests/release
     targetRevision: "v0.6.1"
   destination:
     name: in-cluster
