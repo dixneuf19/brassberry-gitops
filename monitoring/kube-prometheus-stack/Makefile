@@ -17,5 +17,4 @@ dependency:
 	helm dependency update
 
 deploy:
-	kubectl create namespace "${NAMESPACE}" || echo "Namespace ${NAMESPACE} already exists"
-	helm upgrade --install -n "${NAMESPACE}" "${HELM_RELEASE}" . -f values.yaml
+	helm upgrade --install -n "${NAMESPACE}" --create-namespace "${HELM_RELEASE}" . -f values.yaml
