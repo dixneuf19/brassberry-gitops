@@ -1,5 +1,6 @@
 generic:
-  replicaCount: 2
+  # deactivate while nfs is KO
+  replicaCount: 0
   image:
     repository: ghcr.io/dixneuf19/fip-slack-bot
     tag: main
