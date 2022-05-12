@@ -4,5 +4,5 @@ helm:
     value: ghcr.io/dixneuf19/fip-telegram-bot
     forcestring: true
   - name: generic.image.tag
-    value: master@sha256:10620c01d49ac0c3d564f103a3a4e39d69d98fbe89a63baf6cd085ef9397fc3c
+    value: master@sha256:ac2437f48ebe442adbcbc61a64c23484a3ed41b3e61de1a41ea02cc91b851431
     forcestring: true
