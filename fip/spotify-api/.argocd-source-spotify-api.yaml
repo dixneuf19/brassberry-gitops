@@ -4,5 +4,5 @@ helm:
     value: ghcr.io/dixneuf19/spotify-api
     forcestring: true
   - name: generic.image.tag
-    value: master@sha256:eb8c3bedbc051286fbae5e3721048c872806c67bcd6baed6ce29298af9035db5
+    value: master@sha256:3a6305860a47197ac1fcf5e6dc2d2a4bc64ca069edde3fc261cb12166a6b5d4f
     forcestring: true
