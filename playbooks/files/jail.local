@@ -955,6 +955,6 @@ logpath = /var/log/traefik/access.log
 [ssh]
 enabled  = true
 port     = ssh
-filter   = shd
+filter   = sshd
 logpath  = /var/log/auth.log
 maxretry = 6

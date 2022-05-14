@@ -20,20 +20,20 @@
           - nfs-kernel-server
         update_cache: yes
         state: latest
-      when: "{{disks}} | length > 0"
+      when: "disks | length > 0"
 
     - name: Enable service nfs-kernel-server
       systemd:
         name: nfs-kernel-server
         enabled: yes
-      when: "{{disks}} | length > 0"
+      when: "disks | length > 0"
 
     - name: Configure access rights
       file:
         path: "/mnt/{{item.name}}"
         mode: "777"
         state: directory
-        recurse: true
+        # recurse: true
       with_items: "{{disks}}"
 
     - name: Configure exposed disk
@@ -46,4 +46,4 @@
       systemd:
         name: nfs-kernel-server
         state: restarted
-      when: "{{disks}} | length > 0"
+      when: "disks | length > 0"

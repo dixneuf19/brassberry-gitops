@@ -29,6 +29,7 @@
       with_items: "{{disks}}"
       when: 
         - item.type == 'FAT'
+      register: automount_FAT
 
     - name: Automount NTFS
       lineinfile:
@@ -37,6 +38,7 @@
       with_items: "{{disks}}"
       when: 
         - item.type == 'NTFS'
+      register: automount_NTFS
 
     - name: Automount exFAT
       lineinfile:
@@ -45,6 +47,7 @@
       with_items: "{{disks}}"
       when: 
         - item.type == 'exFAT'
+      register: automount_exFAT
 
     - name: Automount EXT4
       lineinfile:
@@ -53,8 +56,10 @@
       with_items: "{{disks}}"
       when: 
         - item.type == 'EXT4'
+      register: automount_EXT4
 
 
     ## Add actual mounting to avoid rebooting
     - name: Reboot
       reboot: {}
+      when: "automount_FAT.changed or automount_NTFS.changed or automount_exFAT.changed or automount_EXT4.changed"

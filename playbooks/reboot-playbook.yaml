@@ -1,0 +1,9 @@
+---
+- become: true
+  hosts: all
+  vars:
+
+  tasks:
+
+    - name: Reboot the server
+      reboot: {}

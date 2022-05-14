@@ -11,6 +11,7 @@ master:
 workers:
   hosts:
     brassberry-25:
+      ansible_ssh_user: dixneuf19
       ansible_host: 192.168.1.25
       disks:
       - name: tuyhoa_2T

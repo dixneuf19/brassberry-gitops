@@ -14,13 +14,12 @@
 hostname: ${HOSTNAME}
 timezone: Europe/Paris
 
-ssh_import_id: 
-  - gh:${GITHUB_USERNAME}
-
 users:
-  - default
-  - name: ubuntu
+  - name: ${GITHUB_USERNAME}
+    ssh_import_id:
+      - gh:${GITHUB_USERNAME}
     sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
 
 # Disable password authentication with the SSH daemon
 ssh_pwauth: false
