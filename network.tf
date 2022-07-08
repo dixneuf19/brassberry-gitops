@@ -29,6 +29,33 @@ resource "oci_core_default_route_table" "main_routes" {
 }
 
 resource "oci_core_default_security_list" "main_security_list" {
+
+  ingress_security_rules {
+    description = "allow ICMP from everywhere"
+    source      = "0.0.0.0/0"
+    protocol    = "1" // ICMP
+  }
+
+  ingress_security_rules {
+    description = "allow http"
+    source      = "0.0.0.0/0"
+    protocol    = "6" // TCP
+    tcp_options {
+      min = 80
+      max = 80
+    }
+  }
+
+  ingress_security_rules {
+    description = "allow https"
+    source      = "0.0.0.0/0"
+    protocol    = "6" // TCP
+    tcp_options {
+      min = 443
+      max = 443
+    }
+  }
+
   ingress_security_rules {
     description = "allow tailscale easy-NAT"
     source      = "0.0.0.0/0"
@@ -38,28 +65,14 @@ resource "oci_core_default_security_list" "main_security_list" {
       max = 41641
     }
   }
-  ingress_security_rules {
-    description = "allow ICMP type 3, code 4 from everywhere"
-    source      = "0.0.0.0/0"
-    protocol    = "1" // ICMP
-    icmp_options {
-      type = 3
-      code = 4
-    }
-  }
-  ingress_security_rules {
-    description = "allow ICMP type 3 from 10.0.0.0/16"
-    source      = "10.0.0.0/16"
-    protocol    = "1" // ICMP
-    icmp_options {
-      type = 3
-    }
-  }
+
   egress_security_rules {
     description = "allow all egress"
     destination = "0.0.0.0/0"
     protocol    = "all"
   }
+
+
   manage_default_resource_id = oci_core_vcn.main_vcn.default_security_list_id
 }
 
@@ -77,3 +90,4 @@ resource "oci_core_default_security_list" "main_security_list" {
 #   vcn_id         = oci_core_vcn.main_vcn.id
 #   public_ip_id   = oci_core_public_ip.main_nat_gateway.id
 # }
+

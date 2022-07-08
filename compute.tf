@@ -31,10 +31,11 @@ resource "oci_core_instance" "oracle-arm" {
   metadata = {
     "user_data" = base64encode(
       templatefile(
-        "userdata.tpl.yaml",
+        "userdata.yaml.tpl",
         {
           github_user        = var.github_user,
           tailscale_auth_key = var.tailscale_auth_key,
+          ip_addrs           = var.node_ips
         }
       )
     )
