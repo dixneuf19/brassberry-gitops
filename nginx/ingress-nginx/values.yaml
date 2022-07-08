@@ -1,6 +1,15 @@
 ingress-nginx:
   # source: https://github.com/kubernetes/ingress-nginx/blob/master/charts/ingress-nginx/values.yaml
   controller:
+
+    service:
+      type: NodePort
+      nodePorts:
+        http: 32080
+        https: 32443
+        # tcp:
+        #   8080: 32808
+        
     updateStrategy:
       rollingUpdate:
         maxUnavailable: 1
@@ -32,7 +41,7 @@ ingress-nginx:
                 - controller
             topologyKey: kubernetes.io/hostname
 
-    replicaCount: 3
+    replicaCount: 2
 
     metrics:
       enabled: true
