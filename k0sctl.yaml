@@ -6,22 +6,22 @@ spec:
   hosts:
   - role: controller+worker
     ssh:
-      address: 192.168.1.24
+      address: 100.115.118.34
       user: ubuntu
   - role: worker
     ssh:
-      address: 192.168.1.25
+      address: 100.91.101.107
       user: dixneuf19
   - role: worker
     ssh:
-      address: 192.168.1.26
-      user: ubuntu
+      address: 100.76.90.89
+      user: dixneuf19
   - role: worker
     ssh:
-      address: 192.168.1.27
+      address: 100.100.239.37
       user: ubuntu
   k0s:
-    version: v1.23.1+k0s.1
+    version: v1.23.6+k0s.1
     config:
       apiVersion: k0s.k0sproject.io/v1beta1
       kind: Cluster
@@ -29,7 +29,7 @@ spec:
         name: k0s
       spec:
         api:
-          address: 192.168.1.24
+          address: 100.115.118.34
           sans:
            - brassberry.dixneuf19.me
         telemetry:
