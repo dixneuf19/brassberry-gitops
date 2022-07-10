@@ -23,3 +23,6 @@ workers:
       - name: magadi_3T
         uuid: E6504EF8504ECECD
         type: NTFS
+    oracle-arm:
+      ansible_ssh_user: dixneuf19
+      is_raspberry: false

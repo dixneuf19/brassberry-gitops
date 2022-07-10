@@ -4,8 +4,6 @@
 ---
 - hosts: all
   become: true
-  # vars_files:
-  #   - vars/default.yml
   tasks:
     - name: Install required package
       apt:

@@ -10,15 +10,19 @@ Then run `sudo fix-ssh-on-pi.bash`, it creates an image that you can burn on the
 
 ## Playbooks
 
-Configuration: `pie_hosts.yaml` (or `pie_hosts_remote.yaml`)
+Configuration: `hosts.yaml`.
 
 You can run the playbooks in this order:
 
-- `ping-example-playbook.yaml` to check host connectivity
-- `kerner-modules.yaml` to install module needed for k0s
-- `upgrade-playbook.yaml` to update the hosts
+- `ping.yaml` to check host connectivity
+- `kernel-modules.yaml` to install module needed for k0s
+- `upgrade.yaml` to update the hosts
 - `mounts.yaml` for the disks
-- `nfs-server-playbook.yaml` to install nfs
+- `nfs-server.yaml` to install nfs
+
+A convenient Makefile is setup, for example you can simply run `make ping`.
+
+To run all of these playbooks in order, run `make all`.
 
 ## K0s
 

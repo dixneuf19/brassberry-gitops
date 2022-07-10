@@ -2,7 +2,7 @@
 # Setup kernel modules
 #################################################
 ---
-- hosts: all
+- hosts: 'brassberry*'
   become: true
   # vars_files:
   #   - vars/default.yml
