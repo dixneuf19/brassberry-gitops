@@ -1,3 +1,4 @@
+# Uses https://github.com/mxbi/tailscale-hostmap to avoid specifying tailscale IP
 apiVersion: k0sctl.k0sproject.io/v1beta1
 kind: Cluster
 metadata:
@@ -6,19 +7,19 @@ spec:
   hosts:
   - role: controller+worker
     ssh:
-      address: 100.115.118.34
+      address: brassberry-24
       user: ubuntu
   - role: worker
     ssh:
-      address: 100.91.101.107
+      address: brassberry-25
       user: dixneuf19
   - role: worker
     ssh:
-      address: 100.76.90.89
+      address: brassberry-26
       user: dixneuf19
   - role: worker
     ssh:
-      address: 100.100.239.37
+      address: brassberry-27
       user: ubuntu
   k0s:
     version: v1.23.8+k0s.0
@@ -29,9 +30,10 @@ spec:
         name: k0s
       spec:
         api:
-          address: 100.115.118.34
+          address: 100.115.118.34 # tailscale IP of main
           sans:
-           - brassberry.dixneuf19.me
            - 192.168.1.24
+           - brassberry-24
+           - brassberry.dixneuf19.me
         telemetry:
           enabled: false
