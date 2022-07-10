@@ -6,21 +6,30 @@ metadata:
 spec:
   hosts:
   - role: controller+worker
+    privateInterface: tailscale0
     ssh:
       address: brassberry-24
       user: ubuntu
   - role: worker
+    privateInterface: tailscale0
     ssh:
       address: brassberry-25
       user: dixneuf19
   - role: worker
+    privateInterface: tailscale0
     ssh:
       address: brassberry-26
       user: dixneuf19
   - role: worker
+    privateInterface: tailscale0
     ssh:
       address: brassberry-27
       user: ubuntu
+  - role: worker
+    privateInterface: tailscale0
+    ssh:
+      address: oracle-arm
+      user: dixneuf19
   k0s:
     version: v1.23.8+k0s.0
     config:
