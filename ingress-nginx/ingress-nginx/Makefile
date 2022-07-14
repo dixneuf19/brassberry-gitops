@@ -2,7 +2,7 @@ HELM_RELEASE=ingress-nginx
 HELM_REPOSITORY=ingress-nginx
 HELM_CHART=ingress-nginx
 
-NAMESPACE=nginx
+NAMESPACE=ingress-nginx
 
 get-latest-value:
 	helm show values "${HELM_REPOSITORY}/${HELM_CHART}" > values.yaml

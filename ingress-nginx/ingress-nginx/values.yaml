@@ -1,0 +1,23 @@
+ingress-nginx:
+  # source: https://github.com/kubernetes/ingress-nginx/blob/master/charts/ingress-nginx/values.yaml
+  controller:
+
+    service:
+      type: NodePort
+      nodePorts:
+        http: 32080
+        https: 32443
+        # tcp:
+        #   8080: 32808
+        
+    nodeSelector:
+      dixneuf19.me/node-role: ingress
+
+    replicaCount: 1
+
+    metrics:
+      enabled: true
+
+      serviceMonitor:
+        enabled: true
+        namespace: "monitoring"
