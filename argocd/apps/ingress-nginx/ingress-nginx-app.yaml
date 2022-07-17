@@ -5,7 +5,7 @@ metadata:
 spec:
   project: default
   source:
-    path: nginx/ingress-nginx/
+    path: ingress-nginx/ingress-nginx/
     repoURL: 'https://github.com/dixneuf19/brassberry-gitops'
     targetRevision: main
     helm:
