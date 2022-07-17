@@ -10,10 +10,10 @@ ingress-nginx:
         # tcp:
         #   8080: 32808
         
-    nodeSelector:
-      dixneuf19.me/node-role: ingress
+    # nodeSelector:
+    #   dixneuf19.me/node-role: ingress
 
-    replicaCount: 1
+    replicaCount: 2
 
     metrics:
       enabled: true
