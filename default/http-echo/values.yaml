@@ -2,7 +2,7 @@ generic:
   replicaCount: 1
   image:
     repository: ealen/echo-server
-    tag: 0.5.2
+    tag: 0.6.0
   container:
     port: 80
   service:
