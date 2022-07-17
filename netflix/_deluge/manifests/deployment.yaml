@@ -52,7 +52,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
     nginx.ingress.kubernetes.io/auth-type: basic
-    nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
+    nginx.ingress.kubernetes.io/auth-secret: ingress-nginx/basic-auth
 spec:
   ingressClassName: nginx
   rules:

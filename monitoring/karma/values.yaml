@@ -26,7 +26,7 @@ generic:
     ingressClassName: nginx
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt
-      nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
+      nginx.ingress.kubernetes.io/auth-secret: ingress-nginx/basic-auth
       nginx.ingress.kubernetes.io/auth-type: basic
     hosts:
       - host: karma.dixneuf19.me

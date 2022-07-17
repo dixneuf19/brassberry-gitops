@@ -60,7 +60,7 @@ argo-cd:
       enabled: true
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt
-        nginx.ingress.kubernetes.io/auth-secret: nginx/basic-auth
+        nginx.ingress.kubernetes.io/auth-secret: ingress-nginx/basic-auth
         nginx.ingress.kubernetes.io/auth-type: basic
         # GRPC, so the CLI won't work
         nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
