@@ -1,0 +1,6 @@
+dependencies:
+- name: grafana-agent-operator
+  repository: https://grafana.github.io/helm-charts
+  version: 0.2.3
+digest: sha256:f63288d7f37b695a24b291fe37abfda5d73002079d7c6dc2efb099b8d47af8aa
+generated: "2022-07-18T13:11:07.290731366+02:00"
