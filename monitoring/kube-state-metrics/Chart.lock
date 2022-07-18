@@ -1,6 +1,6 @@
 dependencies:
-- name: grafana-agent-operator
-  repository: https://grafana.github.io/helm-charts
-  version: 0.2.3
-digest: sha256:f63288d7f37b695a24b291fe37abfda5d73002079d7c6dc2efb099b8d47af8aa
-generated: "2022-07-18T14:22:29.594175945+02:00"
+- name: kube-state-metrics
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 4.13.0
+digest: sha256:f8a276ea41cdeb9bdc430a6e00cb14e920f99adf8e0e7e2d75eac30f59bc17f4
+generated: "2022-07-18T14:32:27.637230526+02:00"
