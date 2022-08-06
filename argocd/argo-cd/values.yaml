@@ -1,9 +1,9 @@
 argo-cd:  
   controller:
     metrics:
-      enabled: true
+      enabled: false
       serviceMonitor:
-        enabled: true
+        enabled: false
         selector:
           prometheus: kube-prometheus
         namespace: monitoring
@@ -48,9 +48,9 @@ argo-cd:
         cpu: 100m
         memory: 128Mi
     metrics:
-      enabled: true
+      enabled: false
       serviceMonitor:
-        enabled: true
+        enabled: false
         selector:
           prometheus: kube-prometheus
         namespace: monitoring
@@ -125,9 +125,9 @@ argo-cd:
         cpu: 1000m
         memory: 256Mi
     metrics:
-      enabled: true
+      enabled: false
       serviceMonitor:
-        enabled: true
+        enabled: false
         selector:
           prometheus: kube-prometheus
         namespace: monitoring
