@@ -1,0 +1,145 @@
+kube-prometheus-stack:
+  alertmanager:
+    enabled: false
+
+  grafana:
+    enabled: true
+    admin:
+      existingSecret: grafana-admin
+
+    defaultDashboardsTimezone: Europe/Paris    
+    plugins:
+      - grafana-piechart-panel
+
+    # Configure dashboard providers.
+    # ref: http://docs.grafana.org/administration/provisioning/#dashboards
+    # `path` must be /var/lib/grafana/dashboards/<provider_name>
+    dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+          - name: remote
+            orgId: 1
+            folder: ''
+            type: file
+            disableDeletion: true
+            editable: false
+            allowUiUpdates: false
+            options:
+              path: /var/lib/grafana/dashboards/remote
+              foldersFromFilesStructure: true
+
+    # Organise dashboards by provider, with the provider's name as the key.
+    dashboards:
+      remote: # The "remote" provider is defined above.
+        nginx-ingress-controller:
+          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.4.0/deploy/grafana/dashboards/nginx.json
+        ingress-request-performance:
+          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.4.0/deploy/grafana/dashboards/request-handling-performance.json
+
+    persistence:
+      enabled: true
+      storageClassName: nfs-client
+    
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt
+        nginx.ingress.kubernetes.io/auth-type: basic
+        nginx.ingress.kubernetes.io/auth-secret: ingress-nginx/basic-auth
+      labels: {}
+      hosts:
+        - grafana.dixneuf19.me
+      path: /
+      tls:
+        - secretName: grafana-dixneuf19-me-tls
+          hosts:
+          - grafana.dixneuf19.me
+
+# These components are not exposed with the k0s setup
+  kubeControllerManager:
+    enabled: false
+  kubeEtcd:
+    enabled: false
+  kubeScheduler:
+    enabled: false
+
+  kubeProxy:
+    enabled: true
+  kubeStateMetrics:
+    enabled: true
+
+
+  nodeExporter:
+    enabled: true
+
+  prometheusOperator:
+    enabled: true
+    resources:
+      limits:
+        cpu: 200m
+        memory: 200Mi
+      requests:
+        cpu: 100m
+        memory: 100Mi
+
+  prometheus:
+    enabled: true
+
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt
+        nginx.ingress.kubernetes.io/auth-type: basic
+        nginx.ingress.kubernetes.io/auth-secret: ingress-nginx/basic-auth
+      labels: {}
+      hosts:
+        - prometheus.dixneuf19.me
+      paths:
+        - /
+      pathType: ImplementationSpecific
+      tls:
+        - secretName: prometheus-dixneuf19-me-tls
+          hosts:
+            - prometheus.dixneuf19.me
+
+    prometheusSpec:
+      externalUrl: "https://prometheus.dixneuf19.me"
+
+      # Watch all PrometheusRules in the cluster.
+      ruleNamespaceSelector:
+        matchLabels: {}
+      ruleSelector:
+        matchLabels: {}
+
+      # Watch all ServiceMonitors in the cluster.
+      serviceMonitorNamespaceSelector:
+        matchLabels: {}
+      serviceMonitorSelector:
+        matchLabels: {}
+
+      # Watch all PodMonitors in the cluster.
+      podMonitorSelector:
+        matchLabels: {}
+      podMonitorNamespaceSelector:
+        matchLabels: {}
+
+      retention: 30d
+
+      resources:
+        requests:
+          memory: 1.5Gi
+          cpu: 1
+        limits:
+          memory: 3Gi
+          cpu: 2
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: nfs-client
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 1Mi

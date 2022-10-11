@@ -1,11 +1,6 @@
-HELM_RELEASE=kube-prometheus-stack
-HELM_REPOSITORY=prometheus-community
-HELM_CHART=kube-prometheus-stack
-
+HELM_RELEASE=kps
 NAMESPACE=monitoring
 
-get-latest-value:
-	helm show values "${HELM_REPOSITORY}/${HELM_CHART}" > values.yaml
 
 secret:
 	kubectl -n "${NAMESPACE}" create secret generic grafana-admin --from-env-file=grafana-admin.secret
