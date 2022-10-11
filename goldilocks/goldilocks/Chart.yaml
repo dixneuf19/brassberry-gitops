@@ -1,0 +1,8 @@
+apiVersion: v2
+description: OTS chart for Goldilocks
+name: goldilocks
+version: 0.1.0
+dependencies:
+  - name: goldilocks
+    version: 6.3.0
+    repository: https://charts.fairwinds.com/stable

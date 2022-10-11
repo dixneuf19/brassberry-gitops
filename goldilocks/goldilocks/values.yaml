@@ -1,0 +1,19 @@
+dashboard:
+  ingress:
+    enabled: true
+
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+      nginx.ingress.kubernetes.io/auth-secret: ingress-nginx/basic-auth
+      nginx.ingress.kubernetes.io/auth-type: basic
+    hosts:
+      - host: goldilocks.dixneuf19.me
+        paths:
+            - path: /
+              type: ImplementationSpecific
+
+    tls:
+      - secretName: goldilocks-dixneuf19-me-tls
+        hosts:
+          - goldilocks.dixneuf19.me
