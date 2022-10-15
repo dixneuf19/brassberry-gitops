@@ -1,12 +1,11 @@
 argo-cd:  
   configs:
     params:
-      server:
-        disable.auth: true
-      controller:
-        status.processors: 10
-        operation.processors: 5
-        repo.server.timeout.seconds: 500
+      server.disable.auth: true
+      controller.status.processors: 10
+      controller.operation.processors: 5
+      controller.repo.server.timeout.seconds: 500
+      
   controller:
     metrics:
       enabled: false
