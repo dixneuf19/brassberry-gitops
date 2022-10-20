@@ -27,6 +27,15 @@ kube-prometheus-stack:
             allowUiUpdates: false
             options:
               path: /var/lib/grafana/dashboards/nginx
+          - name: vpa
+            orgId: 1
+            type: file
+            folder: VerticalPodAutoscaler
+            disableDeletion: false
+            editable: false
+            allowUiUpdates: false
+            options:
+              path: /var/lib/grafana/dashboards/vpa
 
     # Organise dashboards by provider, with the provider's name as the key.
     dashboards:
@@ -35,6 +44,9 @@ kube-prometheus-stack:
           url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.4.0/deploy/grafana/dashboards/nginx.json
         ingress-request-performance:
           url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.4.0/deploy/grafana/dashboards/request-handling-performance.json
+      vpa-recommendations:
+        gnetId: 14588 # https://grafana.com/grafana/dashboards/14588-vpa-recommendations
+        revision: 2
 
     sidecar:
       dashboards:
