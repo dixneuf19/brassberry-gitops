@@ -4,11 +4,11 @@ metadata:
   name: vpa
 spec:
   destination:
-    namespace: kube-system
+    namespace: vpa
     name: in-cluster
   project: default
   source:
-    path: kube-system/vpa/
+    path: vpa/vpa/
     repoURL: 'https://github.com/dixneuf19/brassberry-gitops'
     targetRevision: main
   syncPolicy:
