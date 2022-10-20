@@ -15,4 +15,5 @@ vpa:
       container-namespace-label: namespace
       container-pod-name-label: pod
       container-name-label: container
-      metric-for-pod-labels: 'kube_pod_labels{job="kube-state-metrics"}'
+      # Random solution from https://github.com/kubernetes/autoscaler/issues/5031#issuecomment-1228248204
+      metric-for-pod-labels: 'kube_pod_labels{job="kube-state-metrics"}[8d]'
