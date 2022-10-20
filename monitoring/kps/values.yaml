@@ -36,6 +36,14 @@ kube-prometheus-stack:
             allowUiUpdates: false
             options:
               path: /var/lib/grafana/dashboards/vpa
+          - name: default
+            orgId: 1
+            type: file
+            disableDeletion: false
+            editable: false
+            allowUiUpdates: false
+            options:
+              path: /var/lib/grafana/dashboards/default
 
     # Organise dashboards by provider, with the provider's name as the key.
     dashboards:
@@ -48,6 +56,11 @@ kube-prometheus-stack:
         vpa-recommendations:
           gnetId: 14588 # https://grafana.com/grafana/dashboards/14588-vpa-recommendations
           revision: 2
+          datasource: Prometheus
+      default:
+        node-exporter-full:
+          gnetId: 1860 # https://grafana.com/grafana/dashboards/1860-node-exporter-full
+          revision: 27
           datasource: Prometheus
 
     sidecar:
