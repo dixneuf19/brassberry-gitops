@@ -21,7 +21,7 @@ kube-prometheus-stack:
           - name: nginx
             orgId: 1
             type: file
-            disableDeletion: true
+            disableDeletion: false
             editable: false
             allowUiUpdates: false
             options:
