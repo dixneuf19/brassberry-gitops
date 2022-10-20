@@ -1,10 +1,17 @@
 vpa:
   recommender:
     extraArgs:
-      # depends on my deployment of monitoring/kps
       pod-recommendation-min-cpu-millicores: 10
       pod-recommendation-min-memory-mb: 10
+      # depends on my deployment of monitoring/kps
       prometheus-address: |
         http://kps-kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
       storage: prometheus
-      prometheus-cadvisor-job-name: kubelet # depends on k8s installation
+      # May depend on k8s distribution
+      # Thanks to https://gist.github.com/sherifkayad/1b4e4df408e1be357168a38e1980b9a5
+      prometheus-cadvisor-job-name: kubelet
+      pod-namespace-label: namespace
+      pod-name-label: pod
+      container-namespace-label: namespace
+      container-pod-name-label: pod
+      container-name-label: container
