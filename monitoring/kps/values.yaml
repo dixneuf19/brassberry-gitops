@@ -21,12 +21,12 @@ kube-prometheus-stack:
           - name: nginx
             orgId: 1
             type: file
+            folder: NGINX
             disableDeletion: false
             editable: false
             allowUiUpdates: false
             options:
               path: /var/lib/grafana/dashboards/nginx
-              foldersFromFilesStructure: true
 
     # Organise dashboards by provider, with the provider's name as the key.
     dashboards:
