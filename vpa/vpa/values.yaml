@@ -1,0 +1,7 @@
+vpa:
+  recommender:
+    extraArgs:
+      # depends on my deployment of monitoring/kps
+      prometheus-address: |
+        http://kps-kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+      storage: prometheus
