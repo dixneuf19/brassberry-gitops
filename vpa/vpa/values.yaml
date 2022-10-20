@@ -15,3 +15,4 @@ vpa:
       container-namespace-label: namespace
       container-pod-name-label: pod
       container-name-label: container
+      metric-for-pod-labels: 'kube_pod_labels{job="kube-state-metrics"}'
