@@ -25,7 +25,7 @@ kube-prometheus-stack:
             editable: false
             allowUiUpdates: false
             options:
-              path: /var/lib/grafana/dashboards/nginx
+              path: /tmp/grafana/dashboards/nginx
               foldersFromFilesStructure: true
 
     # Organise dashboards by provider, with the provider's name as the key.
