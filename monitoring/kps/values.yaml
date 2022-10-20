@@ -44,9 +44,10 @@ kube-prometheus-stack:
           url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.4.0/deploy/grafana/dashboards/nginx.json
         ingress-request-performance:
           url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.4.0/deploy/grafana/dashboards/request-handling-performance.json
-      vpa-recommendations:
-        gnetId: 14588 # https://grafana.com/grafana/dashboards/14588-vpa-recommendations
-        revision: 2
+      vpa:
+        vpa-recommendations:
+          gnetId: 14588 # https://grafana.com/grafana/dashboards/14588-vpa-recommendations
+          revision: 2
 
     sidecar:
       dashboards:
