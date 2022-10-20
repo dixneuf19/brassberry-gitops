@@ -18,20 +18,19 @@ kube-prometheus-stack:
       dashboardproviders.yaml:
         apiVersion: 1
         providers:
-          - name: remote
+          - name: NGINX
             orgId: 1
-            folder: ''
             type: file
             disableDeletion: true
             editable: false
             allowUiUpdates: false
             options:
-              path: /var/lib/grafana/dashboards/remote
+              path: /var/lib/grafana/dashboards/NGINX
               foldersFromFilesStructure: true
 
     # Organise dashboards by provider, with the provider's name as the key.
     dashboards:
-      remote: # The "remote" provider is defined above.
+      NGINX: # The "remote" provider is defined above.
         nginx-ingress-controller:
           url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.4.0/deploy/grafana/dashboards/nginx.json
         ingress-request-performance:
