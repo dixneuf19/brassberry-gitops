@@ -48,6 +48,7 @@ kube-prometheus-stack:
         vpa-recommendations:
           gnetId: 14588 # https://grafana.com/grafana/dashboards/14588-vpa-recommendations
           revision: 2
+          datasource: Prometheus
 
     sidecar:
       dashboards:
