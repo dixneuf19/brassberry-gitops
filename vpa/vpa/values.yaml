@@ -18,11 +18,7 @@ vpa:
       # Random solution from https://github.com/kubernetes/autoscaler/issues/5031#issuecomment-1228248204
       metric-for-pod-labels: 'kube_pod_labels{job="kube-state-metrics"}[8d]'
 
+  updater:
+    enabled: false
   admissionController:
-    enabled: true
-
-    # Deactivate theses jobs since their image does not support ARM
-    generateCertificate: false
-    cleanupOnDelete:
-      enabled: false
-
+    enabled: false
