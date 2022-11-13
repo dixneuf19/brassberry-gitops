@@ -22,8 +22,7 @@ vpa:
     enabled: true
 
     # Deactivate theses jobs since their image does not support ARM
-    certGen:
-      enabled: false
+    generateCertificate: false
     cleanupOnDelete:
       enabled: false
 
