@@ -20,3 +20,10 @@ vpa:
 
   admissionController:
     enabled: true
+
+    # Deactivate theses jobs since their image does not support ARM
+    certGen:
+      enabled: false
+    cleanupOnDelete:
+      enabled: false
+
