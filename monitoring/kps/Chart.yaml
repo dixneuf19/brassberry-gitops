@@ -9,5 +9,5 @@ version: 0.1.0
 home: https://github.com/prometheus-operator/kube-prometheus
 dependencies:
 - name: kube-prometheus-stack
-  version: "43.1.2"
+  version: "43.2.1"
   repository: https://prometheus-community.github.io/helm-charts
