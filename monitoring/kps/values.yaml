@@ -82,14 +82,14 @@ kube-prometheus-stack:
           url: https://raw.githubusercontent.com/grafana/loki/main/production/helm/loki/src/dashboards/loki-mixin-recording-rules.json
         loki-operational:
           url: https://raw.githubusercontent.com/grafana/loki/main/production/helm/loki/src/dashboards/loki-operational.json
-        loki-read-resources:
-          url: https://raw.githubusercontent.com/grafana/loki/main/production/helm/loki/src/dashboards/loki-read-resources.json
+        loki-reads-resources:
+          url: https://raw.githubusercontent.com/grafana/loki/main/production/helm/loki/src/dashboards/loki-reads-resources.json
         loki-reads:
           url: https://raw.githubusercontent.com/grafana/loki/main/production/helm/loki/src/dashboards/loki-reads.json
         loki-retention:
           url: https://raw.githubusercontent.com/grafana/loki/main/production/helm/loki/src/dashboards/loki-retention.json
-        loki-write-resources:
-          url: https://raw.githubusercontent.com/grafana/loki/main/production/helm/loki/src/dashboards/loki-write-resources.json
+        loki-writes-resources:
+          url: https://raw.githubusercontent.com/grafana/loki/main/production/helm/loki/src/dashboards/loki-writes-resources.json
         loki-writes:
           url: https://raw.githubusercontent.com/grafana/loki/main/production/helm/loki/src/dashboards/loki-writes.json
 
