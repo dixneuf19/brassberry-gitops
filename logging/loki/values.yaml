@@ -35,15 +35,11 @@ loki:
 
   # Configuration for the single binary node(s)
   singleBinary:
-    # -- Number of replicas for the single binary
-    replicas: 1
-    autoscaling:
-      enabled: false
-    tolerations: []
+    nodeSelector:
+      kubernetes.io/hostname: brassberry-25
     persistence:
       enabled: true
-      size: 10Gi
-      storageClass: nfs-client
+      storageClass: local-path
 
   ingress:
     enabled: false
