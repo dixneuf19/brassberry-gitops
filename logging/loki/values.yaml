@@ -40,6 +40,14 @@ loki:
     persistence:
       enabled: true
       storageClass: local-path
+    resources:
+      requests:
+        cpu: 100m
+        memory: 124Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+
 
   ingress:
     enabled: false
