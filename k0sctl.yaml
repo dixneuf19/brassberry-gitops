@@ -31,7 +31,7 @@ spec:
   #     address: oracle-arm
   #     user: dixneuf19
   k0s:
-    version:  v1.24.7+k0s.0
+    version:  v1.24.9+k0s.0
     config:
       apiVersion: k0s.k0sproject.io/v1beta1
       kind: Cluster
