@@ -6,22 +6,22 @@ metadata:
 spec:
   hosts:
   - role: controller+worker
-    privateInterface: tailscale0
+    privateInterface: eth0
     ssh:
       address: brassberry-24
       user: ubuntu
   - role: worker
-    privateInterface: tailscale0
+    privateInterface: eth0
     ssh:
       address: brassberry-25
       user: dixneuf19
   - role: worker
-    privateInterface: tailscale0
+    privateInterface: eth0
     ssh:
       address: brassberry-26
       user: dixneuf19
   - role: worker
-    privateInterface: tailscale0
+    privateInterface: eth0
     ssh:
       address: brassberry-27
       user: ubuntu
