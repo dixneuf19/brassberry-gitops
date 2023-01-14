@@ -36,6 +36,15 @@ kube-prometheus-stack:
             allowUiUpdates: false
             options:
               path: /var/lib/grafana/dashboards/vpa
+          - name: loki
+            orgId: 1
+            type: file
+            folder: Loki
+            disableDeletion: false
+            editable: false
+            allowUiUpdates: false
+            options:
+              path: /var/lib/grafana/dashboards/loki
           - name: default
             orgId: 1
             type: file
@@ -62,6 +71,27 @@ kube-prometheus-stack:
           gnetId: 1860 # https://grafana.com/grafana/dashboards/1860-node-exporter-full
           revision: 27
           datasource: Prometheus
+      loki:
+        loki-chunks:
+          url: https://raw.githubusercontent.com/grafana/loki/main/production/helm/loki/src/dashboards/loki-chunks.json
+        loki-deletion:
+          url: https://raw.githubusercontent.com/grafana/loki/main/production/helm/loki/src/dashboards/loki-deletion.json
+        loki-logs:
+          url: https://raw.githubusercontent.com/grafana/loki/main/production/helm/loki/src/dashboards/loki-logs.json
+        loki-mixin-recording-rules:
+          url: https://raw.githubusercontent.com/grafana/loki/main/production/helm/loki/src/dashboards/loki-mixin-recording-rules.json
+        loki-operational:
+          url: https://raw.githubusercontent.com/grafana/loki/main/production/helm/loki/src/dashboards/loki-operational.json
+        loki-read-resources:
+          url: https://raw.githubusercontent.com/grafana/loki/main/production/helm/loki/src/dashboards/loki-read-resources.json
+        loki-reads:
+          url: https://raw.githubusercontent.com/grafana/loki/main/production/helm/loki/src/dashboards/loki-reads.json
+        loki-retention:
+          url: https://raw.githubusercontent.com/grafana/loki/main/production/helm/loki/src/dashboards/loki-retention.json
+        loki-write-resources:
+          url: https://raw.githubusercontent.com/grafana/loki/main/production/helm/loki/src/dashboards/loki-write-resources.json
+        loki-writes:
+          url: https://raw.githubusercontent.com/grafana/loki/main/production/helm/loki/src/dashboards/loki-writes.json
 
     sidecar:
       dashboards:
