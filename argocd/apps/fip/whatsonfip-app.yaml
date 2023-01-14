@@ -3,7 +3,7 @@ kind: Application
 metadata:
   name: whats-on-fip
   annotations:
-    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/argocd-image-updater-git-creds
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/brassberry-gitops-creds
     argocd-image-updater.argoproj.io/image-list: whats-on-fip=ghcr.io/dixneuf19/whats-on-fip:main
     argocd-image-updater.argoproj.io/whats-on-fip.update-strategy: digest
     argocd-image-updater.argoproj.io/whats-on-fip.helm.image-name: generic.image.name
