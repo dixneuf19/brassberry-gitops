@@ -1,7 +1,6 @@
 loki:
   loki:
     auth_enabled: false
-
     # Singe binary install
     # https://grafana.com/docs/loki/latest/installation/helm/install-monolithic/
     commonConfig:
@@ -10,43 +9,21 @@ loki:
     storage:
       type: filesystem
 
-
   test:
     enabled: false
 
   monitoring:
     # Dashboards for monitoring Loki
+    # Does not work with the single binary install
     dashboards:
       enabled: true
-      namespace: monitoring
 
-    # Recording rules for monitoring Loki, required for some dashboards
     rules:
-      # -- If enabled, create PrometheusRule resource with Loki recording rules
       enabled: true
-      # -- Include alerting rules
       alerting: true
-      # -- Alternative namespace to create recording rules PrometheusRule resource in
-      namespace: null
-      # -- Additional annotations for the rules PrometheusRule resource
-      annotations: {}
-      # -- Additional labels for the rules PrometheusRule resource
-      labels: {}
-      # -- Additional groups to add to the rules file
-      additionalGroups: []
-      # - name: additional-loki-rules
-      #   rules:
-      #     - record: job:loki_request_duration_seconds_bucket:sum_rate
-      #       expr: sum(rate(loki_request_duration_seconds_bucket[1m])) by (le, job)
-      #     - record: job_route:loki_request_duration_seconds_bucket:sum_rate
-      #       expr: sum(rate(loki_request_duration_seconds_bucket[1m])) by (le, job, route)
-      #     - record: node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate
-      #       expr: sum(rate(container_cpu_usage_seconds_total[1m])) by (node, namespace, pod, container)
-
-    # ServiceMonitor configuration
+      
     serviceMonitor:
       enabled: true
-      namespace: monitoring
 
     selfMonitoring:
       enabled: false
@@ -55,13 +32,6 @@ loki:
 
     lokiCanary:
       enabled: false
-
-    # -- Volumes to add to the backend pods
-    extraVolumes: []
-    # -- Resource requests and limits for the backend
-    resources: {}
-    # -- Grace period to allow the backend to shutdown before it is killed. Especially for the ingestor,
-    # this must be increased. It must be long enough so backends can be gracefully shutdown flushing/transferring
 
   # Configuration for the single binary node(s)
   singleBinary:
