@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: arm-exporter
+  name: local-path-provisioner
 spec:
   destination:
-    namespace: monitoring
+    namespace: storage
     name: in-cluster
   project: default
   source:
     # directory:
     #   jsonnet: {}
     #   recurse: false
-    path: monitoring/arm-exporter/manifests
+    path: storage/local-path-provisioner/
     repoURL: 'https://github.com/dixneuf19/brassberry-gitops'
     targetRevision: main
   syncPolicy:

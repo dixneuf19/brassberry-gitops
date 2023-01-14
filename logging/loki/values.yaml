@@ -1,0 +1,57 @@
+loki:
+  loki:
+    auth_enabled: false
+    # Singe binary install
+    # https://grafana.com/docs/loki/latest/installation/helm/install-monolithic/
+    commonConfig:
+      replication_factor: 1
+
+    storage:
+      type: filesystem
+
+  test:
+    enabled: false
+
+  monitoring:
+    # Dashboards for monitoring Loki
+    # Does not work with the single binary install
+    dashboards:
+      enabled: true
+
+    rules:
+      enabled: true
+      alerting: true
+      
+    serviceMonitor:
+      enabled: true
+
+    selfMonitoring:
+      enabled: false
+      grafanaAgent:
+        installOperator: false
+
+    lokiCanary:
+      enabled: false
+
+  # Configuration for the single binary node(s)
+  singleBinary:
+    nodeSelector:
+      kubernetes.io/hostname: brassberry-25
+    persistence:
+      enabled: true
+      storageClass: local-path
+    resources:
+      requests:
+        cpu: 100m
+        memory: 124Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+
+
+  ingress:
+    enabled: false
+
+  # Configuration for the gateway
+  gateway:
+    enabled: false
