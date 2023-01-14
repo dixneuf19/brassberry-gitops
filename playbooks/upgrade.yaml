@@ -38,35 +38,38 @@
       # Only one line with "Listing... Done"
       - (updates.stdout_lines | length) == 1
 
+    - name: Drain the node
     # cordon the node
-    - name: Cordon node
-      command: >-
-        {{ bin_dir }}/kubectl cordon
-        {{ kube_override_hostname|default(inventory_hostname) }}
-      delegate_to: 127.0.0.1
+      block:
+        - name: Cordon node
+          command: >-
+            {{ bin_dir }}/kubectl cordon
+            {{ kube_override_hostname|default(inventory_hostname) }}
+          delegate_to: 127.0.0.1
 
-    - name: Wait for node to cordon
-      command: >-
-        {{ bin_dir }}/kubectl get node
-        {{ kube_override_hostname|default(inventory_hostname) }}
-        -o json
-      register: wait_for_cordon
-      retries: 10
-      delay: 10
-      # delegate_to: "{{ groups['kube-master'][0] }}"
-      changed_when: false
-      until: (wait_for_cordon['stdout'] | from_json).spec.unschedulable
-      delegate_to: 127.0.0.1
+        - name: Wait for node to cordon
+          command: >-
+            {{ bin_dir }}/kubectl get node
+            {{ kube_override_hostname|default(inventory_hostname) }}
+            -o json
+          register: wait_for_cordon
+          retries: 10
+          delay: 10
+          # delegate_to: "{{ groups['kube-master'][0] }}"
+          changed_when: false
+          until: (wait_for_cordon['stdout'] | from_json).spec.unschedulable
+          delegate_to: 127.0.0.1
 
-    - name: Drain node
-      command: >-
-        {{ bin_dir }}/kubectl drain
-        --force
-        --ignore-daemonsets
-        --grace-period {{ drain_grace_period }}
-        --timeout {{ drain_timeout }}
-        --delete-local-data {{ kube_override_hostname|default(inventory_hostname) }}
-      delegate_to: 127.0.0.1
+        - name: Drain node
+          command: >-
+            {{ bin_dir }}/kubectl drain
+            --force
+            --ignore-daemonsets
+            --grace-period {{ drain_grace_period }}
+            --timeout {{ drain_timeout }}
+            --delete-local-data {{ kube_override_hostname|default(inventory_hostname) }}
+          delegate_to: 127.0.0.1
+      when: is_raspberry
 
     - name: Update all packages
       become: true
@@ -86,8 +89,12 @@
         post_reboot_delay: 30
       when: reboot_required.stat.exists
 
+    # TODO
+    # wait until a valid response is received from kubectl 
+
     - name: Uncordon node
       command: >-
         {{ bin_dir }}/kubectl uncordon
         {{ kube_override_hostname|default(inventory_hostname) }}
       delegate_to: 127.0.0.1
+      when: is_raspberry
