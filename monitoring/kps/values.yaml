@@ -68,6 +68,12 @@ kube-prometheus-stack:
         provider:
           foldersFromFilesStructure: true
 
+    additionalDataSources:
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://loki.logging:3100
+
     persistence:
       enabled: true
       storageClassName: nfs-client
