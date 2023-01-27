@@ -40,6 +40,10 @@ loki:
     persistence:
       enabled: true
       storageClass: local-path
+      # StatefulSetAutoDeletePVC feature flag is not yet activated by default in 1.25
+      # https://github.com/kubernetes/enhancements/tree/master/keps/sig-apps/1847-autoremove-statefulset-pvcs
+      # Causes out-of-sync in argo
+      enableStatefulSetAutoDeletePVC: false
     resources:
       requests:
         cpu: 100m
