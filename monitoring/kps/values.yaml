@@ -190,13 +190,20 @@ kube-prometheus-stack:
         limits:
           memory: 3Gi
           cpu: 2
+          
+      # Runs on a specific node with local storage
+      # NFS is not well supported and causes date corruption in the long run
+      nodeSelector:
+        kubernetes.io/hostname: brassberry-27
+
       storageSpec:
         volumeClaimTemplate:
           spec:
-            storageClassName: nfs-client
+            storageClassName: local-path
             accessModes: ["ReadWriteOnce"]
             resources:
               requests:
+              # local-path-provisioner does not support volume capacity limit currently
                 storage: 1Mi
 
 
