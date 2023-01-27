@@ -1,12 +1,8 @@
 {
   "extends": [
     "config:base",
-    ":automergeMinor"
-  ],
-  "packageRules": [
-    {
-      "matchPackagePatterns": ["kube-prometheus-stack"],
-      "automerge": false
-    }
+    ":dependencyDashboard",
+    ":automergeMinor",
+    ":maintainLockFilesWeekly"
   ]
 }
