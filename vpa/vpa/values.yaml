@@ -1,5 +1,9 @@
 vpa:
   recommender:
+    # current 1.6.1 version use vpa 0.11.0 which does not support k8s 1.25+
+    # https://cloud.google.com/solutions/virtual-desktops?hl=fr
+    image:
+      tag: 0.13.0
     extraArgs:
       pod-recommendation-min-cpu-millicores: 10
       pod-recommendation-min-memory-mb: 10
