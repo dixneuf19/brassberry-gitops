@@ -10,5 +10,5 @@ keywords:
   - gitops
 dependencies:
   - name: argo-cd
-    version: 5.26.1
+    version: 5.26.3
     repository: https://argoproj.github.io/argo-helm
