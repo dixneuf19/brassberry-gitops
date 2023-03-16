@@ -1,6 +1,6 @@
 nfs-client-provisioner:
   image:
-    repository: k8s.gcr.io/sig-storage/nfs-subdir-external-provisioner
+    repository: registry.k8s.io/sig-storage/nfs-subdir-external-provisioner
     tag: v4.0.2
   nfs:
     server: 192.168.1.25
