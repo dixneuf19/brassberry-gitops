@@ -8,5 +8,5 @@ sources:
 type: application
 dependencies:
   - name: kube-state-metrics
-    version: 5.1.0
+    version: 5.2.0
     repository: https://prometheus-community.github.io/helm-charts
