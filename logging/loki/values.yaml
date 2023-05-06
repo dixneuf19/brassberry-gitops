@@ -35,6 +35,7 @@ loki:
 
   # Configuration for the single binary node(s)
   singleBinary:
+    replicas: 1
     nodeSelector:
       kubernetes.io/hostname: brassberry-25
     persistence:
