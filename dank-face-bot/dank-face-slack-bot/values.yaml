@@ -39,6 +39,7 @@ generic:
     FUZZY_OCTO_DISCO_PORT: "80"
     LOG_LEVEL: "debug"
     FIND_FACES_PIC_FOLDER: "/tmp/pics"
+    SLACK_OAUTH_CREDS_FOLDER: "/data"
   secrets:
     - name: dank-face-slack-bot
       key: SLACK_CLIENT_ID
