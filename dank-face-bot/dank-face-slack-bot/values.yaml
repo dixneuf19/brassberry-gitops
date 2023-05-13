@@ -38,6 +38,7 @@ generic:
     FUZZY_OCTO_DISCO_HOST: "http://fuzzy-octo-disco"
     FUZZY_OCTO_DISCO_PORT: "80"
     FIND_FACES_PIC_FOLDER: "/tmp/slack-pics"
+    LOG_LEVEL: "debug"
   secrets:
     - name: dank-face-slack-bot
       key: SLACK_CLIENT_ID
