@@ -1,0 +1,62 @@
+generic:
+  replicaCount: 2
+  image:
+    repository: ghcr.io/dixneuf19/dank-face-slack-bot
+    tag: main
+    pullPolicy: Always
+  container:
+    port: 3000
+    probe:
+      liveness:
+        path: /health
+      readiness:
+        path: /health
+  resources:
+    limits:
+      memory: 128Mi
+      cpu: 300m
+    requests:
+      memory: 64Mi
+      cpu: 100m
+  service:
+    type: ClusterIP
+    port: 80
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+    hosts:
+      - host: dank-face-slack-bot.dixneuf19.me
+        paths:
+          - path: /
+    tls:
+      - hosts:
+          - dank-face-slack-bot.dixneuf19.me
+        secretName: dank-face-slack-bot-dixneuf19-me-tls
+  configmap:
+    FUZZY_OCTO_DISCO_HOST: "http://fuzzy-octo-disco"
+    FUZZY_OCTO_DISCO_PORT: "80"
+    FIND_FACES_PIC_FOLDER: "/tmp/slack-pics"
+  secrets:
+    - name: dank-face-slack-bot
+      key: SLACK_CLIENT_ID
+    - name: dank-face-slack-bot
+      key: SLACK_CLIENT_SECRET
+    - name: dank-face-slack-bot
+      key: SLACK_SIGNING_SECRET
+  persistence:
+    enabled: true
+    pvc:
+      name: dank-face-slack-oauth-credentials
+      storageClassName: nfs-client
+      accessModes:
+        - ReadWriteMany
+      storageRequest: 1Mi
+  volumeMounts:
+    - mountPath: /data
+      name: credentials
+  volumes:
+    - name: credentials
+      persistentVolumeClaim:
+        claimName: dank-face-slack-oauth-credentials

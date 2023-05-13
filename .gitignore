@@ -1,2 +1,2 @@
-# Chart dependencies: removed since ArgoCD can't handle the load
-# **/charts/*.tgz
+**/charts/*.tgz
+**/.env
