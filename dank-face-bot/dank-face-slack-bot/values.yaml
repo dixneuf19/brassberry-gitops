@@ -1,5 +1,5 @@
 generic:
-  replicaCount: 2
+  replicaCount: 1
   image:
     repository: ghcr.io/dixneuf19/dank-face-slack-bot
     tag: main
