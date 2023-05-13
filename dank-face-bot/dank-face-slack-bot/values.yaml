@@ -37,7 +37,6 @@ generic:
   configmap:
     FUZZY_OCTO_DISCO_HOST: "http://fuzzy-octo-disco"
     FUZZY_OCTO_DISCO_PORT: "80"
-    FIND_FACES_PIC_FOLDER: "/tmp/slack-pics"
     LOG_LEVEL: "debug"
   secrets:
     - name: dank-face-slack-bot
@@ -57,7 +56,12 @@ generic:
   volumeMounts:
     - mountPath: /data
       name: credentials
+    - name: dank-face-bot-pics
+      mountPath: /tmp/pics
   volumes:
     - name: credentials
       persistentVolumeClaim:
         claimName: dank-face-slack-oauth-credentials
+    - name: dank-face-bot-pics
+      persistentVolumeClaim:
+        claimName: dank-face-bot-pics
