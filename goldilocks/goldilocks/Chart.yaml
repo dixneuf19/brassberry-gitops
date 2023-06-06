@@ -4,5 +4,5 @@ name: goldilocks
 version: 0.1.0
 dependencies:
   - name: goldilocks
-    version: 6.6.0
+    version: 6.7.0
     repository: https://charts.fairwinds.com/stable
