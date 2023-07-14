@@ -4,5 +4,5 @@ description: promtail OTS
 version: 0.1.0
 dependencies:
 - name: promtail
-  version: "6.11.5"
+  version: "6.11.6"
   repository: https://grafana.github.io/helm-charts
