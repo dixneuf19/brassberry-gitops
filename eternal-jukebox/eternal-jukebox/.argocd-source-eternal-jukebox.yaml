@@ -1,0 +1,8 @@
+helm:
+  parameters:
+  - name: eternalJukebox.image.name
+    value: ghcr.io/dixneuf19/eternal-jukebox
+    forcestring: true
+  - name: eternalJukebox.image.tag
+    value: main@sha256:98e21cfb6950bc316a51381027a225cfc80efb4c6457ceb350ce932551f05ffd
+    forcestring: true
