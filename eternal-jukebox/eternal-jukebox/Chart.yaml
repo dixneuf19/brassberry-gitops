@@ -1,0 +1,9 @@
+apiVersion: v2
+name: eternal-jukebox
+version: 1.0.0
+description: "Loop your favorite song forever" 
+appVersion: "1.0.0"
+dependencies:
+  - name: mysql
+    version: 9.11.1
+    repository: https://charts.bitnami.com/bitnami

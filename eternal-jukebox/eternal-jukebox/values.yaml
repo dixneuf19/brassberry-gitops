@@ -1,0 +1,22 @@
+mysql:
+  auth:
+    existingSecret: mysql-passwords
+    database: eternaljukebox
+    username: eternal_user
+  
+  primary:
+    persistence:
+      storageClass: "nfs-client"
+      size: 1Mi # ignored for nfs-client
+    resources:
+      requests:
+        memory: 512Mi
+        cpu: 100m
+      limits:
+        memory: 756Mi
+        cpu: 1
+
+eternalJukebox:
+  image:
+    name: ghcr.io/dixneuf19/eternal-jukebox
+    tag: main
