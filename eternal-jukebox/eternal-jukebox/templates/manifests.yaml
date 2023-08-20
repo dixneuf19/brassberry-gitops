@@ -1,0 +1,167 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eternal-jukebox-conf
+data: 
+  envvar_config.yaml: |
+    # The base domain
+    baseDomain: eternal-jukebox.dixneuf19.me
+    # What port we're running on
+    port: 8080
+    # Spotify Client / Secret; make an application over here: https://developer.spotify.com/my-applications/
+    spotifyClient: ${SPOTIFYCLIENT}
+    spotifySecret: ${SPOTIFYSECRET}
+
+    # Only needed if you're doing oauth logins
+    googleClient: ${GOOGLECLIENT}
+    googleSecret: ${GOOGLESECRET}
+
+    # These can be any folders you want
+    storageType: LOCAL
+    storageOptions:
+      ANALYSIS_FOLDER: data/analysis
+      AUDIO_FOLDER: data/audio
+      EXTERNAL_AUDIO_FOLDER: data/external_audio
+      UPLOADED_AUDIO_FOLDER: data/uploaded_audio
+      PROFILE_FOLDER: data/profile
+      LOG_FOLDER: data/log
+
+    # If not provided, local audio should work
+    audioSourceType: YOUTUBE
+    audioSourceOptions:
+      # This can be obtained from here: https://developers.google.com/youtube/v3/getting-started
+      API_KEY: ${YOUTUBE_API_KEY}
+
+    # How long blocking workers can go for (in ns)
+    workerExecuteTime: 1200000000000
+    # Can either be JDBC or H2
+    # If H2, you'll need to provide 'databaseName' under options, or leave it blank to default to 'eternal_jukebox'
+    # The values below are only needed if you're connecting to something like a MySQL database
+    databaseType: JDBC
+    databaseOptions:
+      username: ${SQL_USERNAME}
+      password: ${SQL_PASSWORD}
+      jdbcUrl: jdbc:${SQL_TYPE}://${SQL_HOST}:${SQL_PORT}/${SQL_DATABASE_NAME}?useSSL=false
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eternal-jukebox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eternal-jukebox
+  template:
+    metadata:
+      labels:
+        app: eternal-jukebox
+    spec:
+      containers:
+        - name: eternal-jukebox
+          image: {{ .Values.eternalJukebox.image.name }}:{{ .Values.eternalJukebox.image.tag }}
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: api-keys
+          env:
+            - name: SQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-passwords
+                  key: mysql-password
+            - name: SQL_USERNAME
+              value: eternal_user
+            - name: SQL_TYPE
+              value: mysql
+            - name: SQL_HOST
+              value: eternal-jukebox-mysql
+            - name: SQL_PORT
+              value: "3306"
+            - name: SQL_DATABASE_NAME
+              value: eternaljukebox
+          volumeMounts:
+            - name: eternal-jukebox-conf
+              mountPath: /tmp_conf
+              readOnly: false
+            - name: eternal-jukebox-data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 60
+      volumes:
+        - name: eternal-jukebox-conf
+          configMap:
+            name: eternal-jukebox-conf
+            items:
+              - key: envvar_config.yaml
+                path: envvar_config.yaml
+        - name: eternal-jukebox-data
+          persistentVolumeClaim:
+            claimName: eternal-jukebox-data
+        - name: eternal
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eternal-jukebox
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: eternal-jukebox
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: eternal-jukebox
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - eternaljukebox.dixneuf19.me
+      secretName: eternaljukebox-dixneuf19-me-tls
+  rules:
+    - host: eternaljukebox.dixneuf19.me
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: eternal-jukebox
+                port:
+                  number: 8080
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: eternal-jukebox-data
+spec:
+  storageClassName: nfs-client
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Mi # ignored for nfs-client
+---
