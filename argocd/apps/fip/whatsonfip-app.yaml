@@ -8,6 +8,7 @@ metadata:
     argocd-image-updater.argoproj.io/whats-on-fip.update-strategy: digest
     argocd-image-updater.argoproj.io/whats-on-fip.helm.image-name: generic.image.name
     argocd-image-updater.argoproj.io/whats-on-fip.helm.image-tag: generic.image.tag
+    argocd.argoproj.io/manifest-generate-paths: "."
 spec:
   project: default
   source:

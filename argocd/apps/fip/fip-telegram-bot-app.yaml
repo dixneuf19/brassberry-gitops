@@ -8,6 +8,7 @@ metadata:
     argocd-image-updater.argoproj.io/fip-telegram-bot.update-strategy: digest
     argocd-image-updater.argoproj.io/fip-telegram-bot.helm.image-name: generic.image.name
     argocd-image-updater.argoproj.io/fip-telegram-bot.helm.image-tag: generic.image.tag
+    argocd.argoproj.io/manifest-generate-paths: "."
 spec:
   project: default
   source:

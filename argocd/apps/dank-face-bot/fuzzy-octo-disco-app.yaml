@@ -8,6 +8,7 @@ metadata:
     argocd-image-updater.argoproj.io/fuzzy-octo-disco.update-strategy: digest
     argocd-image-updater.argoproj.io/fuzzy-octo-disco.helm.image-name: generic.image.name
     argocd-image-updater.argoproj.io/fuzzy-octo-disco.helm.image-tag: generic.image.tag
+    argocd.argoproj.io/manifest-generate-paths: "."
 spec:
   project: default
   source:

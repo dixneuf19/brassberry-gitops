@@ -8,6 +8,7 @@ metadata:
     argocd-image-updater.argoproj.io/eternal-jukebox.update-strategy: digest
     argocd-image-updater.argoproj.io/eternal-jukebox.helm.image-name: eternalJukebox.image.name
     argocd-image-updater.argoproj.io/eternal-jukebox.helm.image-tag: eternalJukebox.image.tag
+    argocd.argoproj.io/manifest-generate-paths: "."
 spec:
   project: default
   source:

@@ -8,6 +8,7 @@ metadata:
     argocd-image-updater.argoproj.io/spotify-api.update-strategy: digest
     argocd-image-updater.argoproj.io/spotify-api.helm.image-name: generic.image.name
     argocd-image-updater.argoproj.io/spotify-api.helm.image-tag: generic.image.tag
+    argocd.argoproj.io/manifest-generate-paths: "."
 spec:
   project: default
   source:
