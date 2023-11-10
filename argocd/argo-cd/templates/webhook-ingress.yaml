@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+  name: argocd-webhook
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: argocd.dixneuf19.me
+    http:
+      paths:
+      - backend:
+          service:
+            name: argo-cd-argocd-server
+            port:
+              number: 80
+        path: /api/webhook
+        pathType: Exact
+  tls:
+  - hosts:
+    - argocd.dixneuf19.me
+    secretName: argocd-dixneuf19-me-tls # use the one from the main ingress
