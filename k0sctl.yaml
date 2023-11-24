@@ -10,28 +10,27 @@ spec:
     ssh:
       address: brassberry-24
       user: ubuntu
+      keyPath: ~/.ssh/id_rsa
   - role: worker
     privateInterface: eth0
     ssh:
       address: brassberry-25
       user: dixneuf19
+      keyPath: ~/.ssh/id_rsa
   - role: worker
     privateInterface: eth0
     ssh:
       address: brassberry-26
       user: dixneuf19
+      keyPath: ~/.ssh/id_rsa
   - role: worker
     privateInterface: eth0
     ssh:
       address: brassberry-27
       user: ubuntu
-  # - role: worker
-  #   privateInterface: tailscale0
-  #   ssh:
-  #     address: oracle-arm
-  #     user: dixneuf19
+      keyPath: ~/.ssh/id_rsa
   k0s:
-    version: v1.27.5+k0s.0
+    version: v1.28.2+k0s.0
     config:
       apiVersion: k0s.k0sproject.io/v1beta1
       kind: Cluster
