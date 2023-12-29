@@ -6,7 +6,7 @@ generic:
     pullPolicy: Always
   container:
     port: 80
-    probe: null
+    probe: {}
   resources:
     limits:
       memory: 128Mi
