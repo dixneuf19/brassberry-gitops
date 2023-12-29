@@ -7,5 +7,5 @@ home: https://github.com/dixneuf19/FIP-telegram-bot
 dependencies:
   - name: base-helm-chart
     alias: generic
-    version: 0.3.1
+    version: 0.3.2
     repository: https://dixneuf19.github.io/helm-charts-repo/
