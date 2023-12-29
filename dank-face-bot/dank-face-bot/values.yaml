@@ -4,7 +4,7 @@ generic:
     repository: ghcr.io/dixneuf19/dank-face-bot
     tag: "1d0c6e0fc8e016eb2f45d888fb462a53321e4b2d"
   container:
-    probe: null
+    noProbes: true
   resources:
     limits:
       memory: 128Mi
