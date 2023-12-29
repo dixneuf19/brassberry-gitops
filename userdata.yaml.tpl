@@ -1,6 +1,7 @@
 #cloud-config
 
 hostname: "oracle-arm"
+timezone: Europe/Paris
 
 groups:
   - docker
@@ -18,6 +19,8 @@ users:
 
 ssh_pwauth: false
 
+package_upgrade: true
+
 apt:
   sources:
     tailscale.list:
@@ -27,6 +30,7 @@ apt:
 packages:
   - tailscale
   - nginx
+package_reboot_if_required: true
 
 write_files:
   - content: |
@@ -71,9 +75,23 @@ runcmd:
   # Setup tailscale connection
   - tailscale up -authkey ${tailscale_auth_key}
 
-  # Open port 80 and 443
+  # Open port 80 and 443 for ingress
   - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80 -j ACCEPT
   - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 443 -j ACCEPT
+  - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 22 -j ACCEPT
+
+  # See https://docs.k0sproject.io/v1.23.8+k0s.0/networking/
+  # Open port 10250 for kubelet access
+  - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 10250 -j ACCEPT
+  # Kube-router
+  - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 179 -j ACCEPT
+  # Konnectivity
+  - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 8132 -j ACCEPT
+  
+  # Save rules for reboot
+  - netfilter-persistent save
 
   # Reload nginx conf
   - systemctl reload nginx
+
+final_message: "The system is finally up, after $UPTIME seconds"
