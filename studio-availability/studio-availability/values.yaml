@@ -1,0 +1,38 @@
+generic:
+  replicaCount: 2
+  image:
+    repository: ghcr.io/dixneuf19/studio-availability
+    tag: main
+    pullPolicy: Always
+  container:
+    port: 80
+    probe:
+      liveness:
+        path: /health
+      readiness:
+        path: /health
+  resources:
+    limits:
+      memory: 128Mi
+      cpu: 300m
+    requests:
+      memory: 64Mi
+      cpu: 100m
+  service:
+    type: ClusterIP
+    port: 1919
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+    hosts:
+      - host: studio-availability.dixneuf19.me
+        paths:
+          - path: /
+    tls:
+      - hosts:
+          - studio-availability.dixneuf19.me
+        secretName: studio-availability-dixneuf19-me-tls
+
+  configmap: {}
