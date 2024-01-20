@@ -1,0 +1,11 @@
+apiVersion: v2
+name: studio-availability
+version: 1.0.0
+description: "Studio availability" 
+appVersion: "1.0.0"
+home: https://github.com/dixneuf19/studio-availability
+dependencies:
+  - name: base-helm-chart
+    alias: generic
+    version: 0.3.2
+    repository: https://dixneuf19.github.io/helm-charts-repo/
