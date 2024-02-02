@@ -5,5 +5,5 @@ description: "Loop your favorite song forever"
 appVersion: "1.0.0"
 dependencies:
   - name: mysql
-    version: 9.18.2
+    version: 9.19.0
     repository: https://charts.bitnami.com/bitnami
