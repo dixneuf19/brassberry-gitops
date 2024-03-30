@@ -89,13 +89,13 @@ kube-prometheus-stack:
           gnetId: 15141 # https://grafana.com/grafana/dashboards/15141-kubernetes-service-logs
           revision: 1
           datasource: Loki
-      keptn:
-        keptn-applications:
-          url: https://raw.githubusercontent.com/keptn/lifecycle-toolkit/main/dashboards/grafana/import/grafana_dashboard_applications.json
-        keptn-overview:
-          url: https://raw.githubusercontent.com/keptn/lifecycle-toolkit/main/dashboards/grafana/import/grafana_dashboard_overview.json
-        keptn-workloads:
-          url: https://raw.githubusercontent.com/keptn/lifecycle-toolkit/main/dashboards/grafana/import/grafana_dashboard_workloads.json
+      # keptn:
+      #   keptn-applications:
+      #     url: https://raw.githubusercontent.com/keptn/lifecycle-toolkit/main/dashboards/grafana/import/grafana_dashboard_applications.json
+      #   keptn-overview:
+      #     url: https://raw.githubusercontent.com/keptn/lifecycle-toolkit/main/dashboards/grafana/import/grafana_dashboard_overview.json
+      #   keptn-workloads:
+      #     url: https://raw.githubusercontent.com/keptn/lifecycle-toolkit/main/dashboards/grafana/import/grafana_dashboard_workloads.json
 
 
     sidecar:
