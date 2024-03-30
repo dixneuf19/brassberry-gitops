@@ -1,0 +1,6 @@
+dependencies:
+- name: keptn
+  repository: https://charts.lifecycle.keptn.sh
+  version: 0.5.2
+digest: sha256:c148940a7eafe17309e0a86b49bf70bbf28a7957d122774c05801bdd385bb465
+generated: "2024-03-30T18:59:54.868634843+01:00"

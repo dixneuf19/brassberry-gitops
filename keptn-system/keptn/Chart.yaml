@@ -1,0 +1,8 @@
+apiVersion: v2
+description: OTS chart for keptn
+name: keptn
+version: 0.1.0
+dependencies:
+  - name: keptn
+    version: 0.5.2
+    repository: https://charts.lifecycle.keptn.sh
