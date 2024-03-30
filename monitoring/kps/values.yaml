@@ -53,7 +53,7 @@ kube-prometheus-stack:
             editable: false
             allowUiUpdates: false
             options:
-              path: /var/lib/grafana/dashboards/keptn
+              path: /tmp/grafana/dashboards/keptn
           - name: default
             orgId: 1
             type: file
