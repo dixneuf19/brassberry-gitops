@@ -4,5 +4,5 @@ name: keptn
 version: 0.1.0
 dependencies:
   - name: keptn
-    version: 0.5.2
+    version: 0.6.0
     repository: https://charts.lifecycle.keptn.sh
