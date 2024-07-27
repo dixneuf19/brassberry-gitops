@@ -67,10 +67,10 @@ do
 done
 
 
-image_to_download="https://cdimage.ubuntu.com/releases/20.04.4/release/ubuntu-20.04.4-preinstalled-server-arm64+raspi.img.xz"
-image_name="ubuntu-20.04.4-preinstalled-server-arm64+raspi.img.xz"
-sha_gpg_url="https://cdimage.ubuntu.com/releases/20.04.4/release/SHA256SUMS.gpg"
-sha_sum_url="https://cdimage.ubuntu.com/releases/20.04.4/release/SHA256SUMS"
+image_to_download="https://cdimage.ubuntu.com/releases/22.04.4/release/ubuntu-22.04.4-preinstalled-server-arm64+raspi.img.xz"
+image_name="ubuntu-22.04.4-preinstalled-server-arm64+raspi.img.xz"
+sha_gpg_url="https://cdimage.ubuntu.com/releases/22.04.4/release/SHA256SUMS.gpg"
+sha_sum_url="https://cdimage.ubuntu.com/releases/22.04.4/release/SHA256SUMS"
 
 
 sdcard_mount="/mnt/sdcard"

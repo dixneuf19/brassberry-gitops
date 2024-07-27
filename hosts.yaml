@@ -1,30 +1,27 @@
 # Uses https://github.com/mxbi/tailscale-hostmap to avoid specifying tailscale IP
 all:
   vars:
-    ansible_ssh_user: ubuntu
+    ansible_ssh_user: dixneuf19
     disks: []
     is_raspberry: true
-
 
 master:
   hosts:
     brassberry-24:
+      ansible_ssh_user: ubuntu
 
 workers:
   hosts:
     brassberry-25:
-      ansible_ssh_user: dixneuf19
       disks:
       - name: tuyhoa_2T
         uuid: 2b0a49ce-d6c4-456d-a5a6-52850f9b0213
         type: EXT4
     brassberry-26:
-      ansible_ssh_user: dixneuf19
     brassberry-27:
       disks:
       - name: magadi_3T
         uuid: E6504EF8504ECECD
         type: NTFS
     oracle-arm:
-      ansible_ssh_user: dixneuf19
       is_raspberry: false

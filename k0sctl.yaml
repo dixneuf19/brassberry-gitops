@@ -6,7 +6,7 @@ metadata:
 spec:
   hosts:
   - role: controller+worker
-    privateInterface: eth0
+    # privateInterface: eth0
     ssh:
       address: brassberry-24
       user: ubuntu
@@ -22,15 +22,15 @@ spec:
     ssh:
       address: brassberry-26
       user: dixneuf19
-      keyPath: ~/.ssh/id_rsa
+      keyPath: ~/.ssh/id_ed25519
   - role: worker
     privateInterface: eth0
     ssh:
       address: brassberry-27
-      user: ubuntu
-      keyPath: ~/.ssh/id_rsa
+      user: dixneuf19
+      keyPath: ~/.ssh/id_ed25519
   k0s:
-    version: v1.28.2+k0s.0
+    version: v1.29.4+k0s.0
     config:
       apiVersion: k0s.k0sproject.io/v1beta1
       kind: Cluster
