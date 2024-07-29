@@ -30,7 +30,7 @@ spec:
       user: dixneuf19
       keyPath: ~/.ssh/id_ed25519
   k0s:
-    version: v1.29.4+k0s.0
+    version: v1.30.2+k0s.0
     config:
       apiVersion: k0s.k0sproject.io/v1beta1
       kind: Cluster
