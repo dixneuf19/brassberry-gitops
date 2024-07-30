@@ -13,8 +13,13 @@ terraform {
       source  = "go-gandi/gandi"
     }
     oci = {
-      version = "~> 5.0"
+      version = "~> 6.0"
       source  = "oracle/oci"
+    }
+
+    digitalocean = {
+      source  = "digitalocean/digitalocean"
+      version = "~> 2.0"
     }
   }
 }
