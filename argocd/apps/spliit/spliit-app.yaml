@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: spliit
+  annotations:
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/brassberry-gitops-creds
+    argocd-image-updater.argoproj.io/image-list: spliit=ghcr.io/crazy-max/spliit:1.x
+    argocd-image-updater.argoproj.io/spliit.update-strategy: semver
+    argocd-image-updater.argoproj.io/spliit.helm.image-name: image.repository
+    argocd-image-updater.argoproj.io/spliit.helm.image-tag: image.tag
+    argocd.argoproj.io/manifest-generate-paths: "."
+spec:
+  project: default
+  source:
+    path: spliit/spliit
+    repoURL: 'https://github.com/dixneuf19/brassberry-gitops'
+    targetRevision: main
+    helm:
+      valueFiles:
+      - values.yaml
+  destination:
+    namespace: spliit
+    name: in-cluster
+  syncPolicy:
+    automated: # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+    syncOptions:     # Sync options which modifies sync behavior
+    - CreateNamespace=true # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
