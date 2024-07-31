@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spliit
+  labels:
+    app: spliit
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: spliit
+  template:
+    metadata:
+      labels:
+        app: spliit
+    spec:
+      containers:
+        - name: spliit
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          ports:
+            - containerPort: 3000
+              name: http
+          env:
+            - name: POSTGRES_HOST
+              value: "spliit-postgresql"
+            - name: POSTGRES_NAME
+              value: "spliit"
+            - name: POSTGRES_USER
+              value: "spliit"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-passwords
+                  key: password
+            - name: POSTGRES_TIMEOUT
+              value: "60"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+             path: /
+             port: http
+          startupProbe:
+            httpGet:
+              path: /
+              port: http
+            failureThreshold: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spliit
+spec:
+  selector:
+    app: spliit
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: spliit
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: spliit.dixneuf19.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: spliit
+            port:
+              number: 80
+  - host: tricount.dixneuf19.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: spliit
+            port:
+              number: 80
+  tls:
+  - hosts:
+      - spliit.dixneuf19.me
+    secretName: spliit-dixneuf19-me-tls
+  - hosts:
+      - tricount.dixneuf19.me
+    secretName: tricount-dixneuf19-me-tls
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: spliit
+spec:
+  selector:
+    matchLabels:
+      app: spliit
+  maxUnavailable: 1
