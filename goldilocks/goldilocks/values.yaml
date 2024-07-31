@@ -21,7 +21,7 @@ goldilocks:
   controller:
     resources:
       requests:
-        cpu: 200m
+        cpu: 250m
       limits:
         cpu: 1
 
