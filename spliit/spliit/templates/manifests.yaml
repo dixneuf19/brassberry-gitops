@@ -101,7 +101,7 @@ spec:
       - tricount.dixneuf19.me
     secretName: tricount-dixneuf19-me-tls
 ---
-apiVersion: policy/v1beta1
+apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: spliit
