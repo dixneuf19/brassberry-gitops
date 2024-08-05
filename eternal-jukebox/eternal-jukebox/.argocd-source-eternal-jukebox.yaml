@@ -4,5 +4,5 @@ helm:
     value: ghcr.io/dixneuf19/eternal-jukebox
     forcestring: true
   - name: eternalJukebox.image.tag
-    value: main@sha256:df147fd53c846f3271f4741cd4ff256ebe3693aef37125584ced84b5cab7423e
+    value: main@sha256:1d3aa6a0d10229e765df48e41868a113b5a5d40d2ffc7c6b6f6968928d8f5693
     forcestring: true
