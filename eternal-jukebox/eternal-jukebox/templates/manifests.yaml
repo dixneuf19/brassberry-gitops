@@ -41,7 +41,7 @@ data:
     databaseOptions:
       username: ${SQL_USERNAME}
       password: ${SQL_PASSWORD}
-      jdbcUrl: jdbc:${SQL_TYPE}://${SQL_HOST}:${SQL_PORT}/${SQL_DATABASE_NAME}?useSSL=false
+      jdbcUrl: jdbc:${SQL_TYPE}://${SQL_HOST}:${SQL_PORT}/${SQL_DATABASE_NAME}?useSSL=true
 
 ---
 apiVersion: apps/v1
