@@ -45,15 +45,6 @@ kube-prometheus-stack:
             allowUiUpdates: false
             options:
               path: /var/lib/grafana/dashboards/loki
-          - name: keptn
-            orgId: 1
-            type: file
-            folder: Keptn
-            disableDeletion: false
-            editable: false
-            allowUiUpdates: false
-            options:
-              path: /tmp/dashboards/keptn
           - name: default
             orgId: 1
             type: file
@@ -89,14 +80,6 @@ kube-prometheus-stack:
           gnetId: 15141 # https://grafana.com/grafana/dashboards/15141-kubernetes-service-logs
           revision: 1
           datasource: Loki
-      # keptn:
-      #   keptn-applications:
-      #     url: https://raw.githubusercontent.com/keptn/lifecycle-toolkit/main/dashboards/grafana/import/grafana_dashboard_applications.json
-      #   keptn-overview:
-      #     url: https://raw.githubusercontent.com/keptn/lifecycle-toolkit/main/dashboards/grafana/import/grafana_dashboard_overview.json
-      #   keptn-workloads:
-      #     url: https://raw.githubusercontent.com/keptn/lifecycle-toolkit/main/dashboards/grafana/import/grafana_dashboard_workloads.json
-
 
     sidecar:
       dashboards:
@@ -108,10 +91,6 @@ kube-prometheus-stack:
         type: loki
         access: proxy
         url: http://loki.logging:3100
-      - name: Keptn
-        type: jaeger
-        access: proxy
-        url: http://jaeger-collector.keptn-system.svc.cluster.local:16686
 
     persistence:
       enabled: true
@@ -183,13 +162,6 @@ kube-prometheus-stack:
 
     prometheusSpec:
       externalUrl: "https://prometheus.dixneuf19.me"
-
-      # https://keptn.sh/stable/docs/getting-started/observability/#step-11-install-kube-prometheus-stack
-      additionalScrapeConfigs:
-      - job_name: "scrape_klt"
-        scrape_interval: 5s
-        static_configs:
-          - targets: ['lifecycle-operator-metrics-service.keptn-system.svc.cluster.local:2222']
 
       # Watch all PrometheusRules in the cluster.
       ruleNamespaceSelector:
