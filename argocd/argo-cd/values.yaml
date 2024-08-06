@@ -17,7 +17,6 @@ argo-cd:
         additionalLabels: {}
     resources:
       limits:
-        cpu: 1000m
         memory: 2Gi
       requests:
         cpu: 1000m
@@ -29,7 +28,6 @@ argo-cd:
   redis:
     resources:
       limits:
-        cpu: 200m
         memory: 128Mi
       requests:
         cpu: 100m
@@ -38,7 +36,6 @@ argo-cd:
   server:
     resources:
       limits:
-        cpu: 200m
         memory: 256Mi
       requests:
         cpu: 100m
@@ -90,7 +87,6 @@ argo-cd:
   repoServer:
     resources:
       limits:
-        cpu: 1000m
         memory: 512Mi
       requests:
         cpu: 1000m
