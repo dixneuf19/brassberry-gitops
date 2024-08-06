@@ -26,7 +26,6 @@ argo-cd:
         selector:
           prometheus: kube-prometheus
         namespace: monitoring
-        additionalLabels: {}
     resources:
       limits:
         memory: 2Gi
@@ -59,7 +58,6 @@ argo-cd:
         selector:
           prometheus: kube-prometheus
         namespace: monitoring
-        additionalLabels: {}
 
     ingress:
       enabled: true
@@ -69,18 +67,8 @@ argo-cd:
         nginx.ingress.kubernetes.io/auth-type: basic
         # GRPC, so the CLI won't work
         nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-      labels: {}
       ingressClassName: nginx
       tls: true
-      # extraTls:
-      #   - secretName: argocd-dixneuf19-me-tls
-      #     hosts:
-      #       - argocd.dixneuf19.me
-      https: false
-    # dedicated ingess for gRPC as documented at
-    # https://argoproj.github.io/argo-cd/operator-manual/ingress/
-    ingressGrpc:
-      enabled: false
 
   ## Repo Server
   repoServer:
@@ -97,14 +85,13 @@ argo-cd:
         selector:
           prometheus: kube-prometheus
         namespace: monitoring
-        additionalLabels: {}
     env:
       - name: "ARGOCD_EXEC_TIMEOUT"
         value: "5m"
 
   applicationSet:
-    # No use for now + no arm image
-    enabled: false
+    # No use for now
+    replicas: 0
 
   ## Notifications controller
   notifications:
