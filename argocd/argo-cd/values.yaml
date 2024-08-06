@@ -1,4 +1,16 @@
 argo-cd:  
+  global:
+    # -- Default domain used by all components
+    ## Used for ingresses, certificates, SSO, notifications, etc.
+    domain: argocd.dixneuf19.me
+
+    # Default logging options used by all components
+    logging:
+      # -- Set the global logging format. Either: `text` or `json`
+      format: text
+      # -- Set the global logging level. One of: `debug`, `info`, `warn` or `error`
+      level: info
+
   configs:
     params:
       server.disable.auth: true
@@ -17,7 +29,6 @@ argo-cd:
         additionalLabels: {}
     resources:
       limits:
-        cpu: 1000m
         memory: 2Gi
       requests:
         cpu: 1000m
@@ -29,7 +40,6 @@ argo-cd:
   redis:
     resources:
       limits:
-        cpu: 200m
         memory: 128Mi
       requests:
         cpu: 100m
@@ -38,7 +48,6 @@ argo-cd:
   server:
     resources:
       limits:
-        cpu: 200m
         memory: 256Mi
       requests:
         cpu: 100m
@@ -62,35 +71,21 @@ argo-cd:
         nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
       labels: {}
       ingressClassName: nginx
-      hosts:
-        - argocd.dixneuf19.me
-      paths:
-        - /
-      extraPaths:
-        []
-        # - path: /*
-        #   backend:
-        #     serviceName: ssl-redirect
-        #     servicePort: use-annotation
-      tls:
-        - secretName: argocd-dixneuf19-me-tls
-          hosts:
-            - argocd.dixneuf19.me
+      tls: true
+      # extraTls:
+      #   - secretName: argocd-dixneuf19-me-tls
+      #     hosts:
+      #       - argocd.dixneuf19.me
       https: false
     # dedicated ingess for gRPC as documented at
     # https://argoproj.github.io/argo-cd/operator-manual/ingress/
     ingressGrpc:
       enabled: false
 
-    config:
-      # Argo CD's externally facing base URL (optional). Required when configuring SSO
-      url: https://argocd.dixneuf19.me
-
   ## Repo Server
   repoServer:
     resources:
       limits:
-        cpu: 1000m
         memory: 512Mi
       requests:
         cpu: 1000m
@@ -109,4 +104,9 @@ argo-cd:
 
   applicationSet:
     # No use for now + no arm image
+    enabled: false
+
+  ## Notifications controller
+  notifications:
+    # -- Enable notifications controller
     enabled: false
