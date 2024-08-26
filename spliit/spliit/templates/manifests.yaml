@@ -93,6 +93,16 @@ spec:
             name: spliit
             port:
               number: 80
+  - host: baloocount.dixneuf19.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: spliit
+            port:
+              number: 80
   tls:
   - hosts:
       - spliit.dixneuf19.me
@@ -100,6 +110,9 @@ spec:
   - hosts:
       - tricount.dixneuf19.me
     secretName: tricount-dixneuf19-me-tls
+  - hosts:
+      - baloocount.dixneuf19.me
+    secretName: baloocount-dixneuf19-me-tls
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
