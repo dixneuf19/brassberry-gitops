@@ -7,14 +7,14 @@ metadata:
 spec:
   project: default
   source:
-    path: default/nfs-client-provisioner
+    path: storage/nfs-client-provisioner
     repoURL: 'https://github.com/dixneuf19/brassberry-gitops'
     targetRevision: main
     helm:
       valueFiles:
       - values.yaml
   destination:
-    namespace: default
+    namespace: storage
     name: in-cluster
   syncPolicy:
     automated: # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
