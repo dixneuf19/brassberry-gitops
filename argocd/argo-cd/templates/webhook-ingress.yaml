@@ -20,4 +20,4 @@ spec:
   tls:
   - hosts:
     - argocd.dixneuf19.me
-    secretName: argocd-dixneuf19-me-tls # use the one from the main ingress
+    secretName: argocd-server-tls # use the one from the main ingress
