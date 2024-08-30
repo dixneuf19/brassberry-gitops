@@ -24,9 +24,10 @@ users:
 # Disable password authentication with the SSH daemon
 ssh_pwauth: false
 
-## Update apt database and upgrade packages on first boot
-package_update: true
-package_upgrade: true
+## ~~Update apt database and upgrade packages on first boot~~
+# Do it later with a playbook to speed up start time
+package_update: false
+package_upgrade: false
 
 
 final_message: "The system is finally up, after $UPTIME seconds"
