@@ -73,10 +73,10 @@ argo-cd:
   repoServer:
     resources:
       limits:
-        memory: 512Mi
+        memory: 1Gi
       requests:
         cpu: 1000m
-        memory: 256Mi
+        memory: 512Mi
     metrics:
       enabled: false
       serviceMonitor:
