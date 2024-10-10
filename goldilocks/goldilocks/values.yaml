@@ -9,7 +9,7 @@ goldilocks:
         nginx.ingress.kubernetes.io/auth-secret: ingress-nginx/basic-auth
         nginx.ingress.kubernetes.io/auth-type: basic
       hosts:
-        - host: goldilocks.dixneuf19.me
+        - host: goldilocks.dixneuf19.fr
           paths:
               - path: /
                 type: ImplementationSpecific
@@ -17,7 +17,7 @@ goldilocks:
       tls:
         - secretName: goldilocks-dixneuf19-me-tls
           hosts:
-            - goldilocks.dixneuf19.me
+            - goldilocks.dixneuf19.fr
   controller:
     resources:
       requests:

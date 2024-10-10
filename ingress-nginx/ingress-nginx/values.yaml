@@ -11,7 +11,7 @@ ingress-nginx:
         #   8080: 32808
         
     # nodeSelector:
-    #   dixneuf19.me/node-role: ingress
+    #   dixneuf19.fr/node-role: ingress
 
     replicaCount: 2
 

@@ -48,7 +48,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: whoami.dixneuf19.me
+    - host: whoami.dixneuf19.fr
       http:
         paths:
           - path: /
@@ -60,5 +60,5 @@ spec:
                   number: 80
   tls:
     - hosts:
-      - whoami.dixneuf19.me
+      - whoami.dixneuf19.fr
       secretName: whoami-dixneuf19-me-tls

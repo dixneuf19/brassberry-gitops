@@ -7,7 +7,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: argocd.dixneuf19.me
+  - host: argocd.dixneuf19.fr
     http:
       paths:
       - backend:
@@ -19,5 +19,5 @@ spec:
         pathType: Exact
   tls:
   - hosts:
-    - argocd.dixneuf19.me
+    - argocd.dixneuf19.fr
     secretName: argocd-server-tls # use the one from the main ingress

@@ -73,7 +73,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: spliit.dixneuf19.me
+  - host: spliit.dixneuf19.fr
     http:
       paths:
       - path: /
@@ -83,7 +83,7 @@ spec:
             name: spliit
             port:
               number: 80
-  - host: tricount.dixneuf19.me
+  - host: tricount.dixneuf19.fr
     http:
       paths:
       - path: /
@@ -93,7 +93,7 @@ spec:
             name: spliit
             port:
               number: 80
-  - host: baloocount.dixneuf19.me
+  - host: baloocount.dixneuf19.fr
     http:
       paths:
       - path: /
@@ -105,13 +105,13 @@ spec:
               number: 80
   tls:
   - hosts:
-      - spliit.dixneuf19.me
+      - spliit.dixneuf19.fr
     secretName: spliit-dixneuf19-me-tls
   - hosts:
-      - tricount.dixneuf19.me
+      - tricount.dixneuf19.fr
     secretName: tricount-dixneuf19-me-tls
   - hosts:
-      - baloocount.dixneuf19.me
+      - baloocount.dixneuf19.fr
     secretName: baloocount-dixneuf19-me-tls
 ---
 apiVersion: policy/v1

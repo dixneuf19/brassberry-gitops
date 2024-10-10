@@ -6,7 +6,7 @@ kubechecks:
       KUBECHECKS_ARGOCD_API_NAMESPACE: argocd
       KUBECHECKS_ARGOCD_API_SERVER_ADDR: argo-cd-argocd-server.argocd.svc.cluster.local
       KUBECHECKS_LOG_LEVEL: debug
-      KUBECHECKS_WEBHOOK_URL_BASE: https://kubechecks.dixneuf19.me
+      KUBECHECKS_WEBHOOK_URL_BASE: https://kubechecks.dixneuf19.fr
       KUBECHECKS_VCS_TYPE: "github"
       KUBECHECKS_MONITOR_ALL_APPLICATIONS: "true"
       # KUBECHECKS_ENSURE_WEBHOOKS: "true" # Ensure that webhooks are created in repositories referenced by argo
@@ -33,7 +33,7 @@ kubechecks:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt
     hosts:
-      kubechecks.dixneuf19.me:
+      kubechecks.dixneuf19.fr:
         paths:
           - path: "/hooks"
             pathType: Prefix
@@ -41,4 +41,4 @@ kubechecks:
     tls:
      - secretName: kubechecks-dixneuf19-me-tls
        hosts:
-       - kubechecks.dixneuf19.me
+       - kubechecks.dixneuf19.fr

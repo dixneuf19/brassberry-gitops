@@ -14,10 +14,10 @@ generic:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt
     hosts:
-      - host: echo.dixneuf19.me
+      - host: echo.dixneuf19.fr
         paths:
           - path: /
     tls:
       - hosts:
-          - echo.dixneuf19.me
+          - echo.dixneuf19.fr
         secretName: echo-dixneuf19-me-tls

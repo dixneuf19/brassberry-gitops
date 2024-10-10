@@ -26,12 +26,12 @@ generic:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt
     hosts:
-      - host: studio-availability.dixneuf19.me
+      - host: studio-availability.dixneuf19.fr
         paths:
           - path: /
     tls:
       - hosts:
-          - studio-availability.dixneuf19.me
+          - studio-availability.dixneuf19.fr
         secretName: studio-availability-dixneuf19-me-tls
 
   configmap: {}
