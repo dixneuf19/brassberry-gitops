@@ -1,7 +1,6 @@
 #cloud-config
 
-hostname: "droplet-proxy"
-# hostname: "oracle-arm"
+hostname: "oracle-arm"
 timezone: Europe/Paris
 
 groups:
@@ -17,10 +16,6 @@ users:
       - sudo
       - users
       - docker
-    ssh_authorized_keys:
-      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJCNtGUButejGmyBdz3wfK1VvJ8nAnNzEgj4t995RjER julen@loudnaround.org
-
-
 ssh_pwauth: false
 
 package_upgrade: true
@@ -79,22 +74,22 @@ runcmd:
   # Setup tailscale connection
   - tailscale up -authkey ${tailscale_auth_key}
 
-  # # Open port 80 and 443 for ingress
-  # - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80 -j ACCEPT
-  # - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 443 -j ACCEPT
+  # Open port 80 and 443 for ingress
+  - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80 -j ACCEPT
+  - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 443 -j ACCEPT
 
-  # # See https://docs.k0sproject.io/v1.23.8+k0s.0/networking/
-  # # Open port 10250 for kubelet access
-  # - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 10250 -j ACCEPT
-  # # Kube-router
-  # - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 179 -j ACCEPT
-  # # Konnectivity
-  # - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 8132 -j ACCEPT
+  # See https://docs.k0sproject.io/v1.23.8+k0s.0/networking/
+  # Open port 10250 for kubelet access
+  - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 10250 -j ACCEPT
+  # Kube-router
+  - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 179 -j ACCEPT
+  # Konnectivity
+  - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 8132 -j ACCEPT
   
-  # # Save rules for reboot
-  # - netfilter-persistent save
+  # Save rules for reboot
+  - netfilter-persistent save
 
-  # Reload nginx conf
+  # Restart nginx
   - systemctl restart nginx
 
 final_message: "The system is finally up, after $UPTIME seconds"

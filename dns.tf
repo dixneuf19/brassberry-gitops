@@ -2,6 +2,6 @@ resource "gandi_livedns_record" "oracle_arm" {
   name   = "brassberry"
   ttl    = 300
   type   = "A"
-  values = [digitalocean_droplet.proxy.ipv4_address]
+  values = [oci_core_instance.oracle-arm.public_ip]
   zone   = "dixneuf19.me"
 }
