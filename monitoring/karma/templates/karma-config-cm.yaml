@@ -9,7 +9,7 @@ data:
       servers:
         - name: brassberry
           uri: http://kube-prometheus-stack-alertmanager:9093
-          external_uri: https://alertmanager.dixneuf19.me
+          external_uri: https://alertmanager.dixneuf19.fr
           proxy: true
           readonly: false
     debug: false

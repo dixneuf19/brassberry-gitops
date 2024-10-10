@@ -22,7 +22,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: speedtest.dixneuf19.me
+  - host: speedtest.dixneuf19.fr
     http:
       paths:
       - path: /
@@ -34,5 +34,5 @@ spec:
               name: web
   tls:
   - hosts:
-    - speedtest.dixneuf19.me
+    - speedtest.dixneuf19.fr
     secretName: speedtest-dixneuf19-me-tls

@@ -27,12 +27,12 @@ generic:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt
     hosts:
-      - host: dank-face-slack-bot.dixneuf19.me
+      - host: dank-face-slack-bot.dixneuf19.fr
         paths:
           - path: /
     tls:
       - hosts:
-          - dank-face-slack-bot.dixneuf19.me
+          - dank-face-slack-bot.dixneuf19.fr
         secretName: dank-face-slack-bot-dixneuf19-me-tls
   configmap:
     FUZZY_OCTO_DISCO_HOST: "http://fuzzy-octo-disco"

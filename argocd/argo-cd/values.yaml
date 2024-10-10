@@ -2,7 +2,7 @@ argo-cd:
   global:
     # -- Default domain used by all components
     ## Used for ingresses, certificates, SSO, notifications, etc.
-    domain: argocd.dixneuf19.me
+    domain: argocd.dixneuf19.fr
 
     # Default logging options used by all components
     logging:

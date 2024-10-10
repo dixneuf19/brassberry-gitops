@@ -23,12 +23,12 @@ generic:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt
     hosts:
-      - host: fip-telegram-bot.dixneuf19.me
+      - host: fip-telegram-bot.dixneuf19.fr
         paths:
           - path: /
     tls:
       - hosts:
-          - fip-telegram-bot.dixneuf19.me
+          - fip-telegram-bot.dixneuf19.fr
         secretName: fip-telegram-bot-dixneuf19-me-tls
   configmap:
     FIP_API_HOST: whats-on-fip

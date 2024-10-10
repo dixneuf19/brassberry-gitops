@@ -29,12 +29,12 @@ generic:
       nginx.ingress.kubernetes.io/auth-secret: ingress-nginx/basic-auth
       nginx.ingress.kubernetes.io/auth-type: basic
     hosts:
-      - host: karma.dixneuf19.me
+      - host: karma.dixneuf19.fr
         paths:
           - path: /
     tls:
       - hosts:
-          - karma.dixneuf19.me
+          - karma.dixneuf19.fr
         secretName: karma-dixneuf19-me-tls
   configmap:
     CONFIG_FILE: "/etc/karma-config/karma.yaml"

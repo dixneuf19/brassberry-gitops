@@ -27,12 +27,12 @@ generic:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt
     hosts:
-      - host: fip-slack-bot.dixneuf19.me
+      - host: fip-slack-bot.dixneuf19.fr
         paths:
           - path: /
     tls:
       - hosts:
-          - fip-slack-bot.dixneuf19.me
+          - fip-slack-bot.dixneuf19.fr
         secretName: fip-slack-bot-dixneuf19-me-tls
   configmap:
     FIP_API_HOST: whats-on-fip

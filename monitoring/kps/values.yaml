@@ -105,12 +105,12 @@ kube-prometheus-stack:
         nginx.ingress.kubernetes.io/auth-secret: ingress-nginx/basic-auth
       labels: {}
       hosts:
-        - grafana.dixneuf19.me
+        - grafana.dixneuf19.fr
       path: /
       tls:
         - secretName: grafana-dixneuf19-me-tls
           hosts:
-          - grafana.dixneuf19.me
+          - grafana.dixneuf19.fr
 
 # These components are not exposed with the k0s setup
   kubeControllerManager:
@@ -151,17 +151,17 @@ kube-prometheus-stack:
         nginx.ingress.kubernetes.io/auth-secret: ingress-nginx/basic-auth
       labels: {}
       hosts:
-        - prometheus.dixneuf19.me
+        - prometheus.dixneuf19.fr
       paths:
         - /
       pathType: ImplementationSpecific
       tls:
         - secretName: prometheus-dixneuf19-me-tls
           hosts:
-            - prometheus.dixneuf19.me
+            - prometheus.dixneuf19.fr
 
     prometheusSpec:
-      externalUrl: "https://prometheus.dixneuf19.me"
+      externalUrl: "https://prometheus.dixneuf19.fr"
 
       # Watch all PrometheusRules in the cluster.
       ruleNamespaceSelector:
