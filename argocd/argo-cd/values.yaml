@@ -59,6 +59,14 @@ argo-cd:
           prometheus: kube-prometheus
         namespace: monitoring
 
+
+    certificate:
+      # -- Deploy a Certificate resource (requires cert-manager)
+      enabled: true
+      issuer:
+        kind: ClusterIssuer
+        name: letsencrypt
+
     ingress:
       enabled: true
       annotations:
@@ -96,3 +104,4 @@ argo-cd:
   notifications:
     # -- Enable notifications controller
     enabled: false
+
