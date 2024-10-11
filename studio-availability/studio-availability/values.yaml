@@ -32,6 +32,6 @@ generic:
     tls:
       - hosts:
           - studio-availability.dixneuf19.fr
-        secretName: studio-availability-dixneuf19-me-tls
+        secretName: studio-availability-dixneuf19-fr-tls
 
   configmap: {}

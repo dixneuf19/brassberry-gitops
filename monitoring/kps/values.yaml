@@ -108,7 +108,7 @@ kube-prometheus-stack:
         - grafana.dixneuf19.fr
       path: /
       tls:
-        - secretName: grafana-dixneuf19-me-tls
+        - secretName: grafana-dixneuf19-fr-tls
           hosts:
           - grafana.dixneuf19.fr
 
@@ -156,7 +156,7 @@ kube-prometheus-stack:
         - /
       pathType: ImplementationSpecific
       tls:
-        - secretName: prometheus-dixneuf19-me-tls
+        - secretName: prometheus-dixneuf19-fr-tls
           hosts:
             - prometheus.dixneuf19.fr
 

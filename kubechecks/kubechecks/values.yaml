@@ -39,6 +39,6 @@ kubechecks:
             pathType: Prefix
 
     tls:
-     - secretName: kubechecks-dixneuf19-me-tls
+     - secretName: kubechecks-dixneuf19-fr-tls
        hosts:
        - kubechecks.dixneuf19.fr

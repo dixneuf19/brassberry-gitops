@@ -106,13 +106,13 @@ spec:
   tls:
   - hosts:
       - spliit.dixneuf19.fr
-    secretName: spliit-dixneuf19-me-tls
+    secretName: spliit-dixneuf19-fr-tls
   - hosts:
       - tricount.dixneuf19.fr
-    secretName: tricount-dixneuf19-me-tls
+    secretName: tricount-dixneuf19-fr-tls
   - hosts:
       - baloocount.dixneuf19.fr
-    secretName: baloocount-dixneuf19-me-tls
+    secretName: baloocount-dixneuf19-fr-tls
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget

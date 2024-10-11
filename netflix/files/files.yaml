@@ -64,4 +64,4 @@ spec:
   tls:
   - hosts:
     - files.dixneuf19.fr
-    secretName: files-dixneuf19-me-tls
+    secretName: files-dixneuf19-fr-tls

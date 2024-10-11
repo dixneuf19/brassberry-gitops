@@ -35,7 +35,7 @@ generic:
     tls:
       - hosts:
           - karma.dixneuf19.fr
-        secretName: karma-dixneuf19-me-tls
+        secretName: karma-dixneuf19-fr-tls
   configmap:
     CONFIG_FILE: "/etc/karma-config/karma.yaml"
   secrets: []

@@ -61,4 +61,4 @@ spec:
   tls:
     - hosts:
       - whoami.dixneuf19.fr
-      secretName: whoami-dixneuf19-me-tls
+      secretName: whoami-dixneuf19-fr-tls

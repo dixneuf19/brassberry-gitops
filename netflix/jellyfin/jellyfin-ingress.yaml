@@ -20,4 +20,4 @@ spec:
   tls:
   - hosts:
     - netflix.dixneuf19.fr
-    secretName: netflix-dixneuf19-me-tls
+    secretName: netflix-dixneuf19-fr-tls

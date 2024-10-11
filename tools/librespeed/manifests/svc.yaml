@@ -35,4 +35,4 @@ spec:
   tls:
   - hosts:
     - speedtest.dixneuf19.fr
-    secretName: speedtest-dixneuf19-me-tls
+    secretName: speedtest-dixneuf19-fr-tls

@@ -69,6 +69,6 @@ spec:
   tls:
   - hosts:
     - deluge.dixneuf19.fr
-    secretName: deluge-dixneuf19-me-tls
+    secretName: deluge-dixneuf19-fr-tls
 
 

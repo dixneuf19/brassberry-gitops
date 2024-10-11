@@ -15,7 +15,7 @@ goldilocks:
                 type: ImplementationSpecific
 
       tls:
-        - secretName: goldilocks-dixneuf19-me-tls
+        - secretName: goldilocks-dixneuf19-fr-tls
           hosts:
             - goldilocks.dixneuf19.fr
   controller:

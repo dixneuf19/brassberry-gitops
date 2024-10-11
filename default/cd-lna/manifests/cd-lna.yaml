@@ -64,4 +64,4 @@ spec:
   tls:
   - hosts:
     - cd-lna.dixneuf19.fr
-    secretName: cd-lna-dixneuf19-me-tls
+    secretName: cd-lna-dixneuf19-fr-tls

@@ -20,4 +20,4 @@ generic:
     tls:
       - hosts:
           - echo.dixneuf19.fr
-        secretName: echo-dixneuf19-me-tls
+        secretName: echo-dixneuf19-fr-tls

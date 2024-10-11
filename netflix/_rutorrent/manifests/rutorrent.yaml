@@ -81,6 +81,6 @@ spec:
   tls:
   - hosts:
     - rutorrent.dixneuf19.fr
-    secretName: rutorrent-dixneuf19-me-tls
+    secretName: rutorrent-dixneuf19-fr-tls
 
 

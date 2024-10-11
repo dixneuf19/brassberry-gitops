@@ -139,7 +139,7 @@ spec:
   tls:
     - hosts:
         - eternaljukebox.dixneuf19.fr
-      secretName: eternaljukebox-dixneuf19-me-tls
+      secretName: eternaljukebox-dixneuf19-fr-tls
   rules:
     - host: eternaljukebox.dixneuf19.fr
       http:
