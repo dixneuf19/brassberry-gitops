@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/auth-secret: ingress-nginx/basic-auth
+    nginx.ingress.kubernetes.io/auth-type: basic
+  name: lms
+  namespace: lms
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: lms.dixneuf19.fr
+    http:
+      paths:
+      - backend:
+          service:
+            name: logitech-media-server
+            port:
+              number: 9000
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - lms.dixneuf19.fr
+    secretName: lms-dixneuf19-fr-tls

@@ -1,0 +1,6 @@
+logitech-media-server:
+  common:
+    podOptions:  
+      nodeSelector:
+        kubernetes.io/arch: "arm64"
+  TZ: "Europe/Paris"
