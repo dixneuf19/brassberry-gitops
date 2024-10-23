@@ -1,10 +1,10 @@
 NAMESPACE?=metallb-system
+VERSION=v0.14.8
 
 
 .PHONY: get-latest-source
 get-latest-source:
-	wget https://raw.githubusercontent.com/metallb/metallb/v0.9.5/manifests/namespace.yaml -O manifests/namespace.yaml
-	wget https://raw.githubusercontent.com/metallb/metallb/v0.9.5/manifests/metallb.yaml -O manifests/metallb.yaml
+	wget https://raw.githubusercontent.com/metallb/metallb/${VERSION}/config/manifests/metallb-native.yaml -O manifests/metallb.yaml
 
 .PHONY: deploy
 deploy:
