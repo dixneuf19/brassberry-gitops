@@ -42,14 +42,23 @@ spec:
             httpGet:
               path: /
               port: http
+              httpHeaders:
+              - name: Accept-Language
+                value: en-US
           readinessProbe:
             httpGet:
              path: /
              port: http
+             httpHeaders:
+             - name: Accept-Language
+               value: en-US
           startupProbe:
             httpGet:
               path: /
               port: http
+              httpHeaders:
+              - name: Accept-Language
+                value: en-US
             failureThreshold: 30
 ---
 apiVersion: v1
