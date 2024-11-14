@@ -4,3 +4,7 @@ logitech-media-server:
       nodeSelector:
         kubernetes.io/arch: "arm64"
   TZ: "Europe/Paris"
+  workload:
+    main:
+      podSpec:
+        hostname: logitech-media-server
