@@ -23,3 +23,9 @@ spec:
       allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
     syncOptions:     # Sync options which modifies sync behavior
     - CreateNamespace=true # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
+  # Currently beta in k8s, not activated on my k0s but set on logitech-media-server helm chart, causing a diff
+  ignoreDifferences:
+  - group: apps
+    kind: Deployment
+    jqPathExpressions:
+    - '.spec.template.spec.hostUsers' 

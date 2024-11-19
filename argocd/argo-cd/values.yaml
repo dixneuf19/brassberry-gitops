@@ -18,12 +18,6 @@ argo-cd:
       controller.operation.processors: 5
       controller.repo.server.timeout.seconds: 500
 
-    cm:
-      resource.customizations.ignoreDifferences.apps_Deployment:
-        jqPathExpressions:
-        # Currently beta in k8s, not activated on my k0s but set on logitech-media-server helm chart, causing a diff
-        - '.spec.template.spec.hostUsers' 
-      
   controller:
     metrics:
       enabled: false
