@@ -4,7 +4,7 @@
   serial: 1
   vars:
     # Location for kubectl on the nodes.
-    bin_dir: /usr/bin
+    bin_dir: /home/linuxbrew/.linuxbrew/bin
     # Period of time in seconds given to each pod to terminate gracefully. If
     # negative, the default value specified in the pod will be used.
     drain_grace_period: 300
