@@ -1,0 +1,13 @@
+apiVersion: v2
+name: external-secrets
+version: 0.1.0
+appVersion: 0.1.0
+home: https://github.com/external-secrets/external-secrets
+description: External secret management for Kubernetes
+sources:
+  - https://github.com/external-secrets/external-secrets/tree/main/deploy/charts/external-secrets
+type: application
+dependencies:
+  - name: external-secrets
+    version: 0.10.5
+    repository: https://charts.external-secrets.io

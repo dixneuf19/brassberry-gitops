@@ -1,0 +1,13 @@
+apiVersion: v2
+name: cloudnative-pg
+version: 0.1.0
+appVersion: 0.1.0
+home: https://cloudnative-pg.io
+description: CloudNativePG Operator Helm Chart
+sources:
+  - https://github.com/cloudnative-pg/charts/tree/main/charts/cloudnative-pg
+type: application
+dependencies:
+  - name: cloudnative-pg
+    version: 0.22.1
+    repository: https://cloudnative-pg.github.io/charts

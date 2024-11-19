@@ -1,0 +1,43 @@
+superset:
+  ingress:
+    enabled: true
+    ingressClassName: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/auth-secret: ingress-nginx/basic-auth
+      nginx.ingress.kubernetes.io/auth-type: basic
+      cert-manager.io/cluster-issuer: letsencrypt
+      ## Extend timeout to allow long running queries.
+      nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    path: /
+    pathType: ImplementationSpecific
+    hosts:
+      - superset.dixneuf19.fr
+    tls:
+    - hosts:
+      - superset.dixneuf19.fr
+      secretName: superset-dixneuf19-fr-tls
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # The limits below will apply to all Superset components. To set individual resource limitations refer to the pod specific values below.
+    # The pod specific values will overwrite anything that is set here.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  # Handled by external-secrets
+  secretEnv:
+    create: false
+
+
+  # deployed through cloud-native-pg
+  postgresql: 
+    enabled: false
