@@ -1,0 +1,14 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: superset-files-database
+  namespace: data
+spec:
+  instances: 1
+  enablePDB: false
+
+  storage:
+    size: 1Gi
+
+  monitoring:
+    enablePodMonitor: true
