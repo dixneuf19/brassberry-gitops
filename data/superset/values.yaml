@@ -41,3 +41,6 @@ superset:
   # deployed through cloud-native-pg
   postgresql: 
     enabled: false
+
+  init:
+    loadExamples: true
