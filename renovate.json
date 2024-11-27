@@ -4,5 +4,12 @@
     ":dependencyDashboard",
     ":automergeMinor",
     ":maintainLockFilesWeekly"
+  ],
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["superset"],
+      "description": "Last update broke the docker image by removing pg driver. Need to fix the docker image before updating",
+      "automerge": false
+    }
   ]
 }
