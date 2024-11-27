@@ -1,6 +1,6 @@
 dependencies:
 - name: superset
   repository: https://apache.github.io/superset
-  version: 0.13.4
-digest: sha256:3c61cb41c321eff85916baca9461a87bd52f45e6654d029ba754545011492bec
-generated: "2024-11-26T01:19:22.46338812Z"
+  version: 0.13.2
+digest: sha256:a2f0d4cd50e7b1486757237fd9d24bb03587ddfe00db9a395cad9d1759acb7d4
+generated: "2024-11-19T17:04:43.053614904Z"
