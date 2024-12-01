@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: og-baj-website
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: og-baj-website
+  template:
+    metadata:
+      labels:
+        app: og-baj-website
+    spec:
+      imagePullSecrets:
+        - name: ghrc-dixneuf19-site-baj
+      containers:
+        - name: og-baj-website
+          image: {{ .Values.ogBajWebsite.image.name }}:{{ .Values.ogBajWebsite.image.tag }}
+          ports:
+            - containerPort: 80
+              name: http
+          env:
+            - name: DB_HOST
+              value: og-baj-website-mysql
+            - name: DB_NAME
+              value: {{ .Values.mysql.auth.database }}
+            - name: DB_USER
+              value: {{ .Values.mysql.auth.username }}
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-passwords
+                  key: mysql-password
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 60
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: og-baj-website
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+  selector:
+    app: og-baj-website
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: og-baj-website
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - bandajoe.dixneuf19.fr
+      secretName: bandajoe-dixneuf19-fr-tls
+    - hosts:
+      - www.bandajoe.fr
+      secretName: www-bandajoe-fr-tls
+  rules:
+    - host: bandajoe.dixneuf19.fr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: og-baj-website
+                port:
+                  number: 8080
+    - host: www.bandajoe.fr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: og-baj-website
+                port:
+                  number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bandajoe-redirect
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    # nginx.ingress.kubernetes.io/permanent-redirect: https://www.bandajoe.fr$request_uri
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: bandajoe.fr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: og-baj-website
+                port:
+                  number: 8080
+  tls:
+    - hosts:
+      - bandajoe.fr
+      secretName: bandajoe-fr-tls
