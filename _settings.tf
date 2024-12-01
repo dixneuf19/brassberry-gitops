@@ -1,8 +1,8 @@
 provider "oci" {
   tenancy_ocid     = "ocid1.tenancy.oc1..aaaaaaaag3xw32hdfohhaxtbrgqn7bukopofevsijbhbh6y6fgo5u3vnirpq"
   user_ocid        = "ocid1.user.oc1..aaaaaaaa3bnkhue5jyet7ny2wdtj4y2ll4mcb57ijqv2eylpqnxbwkuovhea"
-  private_key_path = "~/.ssh/oracle_cloud_tf.pem"
-  fingerprint      = "12:e5:aa:ed:4e:9f:b7:bf:65:a8:7b:33:9c:06:82:fb"
+  private_key_path = "~/.oci/oci_api_key.pem"
+  fingerprint      = "cc:41:4c:e9:ab:62:cf:0a:d0:c9:59:41:38:fb:f4:75"
   region           = "eu-paris-1"
 }
 
