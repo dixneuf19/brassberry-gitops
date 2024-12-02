@@ -10,7 +10,15 @@ resource "gandi_livedns_record" "wildcard" {
   name   = "*"
   ttl    = 1800
   type   = "CNAME"
-  values = ["brassberry.dixneuf19.fr"]
+  values = ["brassberry.dixneuf19.fr."]
+  zone   = "dixneuf19.fr"
+}
+
+resource "gandi_livedns_record" "root" {
+  name   = "@"
+  ttl    = 300
+  type   = "A"
+  values = [oci_core_instance.oracle-arm.public_ip]
   zone   = "dixneuf19.fr"
 }
 
@@ -18,7 +26,7 @@ resource "gandi_livedns_record" "upptime" {
   name   = "upptime"
   ttl    = 1800
   type   = "CNAME"
-  values = ["dixneuf19.github.io"]
+  values = ["dixneuf19.github.io."]
   zone   = "dixneuf19.fr"
 }
 
