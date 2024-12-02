@@ -101,7 +101,7 @@ metadata:
   name: bandajoe-redirect
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    # nginx.ingress.kubernetes.io/permanent-redirect: https://www.bandajoe.fr$request_uri
+    nginx.ingress.kubernetes.io/permanent-redirect: https://www.bandajoe.fr$request_uri
 spec:
   ingressClassName: nginx
   rules:
