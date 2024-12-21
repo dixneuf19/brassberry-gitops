@@ -2,6 +2,7 @@ kubechecks:
   configMap:
     create: true
     env:
+      GRPC_ENFORCE_ALPN_ENABLED: false
       KUBECHECKS_ARGOCD_API_INSECURE: "true"
       KUBECHECKS_ARGOCD_API_NAMESPACE: argocd
       KUBECHECKS_ARGOCD_API_SERVER_ADDR: argo-cd-argocd-server.argocd.svc.cluster.local
@@ -13,7 +14,7 @@ kubechecks:
       KUBECHECKS_ENABLE_PREUPGRADE: "false" # Buggy if you are already at the latest Kubernetes version
       KUBECHECKS_WORST_KUBECONFORM_STATE: "warning" # For CRD this check fails
       KUBECHECKS_SCHEMAS_LOCATION: https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json
-      
+
   deployment:
     # Default values for kubechecks.
     resources:
@@ -24,8 +25,8 @@ kubechecks:
         cpu: 200m
 
     envFrom:
-    - secretRef:
-        name: kubechecks
+      - secretRef:
+          name: kubechecks
 
   ingress:
     create: true
@@ -39,6 +40,6 @@ kubechecks:
             pathType: Prefix
 
     tls:
-     - secretName: kubechecks-dixneuf19-fr-tls
-       hosts:
-       - kubechecks.dixneuf19.fr
+      - secretName: kubechecks-dixneuf19-fr-tls
+        hosts:
+          - kubechecks.dixneuf19.fr
