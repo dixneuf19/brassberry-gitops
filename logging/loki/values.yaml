@@ -49,6 +49,12 @@ loki:
         cpu: 500m
         memory: 256Mi
 
+  # try to launch an 8G memcached instance...
+  chunksCache:
+    enabled: false
+  resultsCache:
+    enabled: false
+
   # Zero out replica counts of other deployment modes
   backend:
     replicas: 0
