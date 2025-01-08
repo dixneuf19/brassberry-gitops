@@ -1,7 +1,6 @@
 ingress-nginx:
   # source: https://github.com/kubernetes/ingress-nginx/blob/master/charts/ingress-nginx/values.yaml
   controller:
-
     service:
       type: NodePort
       nodePorts:
@@ -9,11 +8,16 @@ ingress-nginx:
         https: 32443
         # tcp:
         #   8080: 32808
-        
+
     # nodeSelector:
     #   dixneuf19.fr/node-role: ingress
 
     replicaCount: 2
+
+    config:
+      # Necessary to read some basic auth secrets
+      # Needed since 1.12.0 with https://github.com/kubernetes/ingress-nginx/pull/11819
+      allow-cross-namespace-resources: true
 
     metrics:
       enabled: true
