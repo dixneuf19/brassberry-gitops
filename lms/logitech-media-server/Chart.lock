@@ -1,6 +1,6 @@
 dependencies:
 - name: logitech-media-server
   repository: oci://tccr.io/truecharts
-  version: 13.4.0
-digest: sha256:325365493dd54dc51792ddfd958fc803ea1cdc96c5afdbe586ef444819e48ed6
-generated: "2025-01-06T22:06:04.865519536Z"
+  version: 13.5.0
+digest: sha256:d96248abcbfa2010a584c6b81c9af2082638c0d67d1216101a705994bf584756
+generated: "2025-01-26T13:53:48.046162085Z"
