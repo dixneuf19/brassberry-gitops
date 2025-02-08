@@ -43,11 +43,11 @@ loki:
       storageClass: local-path
     resources:
       requests:
-        cpu: 100m
-        memory: 124Mi
-      limits:
         cpu: 500m
         memory: 256Mi
+      limits:
+        cpu: 1
+        memory: 512Mi
 
   # try to launch an 8G memcached instance...
   chunksCache:
