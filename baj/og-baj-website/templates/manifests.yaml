@@ -64,58 +64,36 @@ metadata:
   name: og-baj-website
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
 spec:
   ingressClassName: nginx
-  tls:
-    - hosts:
-        - bandajoe.dixneuf19.fr
-      secretName: bandajoe-dixneuf19-fr-tls
-    - hosts:
-      - www.bandajoe.fr
-      secretName: www-bandajoe-fr-tls
   rules:
     - host: bandajoe.dixneuf19.fr
       http:
         paths:
-          - path: /
-            pathType: Prefix
-            backend:
+          - backend:
               service:
                 name: og-baj-website
                 port:
                   number: 8080
+            path: /
+            pathType: Prefix
     - host: www.bandajoe.fr
       http:
         paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: og-baj-website
-                port:
-                  number: 8080
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: bandajoe-redirect
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
-    nginx.ingress.kubernetes.io/permanent-redirect: https://www.bandajoe.fr$request_uri
-spec:
-  ingressClassName: nginx
-  rules:
-    - host: bandajoe.fr
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: og-baj-website
-                port:
-                  number: 8080
+        - backend:
+            service:
+              name: og-baj-website
+              port:
+                number: 8080
+          path: /
+          pathType: Prefix
   tls:
-    - hosts:
-      - bandajoe.fr
-      secretName: bandajoe-fr-tls
+  - hosts:
+    - bandajoe.dixneuf19.fr
+    - www.bandajoe.dixneuf19.fr
+    secretName: bandajoe-dixneuf19-fr-tls
+  - hosts:
+    - www.bandajoe.fr
+    - bandajoe.fr
+    secretName: bandajoe-fr-tls
