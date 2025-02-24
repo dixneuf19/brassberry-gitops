@@ -1,6 +1,6 @@
 dependencies:
 - name: kubechecks
   repository: https://zapier.github.io/kubechecks/
-  version: 0.5.3
-digest: sha256:5d0ee11de346eb77bdc589ffd2127b16bd006c8fd259946d923b767a514b6688
-generated: "2024-12-20T20:54:27.749176858Z"
+  version: 0.5.4
+digest: sha256:dd5236225b1203c273195a609d0076633e4db571c9224289b5a3b943e87f31cf
+generated: "2025-02-24T16:48:50.519436764Z"
