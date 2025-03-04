@@ -114,7 +114,7 @@ kube-prometheus-stack:
     envValueFrom:
       SPLIIT_DB_PASSWORD:
         secretKeyRef:
-          name: grafana-spliit-postgres
+          name: spliit-postgresql-passwords
           key: password
 
     persistence:
