@@ -96,6 +96,26 @@ kube-prometheus-stack:
         type: loki
         access: proxy
         url: http://loki.logging:3100
+      - name: SpliitPostgres
+        type: postgres
+        url: spliit-postgresql.spliit.svc:5432
+        database: spliit
+        user: spliit
+        secureJsonData:
+          password: "${SPLIIT_DB_PASSWORD}"
+        jsonData:
+          sslmode: "disable"
+          maxOpenConns: 100
+          maxIdleConns: 100
+          connMaxLifetime: 14400
+          postgresVersion: 1500
+          timescaledb: false
+
+    envValueFrom:
+      SPLIIT_DB_PASSWORD:
+        secretKeyRef:
+          name: grafana-spliit-postgres
+          key: password
 
     persistence:
       enabled: true
