@@ -4,5 +4,5 @@ helm:
     value: ghcr.io/dixneuf19/studio-availability
     forcestring: true
   - name: generic.image.tag
-    value: main@sha256:84936134bcfee1806b8c34d631b4d260b431d2bef937fdf5fa4c71814717e399
+    value: main@sha256:0fa009e7941ad7e70f9df646b5828e5f18bfb97e1cde8f54d31e7cfcec46365f
     forcestring: true
