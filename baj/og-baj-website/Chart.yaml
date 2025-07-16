@@ -5,5 +5,5 @@ description: "The true bandajoe.fr"
 appVersion: "1.0.0"
 dependencies:
   - name: mysql
-    version: 12.3.5
+    version: 13.0.4
     repository: https://charts.bitnami.com/bitnami
