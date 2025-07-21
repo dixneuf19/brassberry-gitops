@@ -1,4 +1,4 @@
-logitech-media-server:
+lyrion-music-server:
   common:
     podOptions:  
       nodeSelector:
@@ -7,4 +7,4 @@ logitech-media-server:
   workload:
     main:
       podSpec:
-        hostname: logitech-media-server
+        hostname: lyrion-music-server

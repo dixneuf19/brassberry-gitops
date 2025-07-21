@@ -1,5 +1,5 @@
 apiVersion: v2
-name: logitech-media-server
+name: lyrion-music-server
 version: 0.1.0
 appVersion: 0.1.0
 home: https://lyrion.org/
@@ -7,9 +7,9 @@ description: Server for Squeezebox Radio
 sources:
   - https://github.com/LMS-Community/slimserver
   - https://hub.docker.com/r/lmscommunity/logitechmediaserver
-  - https://github.com/truecharts/charts/tree/master/charts/stable/logitech-media-server
+  - https://github.com/truecharts/charts/tree/master/charts/stable/lyrion-music-server
 type: application
 dependencies:
-  - name: logitech-media-server
-    version: 13.5.1
+  - name: lyrion-music-server
+    version: 5.1.1
     repository: oci://tccr.io/truecharts
