@@ -15,7 +15,7 @@ spec:
       paths:
       - backend:
           service:
-            name: logitech-media-server
+            name: lyrion-music-server
             port:
               number: 9000
         path: /

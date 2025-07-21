@@ -1,4 +1,4 @@
-HELM_RELEASE=logitech-media-server
+HELM_RELEASE=lyrion-music-server
 
 NAMESPACE=lms
 
