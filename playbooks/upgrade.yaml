@@ -4,7 +4,7 @@
   serial: 1
   vars:
     # Location for kubectl on the nodes.
-    bin_dir: /home/linuxbrew/.linuxbrew/bin
+    bin_dir: "{{ lookup('env', 'BIN_DIR') }}"
     # Period of time in seconds given to each pod to terminate gracefully. If
     # negative, the default value specified in the pod will be used.
     drain_grace_period: 300
@@ -32,7 +32,7 @@
     - name: Update apt cache
       become: true
       apt:
-       update_cache: yes
+        update_cache: yes
 
     - name: Check for available updates
       become: true
@@ -42,11 +42,11 @@
     - name: End the play for hosts whithout any upgrade
       meta: end_host
       when:
-      # Only one line with "Listing... Done"
-      - (updates.stdout_lines | length) == 1
+        # Only one line with "Listing... Done"
+        - (updates.stdout_lines | length) == 1
 
     - name: Drain the node
-    # cordon the node
+      # cordon the node
       block:
         - name: Cordon node
           command: >-
@@ -97,7 +97,7 @@
       when: reboot_required.stat.exists
 
     # TODO
-    # wait until a valid response is received from kubectl 
+    # wait until a valid response is received from kubectl
 
     - name: Uncordon node
       command: >-
