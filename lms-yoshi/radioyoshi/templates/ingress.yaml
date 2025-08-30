@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/auth-secret: yoshi-basic-auth
+    nginx.ingress.kubernetes.io/auth-type: basic
+  name: lms
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: radioyoshi.dixneuf19.fr
+      http:
+        paths:
+          - backend:
+              service:
+                name: lyrion-music-server
+                port:
+                  number: 9000
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - radioyoshi.dixneuf19.fr
+      secretName: radioyoshi-dixneuf19-fr-tls

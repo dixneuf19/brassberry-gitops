@@ -1,0 +1,10 @@
+lyrion-music-server:
+  common:
+    podOptions:
+      nodeSelector:
+        kubernetes.io/arch: "arm64"
+  TZ: "America/Bogota" # Quito timezone
+  workload:
+    main:
+      podSpec:
+        hostname: lyrion-music-server
