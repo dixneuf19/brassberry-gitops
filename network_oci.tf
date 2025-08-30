@@ -36,6 +36,17 @@ resource "oci_core_default_security_list" "main_security_list" {
     protocol    = "1" // ICMP
   }
 
+  # To use for debugging
+  # ingress_security_rules {
+  #   description = "allow http"
+  #   source      = "0.0.0.0/0"
+  #   protocol    = "6" // TCP
+  #   tcp_options {
+  #     min = 22
+  #     max = 22
+  #   }
+  # }
+
   ingress_security_rules {
     description = "allow http"
     source      = "0.0.0.0/0"
@@ -55,6 +66,48 @@ resource "oci_core_default_security_list" "main_security_list" {
       max = 443
     }
   }
+
+  ingress_security_rules {
+    description = "allow LMS player TCP"
+    source      = "0.0.0.0/0"
+    protocol    = "6" // TCP
+    tcp_options {
+      min = 3483
+      max = 3483
+    }
+  }
+
+  ingress_security_rules {
+    description = "allow LMS player UDP"
+    source      = "0.0.0.0/0"
+    protocol    = "17" // UDP
+    udp_options {
+      min = 3483
+      max = 3483
+    }
+  }
+
+  ingress_security_rules {
+    description = "allow LMS web"
+    source      = "0.0.0.0/0"
+    protocol    = "6" // TCP
+    tcp_options {
+      min = 9000
+      max = 9000
+    }
+  }
+
+  ingress_security_rules {
+    description = "allow LMS CLI"
+    source      = "0.0.0.0/0"
+    protocol    = "6" // TCP
+    tcp_options {
+      min = 9090
+      max = 9090
+    }
+  }
+
+
 
   ingress_security_rules {
     description = "allow tailscale easy-NAT"

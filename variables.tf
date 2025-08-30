@@ -11,7 +11,7 @@ variable "tailscale_auth_key" {
   sensitive = true
 }
 
-variable "gandi_api_key" {
+variable "gandi_pat" {
   type      = string
   sensitive = true
 }
