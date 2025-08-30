@@ -2,7 +2,7 @@ provider "oci" {
   tenancy_ocid     = "ocid1.tenancy.oc1..aaaaaaaag3xw32hdfohhaxtbrgqn7bukopofevsijbhbh6y6fgo5u3vnirpq"
   user_ocid        = "ocid1.user.oc1..aaaaaaaa3bnkhue5jyet7ny2wdtj4y2ll4mcb57ijqv2eylpqnxbwkuovhea"
   private_key_path = "~/.oci/oci_api_key.pem"
-  fingerprint      = "cc:41:4c:e9:ab:62:cf:0a:d0:c9:59:41:38:fb:f4:75"
+  fingerprint      = "b0:56:46:49:33:1d:e5:b5:7d:64:26:c8:e7:ef:90:fc"
   region           = "eu-paris-1"
 }
 
@@ -13,7 +13,7 @@ terraform {
       source  = "go-gandi/gandi"
     }
     oci = {
-      version = "~> 6.0"
+      version = "~> 7.0"
       source  = "oracle/oci"
     }
 
@@ -21,9 +21,14 @@ terraform {
       source  = "digitalocean/digitalocean"
       version = "~> 2.0"
     }
+
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.0"
+    }
   }
 }
 
 provider "gandi" {
-  key = var.gandi_api_key
+  personal_access_token = var.gandi_pat
 }
