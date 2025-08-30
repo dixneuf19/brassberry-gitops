@@ -1,0 +1,31 @@
+# Combined NodePort service for both TCP and UDP protocols
+# Port 3483 translated to 23483 to avoid common port conflicts
+apiVersion: v1
+kind: Service
+metadata:
+  name: lyrion-music-server-nodeport
+spec:
+  ports:
+    - name: main
+      port: 9000
+      targetPort: 9000
+      nodePort: 30900
+    - name: cli
+      port: 9090
+      targetPort: 9090
+      nodePort: 30990
+    - name: slimprototcp
+      port: 23483
+      targetPort: 3483
+      protocol: TCP
+      nodePort: 32483
+    - name: slimprotoudp
+      port: 23483
+      targetPort: 3483
+      protocol: UDP
+      nodePort: 32483
+  selector:
+    app.kubernetes.io/instance: lyrion-music-server
+    app.kubernetes.io/name: lyrion-music-server
+    pod.name: main
+  type: NodePort
