@@ -144,3 +144,21 @@ resource "oci_core_default_security_list" "main_security_list" {
 #   public_ip_id   = oci_core_public_ip.main_nat_gateway.id
 # }
 
+# Get the VNIC ID from the instance
+data "oci_core_vnic_attachments" "oracle_arm_vnic_attachments" {
+  compartment_id = var.oci_compartment_id
+  instance_id    = oci_core_instance.oracle-arm.id
+}
+
+# Get the private IP ID from the VNIC
+data "oci_core_private_ips" "oracle_arm_private_ips" {
+  vnic_id = data.oci_core_vnic_attachments.oracle_arm_vnic_attachments.vnic_attachments[0].vnic_id
+}
+
+# Remove the separate VNIC attachment resource and use the instance's private IP directly
+resource "oci_core_public_ip" "oracle_arm" {
+    compartment_id = var.oci_compartment_id
+    lifetime = "RESERVED"
+    display_name = "oracle-arm-public-ip"
+    private_ip_id = data.oci_core_private_ips.oracle_arm_private_ips.private_ips[0].id
+}

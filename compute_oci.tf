@@ -8,7 +8,7 @@ resource "oci_core_instance" "oracle-arm" {
     ocpus         = "2"
   }
   source_details {
-    boot_volume_size_in_gbs = "200"
+    boot_volume_size_in_gbs = "100"
     source_id               = data.oci_core_images.ampere-ubuntu-images.images[0].id
     source_type             = "image"
   }
@@ -29,8 +29,8 @@ resource "oci_core_instance" "oracle-arm" {
 
   create_vnic_details {
     assign_private_dns_record = "true"
-    assign_public_ip          = "true" # this instance has a Public IP
-    hostname_label            = "oracle-arm"
+    assign_public_ip          = "false"
+    hostname_label            = "oracle-arm-${random_id.hostname_suffix.hex}"
     subnet_id                 = oci_core_subnet.subnet_0.id
   }
 

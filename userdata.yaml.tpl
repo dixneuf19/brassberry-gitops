@@ -19,7 +19,6 @@ users:
 ssh_pwauth: false
 
 # May block tailscale initialization
-
 # package_upgrade: true
 
 packages:
