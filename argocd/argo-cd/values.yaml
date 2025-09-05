@@ -1,4 +1,4 @@
-argo-cd:  
+argo-cd:
   global:
     # -- Default domain used by all components
     ## Used for ingresses, certificates, SSO, notifications, etc.
@@ -29,6 +29,7 @@ argo-cd:
     resources:
       limits:
         memory: 2Gi
+        cpu: 1 # It tries to consume 2 whole CPU and could overload the node
       requests:
         cpu: 1000m
         memory: "1.5Gi"
@@ -58,7 +59,6 @@ argo-cd:
         selector:
           prometheus: kube-prometheus
         namespace: monitoring
-
 
     certificate:
       # -- Deploy a Certificate resource (requires cert-manager)
@@ -104,4 +104,3 @@ argo-cd:
   notifications:
     # -- Enable notifications controller
     enabled: false
-
