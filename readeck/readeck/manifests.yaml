@@ -1,0 +1,124 @@
+---
+# Source: readeck/templates/common.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: readeck-data
+  labels:
+    app.kubernetes.io/instance: readeck
+    app.kubernetes.io/name: readeck
+spec:
+  accessModes:
+    - "ReadWriteMany"
+  resources:
+    requests:
+      storage: "1Mi" # ignored for nfs-client
+  storageClassName: nfs-client
+---
+# Source: readeck/templates/common.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: readeck
+  labels:
+    app.kubernetes.io/service: readeck
+    app.kubernetes.io/instance: readeck
+    app.kubernetes.io/name: readeck
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8000
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: readeck
+    app.kubernetes.io/instance: readeck
+---
+# Source: readeck/templates/common.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: readeck
+  labels:
+    app.kubernetes.io/instance: readeck
+    app.kubernetes.io/name: readeck
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: readeck
+      app.kubernetes.io/instance: readeck
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: readeck
+        app.kubernetes.io/instance: readeck
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: readeck
+          image: "codeberg.org/readeck/readeck:0.20.1"
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /readeck
+          livenessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 0
+            failureThreshold: 3
+            timeoutSeconds: 1
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 0
+            failureThreshold: 3
+            timeoutSeconds: 1
+            periodSeconds: 10
+          startupProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 0
+            failureThreshold: 30
+            timeoutSeconds: 1
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: readeck-data
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: readeck
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - readeck.dixneuf19.fr
+      secretName: readeck-dixneuf19-fr-tls
+  rules:
+    - host: readeck.dixneuf19.fr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: readeck
+                port:
+                  number: 8000
