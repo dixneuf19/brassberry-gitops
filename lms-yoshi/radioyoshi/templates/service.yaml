@@ -26,6 +26,6 @@ spec:
       nodePort: 32483
   selector:
     app.kubernetes.io/instance: radioyoshi
-    app.kubernetes.io/name: radioyoshi
+    app.kubernetes.io/name: lyrion-music-server
     pod.name: main
   type: NodePort
