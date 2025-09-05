@@ -1,8 +1,0 @@
-helm:
-  parameters:
-  - name: generic.image.name
-    value: ghcr.io/dixneuf19/studio-availability
-    forcestring: true
-  - name: generic.image.tag
-    value: main@sha256:3ec9feaf9d4913e6f0545d439e9d14fd1c3c8c2a7f0790dc989c9b3bd46f958c
-    forcestring: true
