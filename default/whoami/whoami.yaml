@@ -6,7 +6,7 @@ metadata:
     app: whoami
     name: whoami
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: whoami
@@ -60,5 +60,5 @@ spec:
                   number: 80
   tls:
     - hosts:
-      - whoami.dixneuf19.fr
+        - whoami.dixneuf19.fr
       secretName: whoami-dixneuf19-fr-tls
