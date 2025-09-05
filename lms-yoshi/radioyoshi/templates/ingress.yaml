@@ -4,7 +4,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
     nginx.ingress.kubernetes.io/auth-secret: yoshi-basic-auth
-    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-type: basic  
   name: lms
 spec:
   ingressClassName: nginx
@@ -14,7 +14,7 @@ spec:
         paths:
           - backend:
               service:
-                name: lyrion-music-server
+                name: radioyoshi-lyrion-music-server
                 port:
                   number: 9000
             path: /
