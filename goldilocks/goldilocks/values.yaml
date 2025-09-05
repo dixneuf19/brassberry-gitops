@@ -11,8 +11,8 @@ goldilocks:
       hosts:
         - host: goldilocks.dixneuf19.fr
           paths:
-              - path: /
-                type: ImplementationSpecific
+            - path: /
+              type: ImplementationSpecific
 
       tls:
         - secretName: goldilocks-dixneuf19-fr-tls
@@ -22,6 +22,3 @@ goldilocks:
     resources:
       requests:
         cpu: 200m
-      limits:
-        cpu: 1
-

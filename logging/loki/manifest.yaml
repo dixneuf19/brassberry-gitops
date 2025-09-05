@@ -1,0 +1,806 @@
+---
+# Source: loki/charts/loki/templates/chunks-cache/poddisruptionbudget-chunks-cache.yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: release-name-loki-memcached-chunks-cache
+  namespace: netflix
+  labels:
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/component: memcached-chunks-cache
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: loki
+      app.kubernetes.io/instance: release-name
+      app.kubernetes.io/component: memcached-chunks-cache
+  maxUnavailable: 1
+---
+# Source: loki/charts/loki/templates/results-cache/poddisruptionbudget-results-cache.yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: release-name-loki-memcached-results-cache
+  namespace: netflix
+  labels:
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/component: memcached-results-cache
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: loki
+      app.kubernetes.io/instance: release-name
+      app.kubernetes.io/component: memcached-results-cache
+  maxUnavailable: 1
+---
+# Source: loki/charts/loki/templates/loki-canary/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: loki-canary
+  namespace: netflix
+  labels:
+    helm.sh/chart: loki-6.24.0
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.3.2"
+    app.kubernetes.io/component: canary
+automountServiceAccountToken: true
+---
+# Source: loki/charts/loki/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: loki
+  namespace: netflix
+  labels:
+    helm.sh/chart: loki-6.24.0
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.3.2"
+automountServiceAccountToken: true
+---
+# Source: loki/charts/loki/templates/config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: loki
+  namespace: netflix
+  labels:
+    helm.sh/chart: loki-6.24.0
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.3.2"
+data:
+  config.yaml: |
+
+    auth_enabled: false
+    bloom_build:
+      builder:
+        planner_address: ""
+      enabled: false
+    bloom_gateway:
+      client:
+        addresses: ""
+      enabled: false
+    chunk_store_config:
+      chunk_cache_config:
+        background:
+          writeback_buffer: 500000
+          writeback_goroutines: 1
+          writeback_size_limit: 500MB
+        default_validity: 0s
+        memcached:
+          batch_size: 4
+          parallelism: 5
+        memcached_client:
+          addresses: dnssrvnoa+_memcached-client._tcp.release-name-loki-chunks-cache.netflix.svc
+          consistent_hash: true
+          max_idle_conns: 72
+          timeout: 2000ms
+    common:
+      compactor_address: 'http://release-name-loki:3100'
+      path_prefix: /var/loki
+      replication_factor: 1
+      storage:
+        filesystem:
+          chunks_directory: /var/loki/chunks
+          rules_directory: /var/loki/rules
+    frontend:
+      scheduler_address: ""
+      tail_proxy_url: ""
+    frontend_worker:
+      scheduler_address: ""
+    index_gateway:
+      mode: simple
+    limits_config:
+      allow_structured_metadata: true
+      max_cache_freshness_per_query: 10m
+      query_timeout: 300s
+      reject_old_samples: true
+      reject_old_samples_max_age: 168h
+      split_queries_by_interval: 15m
+      volume_enabled: true
+    memberlist:
+      join_members:
+      - loki-memberlist
+    pattern_ingester:
+      enabled: true
+    query_range:
+      align_queries_with_step: true
+      cache_results: true
+      results_cache:
+        cache:
+          background:
+            writeback_buffer: 500000
+            writeback_goroutines: 1
+            writeback_size_limit: 500MB
+          default_validity: 12h
+          memcached_client:
+            addresses: dnssrvnoa+_memcached-client._tcp.release-name-loki-results-cache.netflix.svc
+            consistent_hash: true
+            timeout: 500ms
+            update_interval: 1m
+    ruler:
+      storage:
+        type: local
+      wal:
+        dir: /var/loki/ruler-wal
+    runtime_config:
+      file: /etc/loki/runtime-config/runtime-config.yaml
+    schema_config:
+      configs:
+      - from: "2025-01-01"
+        index:
+          period: 24h
+          prefix: index_
+        object_store: filesystem
+        schema: v13
+        store: tsdb
+    server:
+      grpc_listen_port: 9095
+      http_listen_port: 3100
+      http_server_read_timeout: 600s
+      http_server_write_timeout: 600s
+    storage_config:
+      bloom_shipper:
+        working_directory: /var/loki/data/bloomshipper
+      boltdb_shipper:
+        index_gateway_client:
+          server_address: ""
+      hedging:
+        at: 250ms
+        max_per_second: 20
+        up_to: 3
+      tsdb_shipper:
+        index_gateway_client:
+          server_address: ""
+    tracing:
+      enabled: false
+---
+# Source: loki/charts/loki/templates/runtime-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: loki-runtime
+  namespace: netflix
+  labels:
+    helm.sh/chart: loki-6.24.0
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.3.2"
+data:
+  runtime-config.yaml: |
+    {}
+---
+# Source: loki/charts/loki/templates/backend/clusterrole.yaml
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  labels:
+    helm.sh/chart: loki-6.24.0
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.3.2"
+  name: release-name-loki-clusterrole
+rules:
+  - apiGroups: [""] # "" indicates the core API group
+    resources: ["configmaps", "secrets"]
+    verbs: ["get", "watch", "list"]
+---
+# Source: loki/charts/loki/templates/backend/clusterrolebinding.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: release-name-loki-clusterrolebinding
+  labels:
+    helm.sh/chart: loki-6.24.0
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.3.2"
+subjects:
+  - kind: ServiceAccount
+    name: loki
+    namespace: netflix
+roleRef:
+  kind: ClusterRole
+  name: release-name-loki-clusterrole
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: loki/charts/loki/templates/chunks-cache/service-chunks-cache-headless.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-name-loki-chunks-cache
+  labels:
+    helm.sh/chart: loki-6.24.0
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.3.2"
+    app.kubernetes.io/component: "memcached-chunks-cache"
+  annotations: {}
+  namespace: "netflix"
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - name: memcached-client
+      port: 11211
+      targetPort: 11211
+    - name: http-metrics
+      port: 9150
+      targetPort: 9150
+
+  selector:
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/component: "memcached-chunks-cache"
+---
+# Source: loki/charts/loki/templates/loki-canary/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki-canary
+  namespace: netflix
+  labels:
+    helm.sh/chart: loki-6.24.0
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.3.2"
+    app.kubernetes.io/component: canary
+  annotations:
+spec:
+  type: ClusterIP
+  ports:
+    - name: http-metrics
+      port: 3500
+      targetPort: http-metrics
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/component: canary
+---
+# Source: loki/charts/loki/templates/results-cache/service-results-cache-headless.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-name-loki-results-cache
+  labels:
+    helm.sh/chart: loki-6.24.0
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.3.2"
+    app.kubernetes.io/component: "memcached-results-cache"
+  annotations: {}
+  namespace: "netflix"
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - name: memcached-client
+      port: 11211
+      targetPort: 11211
+    - name: http-metrics
+      port: 9150
+      targetPort: 9150
+
+  selector:
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/component: "memcached-results-cache"
+---
+# Source: loki/charts/loki/templates/service-memberlist.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki-memberlist
+  namespace: netflix
+  labels:
+    helm.sh/chart: loki-6.24.0
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.3.2"
+  annotations:
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - name: tcp
+      port: 7946
+      targetPort: http-memberlist
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/part-of: memberlist
+---
+# Source: loki/charts/loki/templates/single-binary/service-headless.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki-headless
+  namespace: netflix
+  labels:
+    helm.sh/chart: loki-6.24.0
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.3.2"
+    variant: headless
+    prometheus.io/service-monitor: "false"
+  annotations:
+spec:
+  clusterIP: None
+  ports:
+    - name: http-metrics
+      port: 3100
+      targetPort: http-metrics
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+---
+# Source: loki/charts/loki/templates/single-binary/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-name-loki
+  namespace: netflix
+  labels:
+    helm.sh/chart: loki-6.24.0
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.3.2"
+  annotations:
+spec:
+  type: ClusterIP
+  ports:
+    - name: http-metrics
+      port: 3100
+      targetPort: http-metrics
+      protocol: TCP
+    - name: grpc
+      port: 9095
+      targetPort: grpc
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/component: single-binary
+---
+# Source: loki/charts/loki/templates/loki-canary/daemonset.yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: loki-canary
+  namespace: netflix
+  labels:
+    helm.sh/chart: loki-6.24.0
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.3.2"
+    app.kubernetes.io/component: canary
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: loki
+      app.kubernetes.io/instance: release-name
+      app.kubernetes.io/component: canary
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: loki
+        app.kubernetes.io/instance: release-name
+        app.kubernetes.io/component: canary
+    spec:
+      serviceAccountName: loki-canary
+
+      securityContext:
+        fsGroup: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+        - name: loki-canary
+          image: docker.io/grafana/loki-canary:3.3.2
+          imagePullPolicy: IfNotPresent
+          args:
+            - -addr=release-name-loki.netflix.svc.cluster.local.:3100
+            - -labelname=pod
+            - -labelvalue=$(POD_NAME)
+            - -push=true
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+          volumeMounts:
+          ports:
+            - name: http-metrics
+              containerPort: 3500
+              protocol: TCP
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: http-metrics
+            initialDelaySeconds: 15
+            timeoutSeconds: 1
+      volumes:
+---
+# Source: loki/charts/loki/templates/chunks-cache/statefulset-chunks-cache.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: release-name-loki-chunks-cache
+  labels:
+    helm.sh/chart: loki-6.24.0
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.3.2"
+    app.kubernetes.io/component: "memcached-chunks-cache"
+    name: "memcached-chunks-cache"
+  annotations: {}
+  namespace: "netflix"
+spec:
+  podManagementPolicy: Parallel
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: loki
+      app.kubernetes.io/instance: release-name
+      app.kubernetes.io/component: "memcached-chunks-cache"
+      name: "memcached-chunks-cache"
+  updateStrategy:
+    type: RollingUpdate
+  serviceName: release-name-loki-chunks-cache
+
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: loki
+        app.kubernetes.io/instance: release-name
+        app.kubernetes.io/component: "memcached-chunks-cache"
+        name: "memcached-chunks-cache"
+      annotations:
+
+    spec:
+      serviceAccountName: loki
+      securityContext:
+        fsGroup: 11211
+        runAsGroup: 11211
+        runAsNonRoot: true
+        runAsUser: 11211
+      initContainers: []
+      nodeSelector: {}
+      affinity: {}
+      topologySpreadConstraints: []
+      tolerations: []
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: memcached
+          image: memcached:1.6.33-alpine
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: 9830Mi
+            requests:
+              cpu: 500m
+              memory: 9830Mi
+          ports:
+            - containerPort: 11211
+              name: client
+          args:
+            - -m 8192
+            - --extended=modern,track_sizes
+            - -I 5m
+            - -c 16384
+            - -v
+            - -u 11211
+          env:
+          envFrom:
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+        - name: exporter
+          image: prom/memcached-exporter:v0.15.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9150
+              name: http-metrics
+          args:
+            - "--memcached.address=localhost:11211"
+            - "--web.listen-address=0.0.0.0:9150"
+          resources:
+            limits: {}
+            requests: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+---
+# Source: loki/charts/loki/templates/results-cache/statefulset-results-cache.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: release-name-loki-results-cache
+  labels:
+    helm.sh/chart: loki-6.24.0
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.3.2"
+    app.kubernetes.io/component: "memcached-results-cache"
+    name: "memcached-results-cache"
+  annotations: {}
+  namespace: "netflix"
+spec:
+  podManagementPolicy: Parallel
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: loki
+      app.kubernetes.io/instance: release-name
+      app.kubernetes.io/component: "memcached-results-cache"
+      name: "memcached-results-cache"
+  updateStrategy:
+    type: RollingUpdate
+  serviceName: release-name-loki-results-cache
+
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: loki
+        app.kubernetes.io/instance: release-name
+        app.kubernetes.io/component: "memcached-results-cache"
+        name: "memcached-results-cache"
+      annotations:
+
+    spec:
+      serviceAccountName: loki
+      securityContext:
+        fsGroup: 11211
+        runAsGroup: 11211
+        runAsNonRoot: true
+        runAsUser: 11211
+      initContainers: []
+      nodeSelector: {}
+      affinity: {}
+      topologySpreadConstraints: []
+      tolerations: []
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: memcached
+          image: memcached:1.6.33-alpine
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: 1229Mi
+            requests:
+              cpu: 500m
+              memory: 1229Mi
+          ports:
+            - containerPort: 11211
+              name: client
+          args:
+            - -m 1024
+            - --extended=modern,track_sizes
+            - -I 5m
+            - -c 16384
+            - -v
+            - -u 11211
+          env:
+          envFrom:
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+        - name: exporter
+          image: prom/memcached-exporter:v0.15.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9150
+              name: http-metrics
+          args:
+            - "--memcached.address=localhost:11211"
+            - "--web.listen-address=0.0.0.0:9150"
+          resources:
+            limits: {}
+            requests: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+---
+# Source: loki/charts/loki/templates/single-binary/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: release-name-loki
+  namespace: netflix
+  labels:
+    helm.sh/chart: loki-6.24.0
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.3.2"
+    app.kubernetes.io/component: single-binary
+    app.kubernetes.io/part-of: memberlist
+spec:
+  replicas: 1
+  podManagementPolicy: Parallel
+  updateStrategy:
+    rollingUpdate:
+      partition: 0
+  serviceName: release-name-loki-headless
+  revisionHistoryLimit: 10
+
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Delete
+    whenScaled: Delete
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: loki
+      app.kubernetes.io/instance: release-name
+      app.kubernetes.io/component: single-binary
+  template:
+    metadata:
+      annotations:
+        checksum/config: 8d8a174ec7def69711fafbeccd5bca2369abbe9268672205d7196ae47368865f
+      labels:
+        app.kubernetes.io/name: loki
+        app.kubernetes.io/instance: release-name
+        app.kubernetes.io/component: single-binary
+        app.kubernetes.io/part-of: memberlist
+    spec:
+      serviceAccountName: loki
+      automountServiceAccountToken: true
+      enableServiceLinks: true
+
+      securityContext:
+        fsGroup: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: loki-sc-rules
+          image: "kiwigrid/k8s-sidecar:1.28.0"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: METHOD
+              value: WATCH
+            - name: LABEL
+              value: "loki_rule"
+            - name: FOLDER
+              value: "/rules"
+            - name: RESOURCE
+              value: "both"
+            - name: WATCH_SERVER_TIMEOUT
+              value: "60"
+            - name: WATCH_CLIENT_TIMEOUT
+              value: "60"
+            - name: LOG_LEVEL
+              value: "INFO"
+          volumeMounts:
+            - name: sc-rules-volume
+              mountPath: "/rules"
+        - name: loki
+          image: docker.io/grafana/loki:3.3.2
+          imagePullPolicy: IfNotPresent
+          args:
+            - -config.file=/etc/loki/config/config.yaml
+            - -target=all
+          ports:
+            - name: http-metrics
+              containerPort: 3100
+              protocol: TCP
+            - name: grpc
+              containerPort: 9095
+              protocol: TCP
+            - name: http-memberlist
+              containerPort: 7946
+              protocol: TCP
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http-metrics
+            initialDelaySeconds: 30
+            timeoutSeconds: 1
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: config
+              mountPath: /etc/loki/config
+            - name: runtime-config
+              mountPath: /etc/loki/runtime-config
+            - name: storage
+              mountPath: /var/loki
+            - name: sc-rules-volume
+              mountPath: "/rules"
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 124Mi
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/component: single-binary
+              topologyKey: kubernetes.io/hostname
+      nodeSelector:
+        kubernetes.io/hostname: brassberry-25
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: config
+          configMap:
+            name: loki
+            items:
+              - key: "config.yaml"
+                path: "config.yaml"
+        - name: runtime-config
+          configMap:
+            name: loki-runtime
+        - name: sc-rules-volume
+          emptyDir: {}
+  volumeClaimTemplates:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: local-path
+        resources:
+          requests:
+            storage: "10Gi"

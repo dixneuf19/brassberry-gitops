@@ -14,7 +14,6 @@ generic:
   resources:
     limits:
       memory: 128Mi
-      cpu: 300m
     requests:
       memory: 64Mi
       cpu: 100m
@@ -44,6 +43,6 @@ generic:
     - name: karma-config-volume
       mountPath: /etc/karma-config
   volumes:
-  - name: karma-config-volume
-    configMap:
-      name: karma-config
+    - name: karma-config-volume
+      configMap:
+        name: karma-config
