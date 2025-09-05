@@ -10,13 +10,13 @@ metadata:
   namespace: lms
 spec:
   ports:
-  - name: main
-    port: 9000
-  - name: cli
-    port: 9090
-  - name: slimprototcp
-    port: 3483
-    protocol: TCP
+    - name: main
+      port: 9000
+    - name: cli
+      port: 9090
+    - name: slimprototcp
+      port: 3483
+      protocol: TCP
   selector:
     app.kubernetes.io/instance: lyrion-music-server
     app.kubernetes.io/name: lyrion-music-server
@@ -33,9 +33,9 @@ metadata:
   namespace: lms
 spec:
   ports:
-  - name: slimprotoudp
-    port: 3483
-    protocol: UDP
+    - name: slimprotoudp
+      port: 3483
+      protocol: UDP
   selector:
     app.kubernetes.io/instance: lyrion-music-server
     app.kubernetes.io/name: lyrion-music-server
