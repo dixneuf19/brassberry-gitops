@@ -1,5 +1,6 @@
 goldilocks:
   dashboard:
+    replicas: 1
     ingress:
       enabled: true
 
@@ -22,3 +23,4 @@ goldilocks:
     resources:
       requests:
         cpu: 200m
+    replicas: 1
