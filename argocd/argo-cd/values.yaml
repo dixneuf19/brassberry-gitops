@@ -104,3 +104,8 @@ argo-cd:
   notifications:
     # -- Enable notifications controller
     enabled: false
+
+  # Currently make sync fails
+  # Since it is already initialized no need to init it again
+  redisSecretInit:
+    enabled: false
