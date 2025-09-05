@@ -8,7 +8,6 @@ generic:
   resources:
     limits:
       memory: 128Mi
-      cpu: 300m
     requests:
       memory: 64Mi
       cpu: 100m
@@ -37,9 +36,9 @@ generic:
     - name: telegram-token
       key: TELEGRAM_TOKEN
   volumeMounts:
-  - name: dank-face-bot-pics
-    mountPath: /tmp/pics
+    - name: dank-face-bot-pics
+      mountPath: /tmp/pics
   volumes:
-  - name: dank-face-bot-pics
-    persistentVolumeClaim:
-      claimName: dank-face-bot-pics
+    - name: dank-face-bot-pics
+      persistentVolumeClaim:
+        claimName: dank-face-bot-pics

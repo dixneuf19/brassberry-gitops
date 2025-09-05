@@ -12,7 +12,7 @@ kube-prometheus-stack:
     admin:
       existingSecret: grafana-admin
 
-    defaultDashboardsTimezone: Europe/Paris    
+    defaultDashboardsTimezone: Europe/Paris
     plugins:
       - grafana-piechart-panel
 
@@ -120,7 +120,7 @@ kube-prometheus-stack:
     persistence:
       enabled: true
       storageClassName: nfs-client
-    
+
     ingress:
       enabled: true
       ingressClassName: nginx
@@ -135,9 +135,9 @@ kube-prometheus-stack:
       tls:
         - secretName: grafana-dixneuf19-fr-tls
           hosts:
-          - grafana.dixneuf19.fr
+            - grafana.dixneuf19.fr
 
-# These components are not exposed with the k0s setup
+  # These components are not exposed with the k0s setup
   kubeControllerManager:
     enabled: false
   kubeEtcd:
@@ -150,7 +150,6 @@ kube-prometheus-stack:
   kubeStateMetrics:
     enabled: true
 
-
   nodeExporter:
     enabled: true
 
@@ -158,7 +157,6 @@ kube-prometheus-stack:
     enabled: true
     resources:
       limits:
-        cpu: 200m
         memory: 200Mi
       requests:
         cpu: 100m
@@ -214,8 +212,7 @@ kube-prometheus-stack:
           cpu: 1
         limits:
           memory: 3Gi
-          cpu: 2
-          
+
       # Runs on a specific node with local storage
       # NFS is not well supported and causes date corruption in the long run
       nodeSelector:
@@ -228,5 +225,5 @@ kube-prometheus-stack:
             accessModes: ["ReadWriteOnce"]
             resources:
               requests:
-              # local-path-provisioner does not support volume capacity limit currently
+                # local-path-provisioner does not support volume capacity limit currently
                 storage: 1Mi

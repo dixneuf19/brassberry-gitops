@@ -12,7 +12,6 @@ generic:
   resources:
     limits:
       memory: 512Mi
-      cpu: 300m
     requests:
       memory: 256Mi
       cpu: 100m
@@ -39,16 +38,16 @@ generic:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
           - matchExpressions:
-            - key: "kubernetes.io/hostname"
-              operator: NotIn
-              values: ["brassberry-25"]
+              - key: "kubernetes.io/hostname"
+                operator: NotIn
+                values: ["brassberry-25"]
   volumeMounts:
-  - name: dank-face-bot-pics
-    mountPath: /tmp/pics
+    - name: dank-face-bot-pics
+      mountPath: /tmp/pics
   volumes:
-  - name: dank-face-bot-pics
-    persistentVolumeClaim:
-      claimName: dank-face-bot-pics
+    - name: dank-face-bot-pics
+      persistentVolumeClaim:
+        claimName: dank-face-bot-pics
   persistence:
     enabled: true
     pvc:

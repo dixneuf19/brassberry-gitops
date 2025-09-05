@@ -5,7 +5,7 @@ mysql:
     existingSecret: mysql-passwords
     database: bandajoe
     username: joe
-  
+
   primary:
     persistence:
       storageClass: "nfs-client"
@@ -16,8 +16,6 @@ mysql:
         cpu: 100m
       limits:
         memory: 756Mi
-        cpu: 1
-
 
     configuration: |-
       [mysqld]
