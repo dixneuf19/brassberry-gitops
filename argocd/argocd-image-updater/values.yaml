@@ -1,8 +1,8 @@
-argocd-image-updater:  
-
+argocd-image-updater:
   # -- Extra arguments for argocd-image-updater not defined in `config.argocd`.
   # If a flag contains both key and value, they need to be split to a new entry
-  extraArgs: []
+  extraArgs:
+    []
     # - --disable-kubernetes
     # - --dry-run
     # - --health-port
@@ -20,7 +20,8 @@ argocd-image-updater:
     # - /app/config/registries.conf
 
   # -- Extra environment variables for argocd-image-updater
-  extraEnv: []
+  extraEnv:
+    []
     # - name: AWS_REGION
     #   value: "us-west-1"
 
@@ -41,7 +42,8 @@ argocd-image-updater:
     logLevel: "info"
 
     # -- ArgoCD Image Updater registries list configuration. More information [here](https://argocd-image-updater.readthedocs.io/en/stable/configuration/registries/)
-    registries: []
+    registries:
+      []
       # - name: Docker Hub
       #   api_url: https://registry-1.docker.io
       #   ping: yes
@@ -65,7 +67,12 @@ argocd-image-updater:
       #   credentials: ext:/scripts/auth1.sh
       #   credsexpire: 10h
 
-  resources: {}
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "100Mi"
+    limits:
+      memory: "200Mi"
 
   metrics:
     enabled: false
