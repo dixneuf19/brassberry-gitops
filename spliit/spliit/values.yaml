@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/crazy-max/spliit
-  tag: 1.15.0
+  tag: 1.17.0
 
 postgresql:
   ## Authentication parameters
