@@ -5,7 +5,7 @@ image:
 postgresql:
   image:
     repository: bitnamilegacy/postgresql
-    tag: 16.6.0-debian-12-r2
+    tag: 17.6.0-debian-12-r2
   ## Authentication parameters
   ## ref: https://github.com/bitnami/containers/tree/main/bitnami/postgresql#setting-the-root-password-on-first-run
   ## ref: https://github.com/bitnami/containers/tree/main/bitnami/postgresql#creating-a-database-on-first-run
