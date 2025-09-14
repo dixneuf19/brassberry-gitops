@@ -1,9 +1,9 @@
 apiVersion: v2
 name: spliit
 version: 1.0.0
-description: "Open-source Tricount" 
+description: "Open-source Tricount"
 appVersion: "1.0.0"
 dependencies:
   - name: postgresql
     version: 15.5.38
-    repository: https://charts.bitnami.com/bitnami
+    repository: oci://registry-1.docker.io/bitnamicharts
