@@ -4,4 +4,4 @@ all: ping kernel-modules mounts nfs-server
 	ansible-playbook -i hosts.yaml playbooks/$@.yaml
 
 kubeconfig:
-	k0sctl kubeconfig >> $KUBECONFIG
+	k0sctl kubeconfig >> ${KUBECONFIG}

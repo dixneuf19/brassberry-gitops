@@ -76,6 +76,7 @@
             --timeout {{ drain_timeout }}
             --delete-emptydir-data {{ kube_override_hostname|default(inventory_hostname) }}
           delegate_to: 127.0.0.1
+          failed_when: false
       when: is_raspberry
 
     - name: Update all packages
