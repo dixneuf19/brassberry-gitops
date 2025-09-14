@@ -40,25 +40,16 @@ spec:
               cpu: "100m"
           livenessProbe:
             httpGet:
-              path: /
+              path: /api/health/liveness
               port: http
-              httpHeaders:
-              - name: Accept-Language
-                value: en-US
           readinessProbe:
             httpGet:
-             path: /
+             path: /api/health/readiness
              port: http
-             httpHeaders:
-             - name: Accept-Language
-               value: en-US
           startupProbe:
             httpGet:
-              path: /
+              path: /api/health/readiness
               port: http
-              httpHeaders:
-              - name: Accept-Language
-                value: en-US
             failureThreshold: 30
 ---
 apiVersion: v1
