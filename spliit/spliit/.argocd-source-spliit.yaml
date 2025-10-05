@@ -4,5 +4,5 @@ helm:
     value: ghcr.io/crazy-max/spliit
     forcestring: true
   - name: image.tag
-    value: 1.17.0
+    value: 1.18.0
     forcestring: true
