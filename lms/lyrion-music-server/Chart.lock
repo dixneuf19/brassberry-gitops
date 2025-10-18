@@ -1,6 +1,6 @@
 dependencies:
 - name: lyrion-music-server
   repository: oci://tccr.io/truecharts
-  version: 5.10.0
-digest: sha256:68636eb666ee4b45eacba20a16aaba572b464cc9e4dff7a60c4feba72178559c
-generated: "2025-10-14T14:56:48.045836638Z"
+  version: 5.11.0
+digest: sha256:b82d0558516583ab42e3abb2b1e9eb44e9e66176edd12fc5b96d5e6a8cfaae11
+generated: "2025-10-18T13:02:41.476933688Z"
