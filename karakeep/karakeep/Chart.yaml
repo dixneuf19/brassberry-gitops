@@ -1,0 +1,17 @@
+apiVersion: v2
+name: karakeep
+description: A self-hosted read-it-later service
+type: application
+version: 0.1.0
+appVersion: "latest"
+keywords:
+  - karakeep
+  - read-it-later
+  - self-hosted
+home: https://github.com/karakeep-app/karakeep
+sources:
+  - https://github.com/karakeep-app/karakeep
+maintainers:
+  - name: brassberry
+    email: padoa@example.com
+
