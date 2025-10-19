@@ -1,0 +1,111 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/karakeep-app/karakeep
+  tag: "0.27.1"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 3000
+  targetPort: 3000
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - host: karakeep.dixneuf19.fr
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: karakeep-dixneuf19-fr-tls
+      hosts:
+        - karakeep.dixneuf19.fr
+
+resources:
+  limits:
+    memory: 1Gi
+  requests:
+    memory: 256Mi
+
+nodeSelector:
+  kubernetes.io/arch: arm64
+
+tolerations: []
+
+affinity: {}
+
+# KaraKeep specific configuration
+env:
+  NEXTAUTH_URL: "https://karakeep.dixneuf19.fr"
+  DATA_DIR: "/data"
+  # Disable resource-intensive features for Raspberry Pi
+  DISABLE_MEILISEARCH: "true"
+  DISABLE_CHROME: "true"
+  DISABLE_OPENAI: "true"
+
+# NextAuth secret from Kubernetes secret
+nextAuthSecret:
+  enabled: true
+  secretName: "karakeep-secrets"
+  secretKey: "nextauth-secret"
+
+persistence:
+  enabled: true
+  storageClass: "nfs-client"
+  accessMode: ReadWriteOnce
+  size: 10Gi
+  mountPath: "/data"
+
+# Health checks
+livenessProbe:
+  httpGet:
+    path: /
+    port: 3000
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: 3000
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+# Autoscaling
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
