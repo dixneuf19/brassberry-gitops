@@ -70,6 +70,7 @@ env:
   DISABLE_MEILISEARCH: "true"
   DISABLE_CHROME: "true"
   DISABLE_OPENAI: "true"
+  DISABLE_SIGNUPS: "true"
 
 # NextAuth secret from Kubernetes secret
 nextAuthSecret:
