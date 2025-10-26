@@ -42,12 +42,12 @@ spec:
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
-            {{- if .Values.nextAuthSecret.enabled }}
-            - name: NEXTAUTH_SECRET
+            {{- range .Values.secretEnvVars }}
+            - name: {{ .name }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.nextAuthSecret.secretName }}
-                  key: {{ .Values.nextAuthSecret.secretKey }}
+                  name: {{ .secretName }}
+                  key: {{ .secretKey }}
             {{- end }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
