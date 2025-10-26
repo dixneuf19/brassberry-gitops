@@ -24,8 +24,8 @@ securityContext:
     drop:
       - ALL
   readOnlyRootFilesystem: false
-  runAsNonRoot: false
-  runAsUser: 0
+  runAsNonRoot: true
+  runAsUser: 1000
   allowPrivilegeEscalation: false
 
 service:
@@ -87,6 +87,16 @@ persistence:
   accessMode: ReadWriteOnce
   size: 10Gi
   mountPath: "/data"
+
+# Additional volume mounts for Next.js cache
+extraVolumeMounts:
+  - name: nextjs-cache
+    mountPath: /app/apps/web/.next/cache
+
+# Additional volumes
+extraVolumes:
+  - name: nextjs-cache
+    emptyDir: {}
 
 # Health checks
 livenessProbe:
