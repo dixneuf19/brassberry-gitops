@@ -6,7 +6,7 @@ namespace:
 
 secret: namespace
 	kubectl -n "${NAMESPACE}" create secret generic karakeep-secrets \
-		--from-literal=nextauth-secret=$$(openssl rand -base64 36) || true
+		--from-env-file=karakeep.secret
 
 template:
 	helm template -n "${NAMESPACE}" "${HELM_RELEASE}" . -f values.yaml > manifests.yaml

@@ -72,11 +72,14 @@ env:
   DISABLE_OPENAI: "true"
   DISABLE_SIGNUPS: "true"
 
-# NextAuth secret from Kubernetes secret
-nextAuthSecret:
-  enabled: true
-  secretName: "karakeep-secrets"
-  secretKey: "nextauth-secret"
+# Secrets imported as environment variables
+secretEnvVars:
+  - name: NEXTAUTH_SECRET
+    secretName: "karakeep-secrets"
+    secretKey: "NEXTAUTH_SECRET"
+  - name: OPENAI_API_KEY
+    secretName: "karakeep-secrets"
+    secretKey: "OPENAI_API_KEY"
 
 persistence:
   enabled: true
