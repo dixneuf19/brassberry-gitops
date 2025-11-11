@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/spliit-app/spliit
-  tag: 1.18.0
+  tag: 1.19.0
 
 postgresql:
   image:
