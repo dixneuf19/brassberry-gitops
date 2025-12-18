@@ -1,6 +1,6 @@
 dependencies:
 - name: vpa
   repository: https://charts.fairwinds.com/stable
-  version: 4.10.0
-digest: sha256:9097fff482623c06d7fdca1faff3e158f8008e38acecf4da320499981eb86ced
-generated: "2025-11-05T23:36:17.447141312Z"
+  version: 4.10.1
+digest: sha256:f60cb72e0f14f6c81523fccf28435628f727fb45096413115c314d00ba913196
+generated: "2025-12-18T00:09:06.279857555Z"
