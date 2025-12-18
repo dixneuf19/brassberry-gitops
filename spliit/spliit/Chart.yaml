@@ -5,5 +5,5 @@ description: "Open-source Tricount"
 appVersion: "1.0.0"
 dependencies:
   - name: postgresql
-    version: 15.5.38
+    version: 18.1.15
     repository: oci://registry-1.docker.io/bitnamicharts
