@@ -21,19 +21,15 @@ spec:
             - containerPort: 3000
               name: http
           env:
-            - name: POSTGRES_HOST
-              value: "spliit-postgresql"
-            - name: POSTGRES_NAME
-              value: "spliit"
-            - name: POSTGRES_USER
-              value: "spliit"
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgresql-passwords
                   key: password
-            - name: POSTGRES_TIMEOUT
-              value: "60"
+            - name: POSTGRES_PRISMA_URL
+              value: "postgresql://spliit:$(POSTGRES_PASSWORD)@spliit-postgresql/spliit"
+            - name: POSTGRES_URL_NON_POOLING
+              value: "postgresql://spliit:$(POSTGRES_PASSWORD)@spliit-postgresql/spliit"
           resources:
             requests:
               memory: "128Mi"
