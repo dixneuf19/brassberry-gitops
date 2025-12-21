@@ -19,7 +19,6 @@ spec:
     method: "git:secret:argocd/brassberry-gitops-creds"
     gitConfig:
       branch: "main"
-      writeBackTarget: "helmvalues:./values.yaml"
   # Global defaults
   commonUpdateSettings:
     updateStrategy: "digest"
@@ -94,7 +93,6 @@ spec:
     method: "git:secret:argocd/brassberry-gitops-creds"
     gitConfig:
       branch: "main"
-      writeBackTarget: "helmvalues:./values.yaml"
   commonUpdateSettings:
     updateStrategy: "semver"
   applicationRefs:
@@ -109,10 +107,7 @@ spec:
     - namePattern: "spliit"
       images:
         - alias: "spliit"
-          imageName: "ghcr.io/spliit-app/spliit"
-          commonUpdateSettings:
-            # Only update to 1.x versions
-            allowTags: "regexp:^1\\."
+          imageName: "ghcr.io/spliit-app/spliit:1.x"
           manifestTargets:
             helm:
               name: "image.repository"
