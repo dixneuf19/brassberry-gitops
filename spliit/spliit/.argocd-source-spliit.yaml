@@ -1,8 +1,8 @@
 helm:
   parameters:
-    - name: image.repository
-      value: ghcr.io/spliit-app/spliit
-      forcestring: true
-    - name: image.tag
-      value: 1.18.0
-      forcestring: true
+  - name: image.repository
+    value: ghcr.io/spliit-app/spliit
+    forcestring: true
+  - name: image.tag
+    value: 1.19.0
+    forcestring: true
