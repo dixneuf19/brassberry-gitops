@@ -10,9 +10,8 @@ metadata:
 spec:
   namespace: argocd
   writeBackConfig:
-    method: "git"
+    method: "git:secret:argocd/brassberry-gitops-creds"
     gitConfig:
-      credentials: "secret:argocd/brassberry-gitops-creds"
       branch: "main"
       writeBackTarget: "helmvalues:./values.yaml"
   applicationRefs:
@@ -35,9 +34,8 @@ metadata:
 spec:
   namespace: argocd
   writeBackConfig:
-    method: "git"
+    method: "git:secret:argocd/brassberry-gitops-creds"
     gitConfig:
-      credentials: "secret:argocd/brassberry-gitops-creds"
       branch: "main"
       writeBackTarget: "helmvalues:./values.yaml"
   applicationRefs:
@@ -60,9 +58,8 @@ metadata:
 spec:
   namespace: argocd
   writeBackConfig:
-    method: "git"
+    method: "git:secret:argocd/brassberry-gitops-creds"
     gitConfig:
-      credentials: "secret:argocd/brassberry-gitops-creds"
       branch: "main"
       writeBackTarget: "helmvalues:./values.yaml"
   applicationRefs:
@@ -85,9 +82,8 @@ metadata:
 spec:
   namespace: argocd
   writeBackConfig:
-    method: "git"
+    method: "git:secret:argocd/brassberry-gitops-creds"
     gitConfig:
-      credentials: "secret:argocd/brassberry-gitops-creds"
       branch: "main"
       writeBackTarget: "helmvalues:./values.yaml"
   applicationRefs:
@@ -110,9 +106,8 @@ metadata:
 spec:
   namespace: argocd
   writeBackConfig:
-    method: "git"
+    method: "git:secret:argocd/brassberry-gitops-creds"
     gitConfig:
-      credentials: "secret:argocd/brassberry-gitops-creds"
       branch: "main"
       writeBackTarget: "helmvalues:./values.yaml"
   applicationRefs:
@@ -135,9 +130,8 @@ metadata:
 spec:
   namespace: argocd
   writeBackConfig:
-    method: "git"
+    method: "git:secret:argocd/brassberry-gitops-creds"
     gitConfig:
-      credentials: "secret:argocd/brassberry-gitops-creds"
       branch: "main"
       writeBackTarget: "helmvalues:./values.yaml"
   applicationRefs:
@@ -160,9 +154,8 @@ metadata:
 spec:
   namespace: argocd
   writeBackConfig:
-    method: "git"
+    method: "git:secret:argocd/brassberry-gitops-creds"
     gitConfig:
-      credentials: "secret:argocd/brassberry-gitops-creds"
       branch: "main"
       writeBackTarget: "helmvalues:./values.yaml"
   applicationRefs:
@@ -185,9 +178,8 @@ metadata:
 spec:
   namespace: argocd
   writeBackConfig:
-    method: "git"
+    method: "git:secret:argocd/brassberry-gitops-creds"
     gitConfig:
-      credentials: "secret:argocd/brassberry-gitops-creds"
       branch: "main"
       writeBackTarget: "helmvalues:./values.yaml"
   applicationRefs:
@@ -210,9 +202,8 @@ metadata:
 spec:
   namespace: argocd
   writeBackConfig:
-    method: "git"
+    method: "git:secret:argocd/brassberry-gitops-creds"
     gitConfig:
-      credentials: "secret:argocd/brassberry-gitops-creds"
       branch: "main"
       writeBackTarget: "helmvalues:./values.yaml"
   applicationRefs:
@@ -226,4 +217,3 @@ spec:
             helm:
               name: "generic.image.name"
               tag: "generic.image.tag"
-
