@@ -1,204 +1,93 @@
 # ImageUpdater CRD resources
 # Migrated from annotation-based configuration to CRD-based approach
-# See: https://argocd-image-updater.readthedocs.io/en/stable/configuration/migration/
+# See: https://argocd-image-updater.readthedocs.io/en/stable/configuration/applications/
+#
+# Uses hierarchical configuration:
+# - Global writeBackConfig and commonUpdateSettings
+# - Application-level overrides where needed
 ---
-# karakeep - semver updates
+# Digest-based updates for apps using generic helm chart
+# Matches: fip-*, dank-face-*, fuzzy-octo-disco, spotify-api, whats-on-fip
 apiVersion: argocd-image-updater.argoproj.io/v1alpha1
 kind: ImageUpdater
 metadata:
-  name: karakeep-image-updater
+  name: digest-apps-image-updater
 spec:
   namespace: argocd
+  # Global write-back config shared by all apps
   writeBackConfig:
     method: "git:secret:argocd/brassberry-gitops-creds"
     gitConfig:
       branch: "main"
       writeBackTarget: "helmvalues:./values.yaml"
+  # Global defaults
+  commonUpdateSettings:
+    updateStrategy: "digest"
   applicationRefs:
-    - namePattern: "karakeep"
-      images:
-        - alias: "karakeep"
-          imageName: "ghcr.io/karakeep-app/karakeep:release"
-          commonUpdateSettings:
-            updateStrategy: "semver"
-          manifestTargets:
-            helm:
-              name: "image.repository"
-              tag: "image.tag"
----
-# spliit - semver updates
-apiVersion: argocd-image-updater.argoproj.io/v1alpha1
-kind: ImageUpdater
-metadata:
-  name: spliit-image-updater
-spec:
-  namespace: argocd
-  writeBackConfig:
-    method: "git:secret:argocd/brassberry-gitops-creds"
-    gitConfig:
-      branch: "main"
-      writeBackTarget: "helmvalues:./values.yaml"
-  applicationRefs:
-    - namePattern: "spliit"
-      images:
-        - alias: "spliit"
-          imageName: "ghcr.io/crazy-max/spliit:1.x"
-          commonUpdateSettings:
-            updateStrategy: "semver"
-          manifestTargets:
-            helm:
-              name: "image.repository"
-              tag: "image.tag"
----
-# fip-slack-bot - digest updates
-apiVersion: argocd-image-updater.argoproj.io/v1alpha1
-kind: ImageUpdater
-metadata:
-  name: fip-slack-bot-image-updater
-spec:
-  namespace: argocd
-  writeBackConfig:
-    method: "git:secret:argocd/brassberry-gitops-creds"
-    gitConfig:
-      branch: "main"
-      writeBackTarget: "helmvalues:./values.yaml"
-  applicationRefs:
+    # fip namespace apps
     - namePattern: "fip-slack-bot"
       images:
         - alias: "fip-slack-bot"
           imageName: "ghcr.io/dixneuf19/fip-slack-bot:main"
-          commonUpdateSettings:
-            updateStrategy: "digest"
           manifestTargets:
             helm:
               name: "generic.image.name"
               tag: "generic.image.tag"
----
-# fip-telegram-bot - digest updates
-apiVersion: argocd-image-updater.argoproj.io/v1alpha1
-kind: ImageUpdater
-metadata:
-  name: fip-telegram-bot-image-updater
-spec:
-  namespace: argocd
-  writeBackConfig:
-    method: "git:secret:argocd/brassberry-gitops-creds"
-    gitConfig:
-      branch: "main"
-      writeBackTarget: "helmvalues:./values.yaml"
-  applicationRefs:
     - namePattern: "fip-telegram-bot"
       images:
         - alias: "fip-telegram-bot"
           imageName: "ghcr.io/dixneuf19/fip-telegram-bot:master"
-          commonUpdateSettings:
-            updateStrategy: "digest"
           manifestTargets:
             helm:
               name: "generic.image.name"
               tag: "generic.image.tag"
----
-# spotify-api - digest updates
-apiVersion: argocd-image-updater.argoproj.io/v1alpha1
-kind: ImageUpdater
-metadata:
-  name: spotify-api-image-updater
-spec:
-  namespace: argocd
-  writeBackConfig:
-    method: "git:secret:argocd/brassberry-gitops-creds"
-    gitConfig:
-      branch: "main"
-      writeBackTarget: "helmvalues:./values.yaml"
-  applicationRefs:
     - namePattern: "spotify-api"
       images:
         - alias: "spotify-api"
           imageName: "ghcr.io/dixneuf19/spotify-api:master"
-          commonUpdateSettings:
-            updateStrategy: "digest"
           manifestTargets:
             helm:
               name: "generic.image.name"
               tag: "generic.image.tag"
----
-# whats-on-fip - digest updates
-apiVersion: argocd-image-updater.argoproj.io/v1alpha1
-kind: ImageUpdater
-metadata:
-  name: whats-on-fip-image-updater
-spec:
-  namespace: argocd
-  writeBackConfig:
-    method: "git:secret:argocd/brassberry-gitops-creds"
-    gitConfig:
-      branch: "main"
-      writeBackTarget: "helmvalues:./values.yaml"
-  applicationRefs:
     - namePattern: "whats-on-fip"
       images:
         - alias: "whats-on-fip"
           imageName: "ghcr.io/dixneuf19/whats-on-fip:main"
-          commonUpdateSettings:
-            updateStrategy: "digest"
           manifestTargets:
             helm:
               name: "generic.image.name"
               tag: "generic.image.tag"
----
-# fuzzy-octo-disco - digest updates
-apiVersion: argocd-image-updater.argoproj.io/v1alpha1
-kind: ImageUpdater
-metadata:
-  name: fuzzy-octo-disco-image-updater
-spec:
-  namespace: argocd
-  writeBackConfig:
-    method: "git:secret:argocd/brassberry-gitops-creds"
-    gitConfig:
-      branch: "main"
-      writeBackTarget: "helmvalues:./values.yaml"
-  applicationRefs:
+    # dank-face-bot namespace apps
     - namePattern: "fuzzy-octo-disco"
       images:
         - alias: "fuzzy-octo-disco"
           imageName: "ghcr.io/dixneuf19/fuzzy-octo-disco:master"
-          commonUpdateSettings:
-            updateStrategy: "digest"
           manifestTargets:
             helm:
               name: "generic.image.name"
               tag: "generic.image.tag"
----
-# dank-face-slack-bot - digest updates
-apiVersion: argocd-image-updater.argoproj.io/v1alpha1
-kind: ImageUpdater
-metadata:
-  name: dank-face-slack-bot-image-updater
-spec:
-  namespace: argocd
-  writeBackConfig:
-    method: "git:secret:argocd/brassberry-gitops-creds"
-    gitConfig:
-      branch: "main"
-      writeBackTarget: "helmvalues:./values.yaml"
-  applicationRefs:
     - namePattern: "dank-face-slack-bot"
       images:
         - alias: "dank-face-slack-bot"
           imageName: "ghcr.io/dixneuf19/dank-face-slack-bot:main"
-          commonUpdateSettings:
-            updateStrategy: "digest"
+          manifestTargets:
+            helm:
+              name: "generic.image.name"
+              tag: "generic.image.tag"
+    - namePattern: "dank-face-bot"
+      images:
+        - alias: "dank-face-bot"
+          imageName: "ghcr.io/dixneuf19/dank-face-bot:master"
           manifestTargets:
             helm:
               name: "generic.image.name"
               tag: "generic.image.tag"
 ---
-# dank-face-bot - digest updates
+# Semver-based updates for apps with standard image.repository/image.tag
 apiVersion: argocd-image-updater.argoproj.io/v1alpha1
 kind: ImageUpdater
 metadata:
-  name: dank-face-bot-image-updater
+  name: semver-apps-image-updater
 spec:
   namespace: argocd
   writeBackConfig:
@@ -206,14 +95,25 @@ spec:
     gitConfig:
       branch: "main"
       writeBackTarget: "helmvalues:./values.yaml"
+  commonUpdateSettings:
+    updateStrategy: "semver"
   applicationRefs:
-    - namePattern: "dank-face-bot"
+    - namePattern: "karakeep"
       images:
-        - alias: "dank-face-bot"
-          imageName: "ghcr.io/dixneuf19/dank-face-bot:master"
-          commonUpdateSettings:
-            updateStrategy: "digest"
+        - alias: "karakeep"
+          imageName: "ghcr.io/karakeep-app/karakeep"
           manifestTargets:
             helm:
-              name: "generic.image.name"
-              tag: "generic.image.tag"
+              name: "image.repository"
+              tag: "image.tag"
+    - namePattern: "spliit"
+      images:
+        - alias: "spliit"
+          imageName: "ghcr.io/spliit-app/spliit"
+          commonUpdateSettings:
+            # Only update to 1.x versions
+            allowTags: "regexp:^1\\."
+          manifestTargets:
+            helm:
+              name: "image.repository"
+              tag: "image.tag"
