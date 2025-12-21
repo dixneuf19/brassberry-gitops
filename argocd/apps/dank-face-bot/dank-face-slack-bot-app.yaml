@@ -3,21 +3,17 @@ kind: Application
 metadata:
   name: dank-face-slack-bot
   annotations:
-    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/brassberry-gitops-creds
-    argocd-image-updater.argoproj.io/image-list: dank-face-slack-bot=ghcr.io/dixneuf19/dank-face-slack-bot:main
-    argocd-image-updater.argoproj.io/dank-face-slack-bot.update-strategy: digest
-    argocd-image-updater.argoproj.io/dank-face-slack-bot.helm.image-name: generic.image.name
-    argocd-image-updater.argoproj.io/dank-face-slack-bot.helm.image-tag: generic.image.tag
     argocd.argoproj.io/manifest-generate-paths: "."
+    # Image update now managed by ImageUpdater CRD in argocd-image-updater chart
 spec:
   project: default
   source:
     path: dank-face-bot/dank-face-slack-bot
-    repoURL: 'https://github.com/dixneuf19/brassberry-gitops'
+    repoURL: "https://github.com/dixneuf19/brassberry-gitops"
     targetRevision: main
     helm:
       valueFiles:
-      - values.yaml
+        - values.yaml
   destination:
     namespace: dank-face-bot
     name: in-cluster
@@ -25,5 +21,5 @@ spec:
     automated: # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
       prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
       selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
-    syncOptions:     # Sync options which modifies sync behavior
-    - CreateNamespace=true # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
+    syncOptions: # Sync options which modifies sync behavior
+      - CreateNamespace=true # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
