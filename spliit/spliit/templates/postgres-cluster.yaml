@@ -4,7 +4,11 @@ metadata:
   name: spliit
 spec:
   instances: 1
-  imageName: ghcr.io/cloudnative-pg/postgresql:18.1-standard-trixie # TODO: use Image catalog
+  imageCatalogRef:
+    apiGroup: postgresql.cnpg.io
+    kind: ClusterImageCatalog
+    name: postgresql-standard-trixie
+    major: 18
   storage:
     size: 10Gi
   resources:
