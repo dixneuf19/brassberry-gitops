@@ -11,11 +11,12 @@ spec:
   project: default
   source:
     path: cnpg-system/cloudnative-pg/
-    repoURL: 'https://github.com/dixneuf19/brassberry-gitops'
+    repoURL: "https://github.com/dixneuf19/brassberry-gitops"
     targetRevision: main
   syncPolicy:
     automated:
       prune: true
       selfHeal: false
     syncOptions:
-    - CreateNamespace=true
+      - CreateNamespace=true
+      - ServerSideApply=true # Used to be able to apply big CRDs
