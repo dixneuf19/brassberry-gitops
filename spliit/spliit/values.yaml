@@ -1,47 +1,4 @@
 image:
+  # Overriden in .argocd-source-spliit.yaml
   repository: ghcr.io/spliit-app/spliit
   tag: 1.19.0
-
-postgresql:
-  image:
-    repository: bitnamilegacy/postgresql
-    tag: 16.6.0-debian-12-r2
-  ## Authentication parameters
-  ## ref: https://github.com/bitnami/containers/tree/main/bitnami/postgresql#setting-the-root-password-on-first-run
-  ## ref: https://github.com/bitnami/containers/tree/main/bitnami/postgresql#creating-a-database-on-first-run
-  ## ref: https://github.com/bitnami/containers/tree/main/bitnami/postgresql#creating-a-database-user-on-first-run
-  ##
-  auth:
-    ## @param auth.enablePostgresUser Assign a password to the "postgres" admin user. Otherwise, remote access will be blocked for this user
-    ##
-    enablePostgresUser: true
-    ## @param auth.username Name for a custom user to create
-    ##
-    username: "spliit"
-    ## @param auth.password Password for the custom user to create. Ignored if `auth.existingSecret` is provided
-    ## @param auth.database Name for a custom database to create
-    ##
-    database: "spliit"
-    ##
-    existingSecret: "postgresql-passwords"
-    ## @param auth.secretKeys.adminPasswordKey Name of key in existing secret to use for PostgreSQL credentials. Only used when `auth.existingSecret` is set.
-    ## @param auth.secretKeys.userPasswordKey Name of key in existing secret to use for PostgreSQL credentials. Only used when `auth.existingSecret` is set.
-    ## @param auth.secretKeys.replicationPasswordKey Name of key in existing secret to use for PostgreSQL credentials. Only used when `auth.existingSecret` is set.
-    ##
-    secretKeys:
-      adminPasswordKey: postgres-password
-      userPasswordKey: password
-      replicationPasswordKey: replication-password
-  ## @param architecture PostgreSQL architecture (`standalone` or `replication`)
-  ##
-  architecture: standalone
-  primary:
-    ## PostgreSQL Primary resource requests and limits
-    ## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
-    ## @param primary.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if primary.resources is set (primary.resources is recommended for production).
-    ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
-    ##
-    resourcesPreset: "nano"
-    persistence:
-      storageClass: "nfs-client"
-      size: 8Gi
