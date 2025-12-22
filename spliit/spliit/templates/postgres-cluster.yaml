@@ -1,0 +1,32 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: spliit
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.1-standard-trixie # TODO: use Image catalog
+  storage:
+    size: 10Gi
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "0.5"
+    limits:
+      memory: "512Mi"
+  bootstrap:
+    initdb:
+      import:
+        type: microservice
+        databases:
+          - spliit
+        source:
+          externalCluster: bitnami-spliit-pg
+  externalClusters:
+  - name: bitnami-spliit-pg
+    connectionParameters:
+      host: spliit-postgresql
+      user: postgres
+      dbname: spliit
+    password:
+      name: postgresql-passwords
+      key: postgres-password

@@ -21,19 +21,22 @@ spec:
             - containerPort: 3000
               name: http
           env:
-            - name: POSTGRES_PASSWORD
+            - name: POSTGRES_PRISMA_URL
               valueFrom:
                 secretKeyRef:
-                  name: postgresql-passwords
-                  key: password
-            - name: POSTGRES_PRISMA_URL
-              value: "postgresql://spliit:$(POSTGRES_PASSWORD)@spliit-postgresql/spliit"
+                  name: spliit-app
+                  key: uri
             - name: POSTGRES_URL_NON_POOLING
-              value: "postgresql://spliit:$(POSTGRES_PASSWORD)@spliit-postgresql/spliit"
+              valueFrom:
+                secretKeyRef:
+                  name: spliit-app
+                  key: uri
           resources:
             requests:
               memory: "128Mi"
               cpu: "100m"
+            limits:
+              memory: "256Mi"
           livenessProbe:
             httpGet:
               path: /api/health/liveness
