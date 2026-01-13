@@ -12,4 +12,4 @@ type: application
 dependencies:
   - name: lyrion-music-server
     version: 5.13.12
-    repository: oci://tccr.io/truecharts
+    repository: oci://oci.trueforge.org/truecharts
