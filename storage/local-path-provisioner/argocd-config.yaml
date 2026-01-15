@@ -1,0 +1,4 @@
+name: local-path-provisioner
+namespace: storage
+path: storage/local-path-provisioner
+type: directory

@@ -1,0 +1,5 @@
+name: goldilocks
+namespace: goldilocks
+path: goldilocks/goldilocks
+type: helm
+selfHeal: true

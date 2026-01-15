@@ -1,0 +1,9 @@
+name: lyrion-music-server
+namespace: lms
+path: lms/lyrion-music-server
+type: helm
+ignoreDifferences:
+  - group: apps
+    kind: Deployment
+    jqPathExpressions:
+      - ".spec.template.spec.hostUsers"

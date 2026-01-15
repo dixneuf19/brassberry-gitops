@@ -1,0 +1,6 @@
+name: cloudnative-pg
+namespace: cnpg-system
+path: cnpg-system/cloudnative-pg
+type: directory
+syncOptions:
+  - ServerSideApply=true

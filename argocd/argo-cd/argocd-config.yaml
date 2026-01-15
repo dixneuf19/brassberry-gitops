@@ -1,0 +1,6 @@
+name: argo-cd
+namespace: argocd
+path: argocd/argo-cd
+type: helm
+syncOptions:
+  - ServerSideApply=true

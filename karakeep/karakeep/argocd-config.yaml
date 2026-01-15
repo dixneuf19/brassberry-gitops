@@ -1,0 +1,5 @@
+name: karakeep
+namespace: karakeep
+path: karakeep/karakeep
+type: helm
+selfHeal: true

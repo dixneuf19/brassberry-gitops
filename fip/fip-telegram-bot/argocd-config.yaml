@@ -1,0 +1,4 @@
+name: fip-telegram-bot
+namespace: fip
+path: fip/fip-telegram-bot
+type: helm

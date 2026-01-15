@@ -1,0 +1,4 @@
+name: nfs-client-provisioner
+namespace: storage
+path: storage/nfs-client-provisioner
+type: helm

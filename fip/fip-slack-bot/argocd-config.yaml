@@ -1,0 +1,4 @@
+name: fip-slack-bot
+namespace: fip
+path: fip/fip-slack-bot
+type: helm

@@ -1,0 +1,5 @@
+name: librespeed
+namespace: tools
+path: tools/librespeed/manifests
+type: directory
+selfHeal: true

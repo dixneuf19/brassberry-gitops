@@ -1,0 +1,8 @@
+name: kps
+namespace: monitoring
+path: monitoring/kps
+type: helm
+helm:
+  skipCrds: true
+syncOptions:
+  - ServerSideApply=true

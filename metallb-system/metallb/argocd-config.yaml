@@ -1,0 +1,5 @@
+# Note: metallb deploys to default namespace, not metallb-system
+name: metallb
+namespace: default
+path: metallb-system/metallb
+type: directory

@@ -1,0 +1,4 @@
+name: fuzzy-octo-disco
+namespace: dank-face-bot
+path: dank-face-bot/fuzzy-octo-disco
+type: helm

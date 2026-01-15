@@ -1,0 +1,4 @@
+name: spotify-api
+namespace: fip
+path: fip/spotify-api
+type: helm
