@@ -11,5 +11,5 @@ sources:
 type: application
 dependencies:
   - name: lyrion-music-server
-    version: 5.13.19
+    version: 5.13.21
     repository: oci://oci.trueforge.org/truecharts
