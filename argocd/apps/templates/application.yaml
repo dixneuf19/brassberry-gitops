@@ -1,0 +1,41 @@
+{{- range .Values.applications }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .name }}
+  annotations:
+    argocd.argoproj.io/manifest-generate-paths: "."
+spec:
+  project: default
+  source:
+    repoURL: {{ .repoURL | default "https://github.com/dixneuf19/brassberry-gitops" | quote }}
+    targetRevision: {{ .targetRevision | default "main" }}
+    path: {{ .path }}
+{{- if eq (.type | default "helm") "helm" }}
+    helm:
+{{- if .helm }}
+{{ toYaml .helm | indent 6 }}
+{{- end }}
+      valueFiles:
+        - values.yaml
+{{- end }}
+  destination:
+    name: in-cluster
+    namespace: {{ .namespace }}
+{{- if .ignoreDifferences }}
+  ignoreDifferences:
+{{ toYaml .ignoreDifferences | indent 4 }}
+{{- end }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: {{ .selfHeal | default false }}
+    syncOptions:
+      - CreateNamespace=true
+{{- if .syncOptions }}
+{{- range .syncOptions }}
+      - {{ . }}
+{{- end }}
+{{- end }}
+{{- end }}

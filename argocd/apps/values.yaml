@@ -1,0 +1,213 @@
+# ArgoCD Applications
+# Each entry generates an Application resource
+#
+# Schema:
+#   name: Application name (required)
+#   namespace: Target namespace (required)
+#   path: Path to manifests (required)
+#   type: "helm" (default) or "directory"
+#   selfHeal: Enable self-healing (default: false)
+#   syncOptions: Additional sync options (list)
+#   helm: Helm-specific options (skipCrds, etc.)
+#   ignoreDifferences: Ignore diff rules (list)
+#   repoURL: Custom source repo (default: this repo)
+#   targetRevision: Git branch/tag (default: main)
+
+applications:
+  # =============================================================================
+  # Default namespace
+  # =============================================================================
+  - name: http-echo
+    namespace: default
+    path: default/http-echo
+
+  - name: whoami
+    namespace: default
+    path: default/whoami
+    type: directory
+
+  - name: cd-lna
+    namespace: default
+    path: default/cd-lna/manifests
+    type: directory
+
+  - name: personal-website
+    namespace: default
+    path: manifests
+    type: directory
+    selfHeal: true
+    repoURL: https://github.com/dixneuf19/personal-website
+
+  # =============================================================================
+  # FIP apps
+  # =============================================================================
+  - name: whats-on-fip
+    namespace: fip
+    path: fip/whats-on-fip
+
+  - name: fip-slack-bot
+    namespace: fip
+    path: fip/fip-slack-bot
+
+  - name: fip-telegram-bot
+    namespace: fip
+    path: fip/fip-telegram-bot
+
+  - name: spotify-api
+    namespace: fip
+    path: fip/spotify-api
+
+  # =============================================================================
+  # Dank Face Bot apps
+  # =============================================================================
+  - name: dank-face-bot
+    namespace: dank-face-bot
+    path: dank-face-bot/dank-face-bot
+
+  - name: dank-face-slack-bot
+    namespace: dank-face-bot
+    path: dank-face-bot/dank-face-slack-bot
+
+  - name: fuzzy-octo-disco
+    namespace: dank-face-bot
+    path: dank-face-bot/fuzzy-octo-disco
+
+  # =============================================================================
+  # ArgoCD apps
+  # =============================================================================
+  - name: argo-cd
+    namespace: argocd
+    path: argocd/argo-cd
+    syncOptions:
+      - ServerSideApply=true
+
+  - name: argocd-image-updater
+    namespace: argocd
+    path: argocd/argocd-image-updater
+
+  # =============================================================================
+  # Monitoring
+  # =============================================================================
+  - name: kps
+    namespace: monitoring
+    path: monitoring/kps
+    helm:
+      skipCrds: true
+    syncOptions:
+      - ServerSideApply=true
+
+  - name: karma
+    namespace: monitoring
+    path: monitoring/karma
+
+  - name: kube-state-metrics
+    namespace: monitoring
+    path: monitoring/kube-state-metrics
+
+  # =============================================================================
+  # Storage
+  # =============================================================================
+  - name: nfs-client-provisioner
+    namespace: storage
+    path: storage/nfs-client-provisioner
+
+  - name: local-path-provisioner
+    namespace: storage
+    path: storage/local-path-provisioner
+    type: directory
+
+  # =============================================================================
+  # Infrastructure
+  # =============================================================================
+  - name: ingress-nginx
+    namespace: ingress-nginx
+    path: ingress-nginx/ingress-nginx
+
+  - name: cert-manager
+    namespace: cert-manager
+    path: cert-manager/cert-manager
+    type: directory
+
+  - name: metallb
+    namespace: default
+    path: metallb-system/metallb
+    type: directory
+
+  - name: external-secrets
+    namespace: external-secrets
+    path: external-secrets/external-secrets
+    type: directory
+    syncOptions:
+      - ServerSideApply=true
+
+  # =============================================================================
+  # CNPG (CloudNative PostgreSQL)
+  # =============================================================================
+  - name: cloudnative-pg
+    namespace: cnpg-system
+    path: cnpg-system/cloudnative-pg
+    type: directory
+    syncOptions:
+      - ServerSideApply=true
+
+  - name: cnpg-image-catalogs
+    namespace: cnpg-system
+    path: image-catalogs
+    type: directory
+    selfHeal: true
+    repoURL: https://github.com/cloudnative-pg/artifacts
+
+  # =============================================================================
+  # Media servers
+  # =============================================================================
+  - name: lyrion-music-server
+    namespace: lms
+    path: lms/lyrion-music-server
+    ignoreDifferences:
+      - group: apps
+        kind: Deployment
+        jqPathExpressions:
+          - ".spec.template.spec.hostUsers"
+
+  - name: radioyoshi
+    namespace: lms-yoshi
+    path: lms-yoshi/radioyoshi
+    ignoreDifferences:
+      - group: apps
+        kind: Deployment
+        jqPathExpressions:
+          - ".spec.template.spec.hostUsers"
+
+  # =============================================================================
+  # Other apps
+  # =============================================================================
+  - name: goldilocks
+    namespace: goldilocks
+    path: goldilocks/goldilocks
+    selfHeal: true
+
+  - name: vpa
+    namespace: vpa
+    path: vpa/vpa
+    type: directory
+
+  - name: karakeep
+    namespace: karakeep
+    path: karakeep/karakeep
+    selfHeal: true
+
+  - name: spliit
+    namespace: spliit
+    path: spliit/spliit
+    selfHeal: true
+
+  - name: readeck
+    namespace: readeck
+    path: readeck/readeck
+    type: directory
+
+  - name: librespeed
+    namespace: tools
+    path: tools/librespeed/manifests
+    type: directory
+    selfHeal: true
