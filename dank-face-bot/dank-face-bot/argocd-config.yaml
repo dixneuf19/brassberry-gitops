@@ -1,0 +1,4 @@
+name: dank-face-bot
+namespace: dank-face-bot
+path: dank-face-bot/dank-face-bot
+type: helm

@@ -1,0 +1,4 @@
+name: cd-lna
+namespace: default
+path: default/cd-lna/manifests
+type: directory

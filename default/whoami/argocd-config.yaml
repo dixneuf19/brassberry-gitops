@@ -1,0 +1,4 @@
+name: whoami
+namespace: default
+path: default/whoami
+type: directory

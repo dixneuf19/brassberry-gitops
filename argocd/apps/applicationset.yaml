@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cluster-apps
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - git:
+        repoURL: https://github.com/dixneuf19/brassberry-gitops
+        revision: main
+        files:
+          - path: "**/argocd-config.yaml"
+  template:
+    metadata:
+      name: "{{ .name }}"
+      annotations:
+        argocd.argoproj.io/manifest-generate-paths: "."
+    spec:
+      project: default
+      source:
+        repoURL: '{{ default "https://github.com/dixneuf19/brassberry-gitops" .repoURL }}'
+        targetRevision: '{{ default "main" .targetRevision }}'
+        path: "{{ .path }}"
+{{- if eq (default "helm" .type) "helm" }}
+        helm:
+{{- if and .helm .helm.skipCrds }}
+          skipCrds: {{ .helm.skipCrds }}
+{{- end }}
+          valueFiles:
+            - values.yaml
+{{- end }}
+      destination:
+        name: in-cluster
+        namespace: "{{ .namespace }}"
+{{- if .ignoreDifferences }}
+      ignoreDifferences:
+{{ toYaml .ignoreDifferences | indent 8 }}
+{{- end }}
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: {{ default false .selfHeal }}
+        syncOptions:
+          - CreateNamespace=true
+{{- if .syncOptions }}
+{{- range .syncOptions }}
+          - {{ . }}
+{{- end }}
+{{- end }}

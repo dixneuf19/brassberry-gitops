@@ -1,0 +1,7 @@
+# CloudNativePG image catalogs from external repo
+name: cnpg-image-catalogs
+namespace: cnpg-system
+path: image-catalogs
+repoURL: https://github.com/cloudnative-pg/artifacts
+type: directory
+selfHeal: true

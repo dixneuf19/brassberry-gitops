@@ -1,0 +1,5 @@
+name: spliit
+namespace: spliit
+path: spliit/spliit
+type: helm
+selfHeal: true

@@ -1,0 +1,4 @@
+name: kube-state-metrics
+namespace: monitoring
+path: monitoring/kube-state-metrics
+type: helm

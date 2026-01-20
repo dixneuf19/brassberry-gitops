@@ -1,0 +1,9 @@
+name: radioyoshi
+namespace: lms-yoshi
+path: lms-yoshi/radioyoshi
+type: helm
+ignoreDifferences:
+  - group: apps
+    kind: Deployment
+    jqPathExpressions:
+      - ".spec.template.spec.hostUsers"

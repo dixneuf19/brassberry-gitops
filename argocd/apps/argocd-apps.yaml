@@ -1,3 +1,6 @@
+# Bootstrap Application that syncs the ApplicationSet
+# The ApplicationSet (applicationset.yaml) generates all other Applications
+# based on argocd-config.yaml files found throughout the repo
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -11,13 +14,11 @@ spec:
   project: default
   source:
     path: argocd/apps/
-    repoURL: 'https://github.com/dixneuf19/brassberry-gitops'
+    repoURL: https://github.com/dixneuf19/brassberry-gitops
     targetRevision: main
-    directory:
-      recurse: true
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
-    - CreateNamespace=true
+      - CreateNamespace=true

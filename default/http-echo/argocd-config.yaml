@@ -1,0 +1,4 @@
+name: http-echo
+namespace: default
+path: default/http-echo
+type: helm

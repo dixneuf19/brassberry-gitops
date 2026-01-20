@@ -1,0 +1,6 @@
+name: external-secrets
+namespace: external-secrets
+path: external-secrets/external-secrets
+type: directory
+syncOptions:
+  - ServerSideApply=true

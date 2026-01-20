@@ -1,0 +1,4 @@
+name: whats-on-fip
+namespace: fip
+path: fip/whats-on-fip
+type: helm
