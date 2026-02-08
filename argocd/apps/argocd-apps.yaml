@@ -1,3 +1,5 @@
+# Bootstrap Application that uses Helm chart to generate all other Applications
+# Edit values.yaml to add/remove/configure applications
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -11,13 +13,14 @@ spec:
   project: default
   source:
     path: argocd/apps/
-    repoURL: 'https://github.com/dixneuf19/brassberry-gitops'
+    repoURL: https://github.com/dixneuf19/brassberry-gitops
     targetRevision: main
-    directory:
-      recurse: true
+    helm:
+      valueFiles:
+        - values.yaml
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
-    - CreateNamespace=true
+      - CreateNamespace=true

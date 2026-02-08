@@ -1,0 +1,4 @@
+apiVersion: v2
+name: argocd-apps
+description: Helm chart to generate ArgoCD Application resources
+version: 1.0.0
