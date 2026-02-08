@@ -1,8 +1,6 @@
 kube-prometheus-stack:
   crds:
     enabled: true
-    upgradeJob:
-      enabled: true
 
   alertmanager:
     enabled: false
