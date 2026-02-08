@@ -15,3 +15,8 @@ maintainers:
   - name: brassberry
     email: padoa@example.com
 
+dependencies:
+  - name: meilisearch
+    version: "0.25.1"
+    repository: https://meilisearch.github.io/meilisearch-kubernetes
+

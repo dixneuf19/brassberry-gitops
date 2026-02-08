@@ -68,8 +68,8 @@ affinity: {}
 env:
   NEXTAUTH_URL: "https://karakeep.dixneuf19.fr"
   DATA_DIR: "/data"
-  # Disable resource-intensive features for Raspberry Pi
-  DISABLE_MEILISEARCH: "true"
+  # Research (Meilisearch) enabled; other resource-intensive features disabled for Raspberry Pi
+  MEILI_ADDR: "http://karakeep-meilisearch:7700"
   DISABLE_CHROME: "true"
   DISABLE_OPENAI: "true"
   DISABLE_SIGNUPS: "true"
@@ -82,6 +82,9 @@ secretEnvVars:
   - name: OPENAI_API_KEY
     secretName: "karakeep-secrets"
     secretKey: "OPENAI_API_KEY"
+  - name: MEILI_MASTER_KEY
+    secretName: "karakeep-secrets"
+    secretKey: "MEILI_MASTER_KEY"
 
 persistence:
   enabled: true
@@ -100,10 +103,10 @@ extraVolumes:
   - name: nextjs-cache
     emptyDir: {}
 
-# Health checks
+# Health checks (use dedicated health endpoint)
 livenessProbe:
   httpGet:
-    path: /
+    path: /api/health
     port: 3000
   initialDelaySeconds: 30
   periodSeconds: 10
@@ -112,7 +115,7 @@ livenessProbe:
 
 readinessProbe:
   httpGet:
-    path: /
+    path: /api/health
     port: 3000
   initialDelaySeconds: 5
   periodSeconds: 5
@@ -126,3 +129,27 @@ autoscaling:
   maxReplicas: 3
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
+
+# Meilisearch subchart (research feature) - tuned for GitOps + Raspberry Pi
+meilisearch:
+  auth:
+    existingMasterKeySecret: "karakeep-secrets"
+  environment:
+    MEILI_ENV: production
+    MEILI_NO_ANALYTICS: true
+  persistence:
+    enabled: true
+    size: 1Gi
+    storageClass: "nfs-client"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      # cpu: 500m
+      memory: 512Mi
+  ingress:
+    enabled: false
+  # Optional: increase if Pi is slow to start
+  # startupProbe:
+  #   failureThreshold: 90
