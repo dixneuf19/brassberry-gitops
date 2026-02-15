@@ -1,0 +1,68 @@
+#################################################
+# Force PCIe ASPM via kernel boot parameters
+#
+# The CWWK N355 ACPI FADT table incorrectly declares
+# that the system doesn't support PCIe ASPM, preventing
+# the Linux kernel from actively managing PCIe link
+# power states. This playbook adds kernel parameters
+# to override that broken FADT flag.
+#
+# BIOS ASPM settings (see bios.md) get most devices
+# to L1, but the kernel needs active control to enable
+# L1 substates and enforce powersave policy.
+#
+# Proxmox with ZFS root uses proxmox-boot-tool (not GRUB)
+# so kernel params go in /etc/kernel/cmdline.
+#
+# After running this playbook, a REBOOT is required.
+#################################################
+---
+- hosts: proxmox
+  become: true
+  vars:
+    # pcie_aspm=force: override broken ACPI FADT table
+    # pcie_aspm.policy=powersave: enable deepest substates (L1.1/L1.2)
+    #   and prevent drivers (e.g. igc) from disabling ASPM
+    # Change to "pcie_aspm=force" alone if stability issues arise
+    aspm_params: "pcie_aspm=force pcie_aspm.policy=powersave"
+
+  handlers:
+    - name: refresh proxmox boot
+      ansible.builtin.command: proxmox-boot-tool refresh
+
+  tasks:
+    # =========================================
+    # Show current state
+    # =========================================
+    - name: Read current kernel cmdline
+      ansible.builtin.command: cat /etc/kernel/cmdline
+      register: cmdline_current
+      changed_when: false
+
+    - name: Show current /etc/kernel/cmdline
+      ansible.builtin.debug:
+        msg: "{{ cmdline_current.stdout }}"
+
+    # =========================================
+    # Add ASPM kernel parameters
+    # =========================================
+    - name: Add PCIe ASPM parameters to kernel cmdline
+      ansible.builtin.lineinfile:
+        path: /etc/kernel/cmdline
+        regexp: '^((?!.*pcie_aspm=force).+)$'
+        line: '\1 {{ aspm_params }}'
+        backrefs: yes
+      notify: refresh proxmox boot
+
+    # =========================================
+    # Post-apply info
+    # =========================================
+    - name: Reboot reminder
+      ansible.builtin.debug:
+        msg: >-
+          Kernel cmdline updated and proxmox-boot-tool refreshed.
+          A REBOOT is required for changes to take effect.
+          After reboot, verify with:
+            dmesg | grep -i aspm
+            lspci -vv -s 04:00.0 | grep -i aspm
+            cat /sys/module/pcie_aspm/parameters/policy
