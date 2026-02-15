@@ -7,12 +7,6 @@ NAMESPACE=ingress-nginx
 get-latest-value:
 	helm show values "${HELM_REPOSITORY}/${HELM_CHART}" > values.yaml
 
-passwd:
-	htpasswd -c basic-auth.htpasswd ${USERNAME}
-
-secret:
-	kubectl -n "${NAMESPACE}" create secret generic basic-auth --from-file=auth=basic-auth.htpasswd
-
 dependency:
 	helm dependency update
 

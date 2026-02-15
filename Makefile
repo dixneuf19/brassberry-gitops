@@ -71,4 +71,8 @@ proxmox-bootstrap:
 proxmox-zfs:
 	ansible-playbook -i $(ANSIBLE_INVENTORY) proxmox/playbooks/proxmox-zfs.yaml
 
-.PHONY: all ping reboot tailscale jellyfin mounts kernel-modules upgrade nfs-server remove-nfs-server kubeconfig k0sctl proxmox-post-install proxmox-bootstrap proxmox-zfs tailscale-hostmap-pull tailscale-hosts
+# Force PCIe ASPM via GRUB (fixes broken ACPI FADT on CWWK N355)
+proxmox-grub-aspm:
+	ansible-playbook -i $(ANSIBLE_INVENTORY) proxmox/playbooks/proxmox-grub-aspm.yaml
+
+.PHONY: all ping reboot tailscale jellyfin mounts kernel-modules upgrade nfs-server remove-nfs-server kubeconfig k0sctl proxmox-post-install proxmox-bootstrap proxmox-zfs proxmox-grub-aspm tailscale-hostmap-pull tailscale-hosts
