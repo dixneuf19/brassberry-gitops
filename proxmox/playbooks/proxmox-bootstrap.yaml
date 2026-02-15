@@ -1,0 +1,82 @@
+#################################################
+# Bootstrap Proxmox after community post-install script
+# Run "make proxmox-post-install" first!
+#
+# This handles what the community script does NOT:
+# - Useful packages
+# - Tailscale
+# - Terraform API token
+#
+# ZFS config (including rpool tuning) is in proxmox-zfs.yaml
+#################################################
+---
+- hosts: proxmox
+  become: true
+  tasks:
+    # =========================================
+    # Packages
+    # =========================================
+    - name: Install useful packages
+      apt:
+        name:
+          - vim
+          - htop
+          - iotop
+          - tmux
+          - curl
+          - wget
+          - sudo
+        state: present
+        update_cache: yes
+
+    # =========================================
+    # Tailscale
+    # =========================================
+    - name: Check if Tailscale is installed
+      command: which tailscale
+      register: tailscale_check
+      failed_when: false
+      changed_when: false
+
+    - name: Install Tailscale
+      shell: curl -fsSL https://tailscale.com/install.sh | sh
+      when: tailscale_check.rc != 0
+
+    - name: Reminder to join Tailscale
+      debug:
+        msg: "Tailscale installed. Run 'tailscale up' on the host to join your tailnet."
+      when: tailscale_check.rc != 0
+
+    # =========================================
+    # Terraform API token
+    # =========================================
+    - name: Check if terraform user exists
+      command: pveum user list --output-format json
+      register: pveum_users
+      changed_when: false
+
+    - name: Create terraform API user
+      command: pveum user add terraform@pam --comment "Terraform automation"
+      when: "'terraform@pam' not in pveum_users.stdout"
+
+    - name: Grant Administrator role to terraform user
+      command: pveum aclmod / -user terraform@pam -role Administrator
+      when: "'terraform@pam' not in pveum_users.stdout"
+
+    - name: Check if terraform token exists
+      command: pveum user token list terraform@pam --output-format json
+      register: pveum_tokens
+      changed_when: false
+      failed_when: false
+
+    - name: Create terraform API token
+      command: pveum user token add terraform@pam terraform-token --privsep 0 --output-format json
+      register: terraform_token
+      when: "'terraform-token' not in pveum_tokens.stdout"
+
+    - name: Display terraform API token
+      debug:
+        msg: >
+          Save this token in your terraform.tfvars:
+          proxmox_api_token = "terraform@pam!terraform-token={{ (terraform_token.stdout | from_json).value }}"
+      when: terraform_token is changed

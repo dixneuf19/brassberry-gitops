@@ -66,5 +66,36 @@ Temporary Items
 
 # End of https://www.toptal.com/developers/gitignore/api/helm,visualstudiocode,macos,direnv,dotenv
 
+### Secrets ###
 **/*.secret
 *.htpasswd
+
+### Terraform ###
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+secret.tfvars
+secret.auto.tfvars
+*.secret.tfvars
+*.secret.auto.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+.terraform.lock.hcl
+terraform.tfvars
+
+### Raspberry Pi / Ansible ###
+*.img
+*.xz
+SHA256*
+*.part
+*.kubeconfig.yaml
+**/k0s_backup*
+**/__pycache__/
+
+### IDE ###
+.idea

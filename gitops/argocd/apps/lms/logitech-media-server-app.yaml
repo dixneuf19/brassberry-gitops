@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lyrion-music-server
+  annotations:
+    argocd.argoproj.io/manifest-generate-paths: "."
+spec:
+  project: default
+  source:
+    path: gitops/lms/lyrion-music-server/
+    repoURL: 'https://github.com/dixneuf19/brassberry-gitops'
+    targetRevision: main
+    helm:
+      valueFiles:
+      - values.yaml
+  destination:
+    namespace: lms
+    name: in-cluster
+  syncPolicy:
+    automated: # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: false # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+      allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
+    syncOptions:     # Sync options which modifies sync behavior
+    - CreateNamespace=true # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
+  # Currently beta in k8s, not activated on my k0s but set on lyrion-music-server helm chart, causing a diff
+  ignoreDifferences:
+  - group: apps
+    kind: Deployment
+    jqPathExpressions:
+    - '.spec.template.spec.hostUsers' 

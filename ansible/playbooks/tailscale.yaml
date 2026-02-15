@@ -1,0 +1,10 @@
+#################################################
+# Setup tailscale
+#################################################
+---
+- hosts: all
+  roles:
+    - role: artis3n.tailscale
+      vars:
+        # Example pulling the API key from the env vars on the host running Ansible
+        tailscale_authkey: "{{ lookup('env', 'TAILSCALE_KEY') }}"

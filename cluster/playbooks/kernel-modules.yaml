@@ -1,0 +1,24 @@
+#################################################
+# Setup kernel modules
+#################################################
+---
+- hosts: 'brassberry*'
+  become: true
+  # vars_files:
+  #   - vars/default.yml
+
+  tasks:
+    - name: Enable kernel modules
+      # source: https://docs.k0sproject.io/v1.21.3+k0s.0/raspberry-pi4/#kernel-modules
+      blockinfile:
+        path: /etc/modules-load.d/modules.conf
+        create: false
+        block: |
+          overlay
+          nf_conntrack
+          br_netfilter
+      register: kernel_module
+
+    - name: Reboot
+      reboot: {}
+      when: kernel_module.changed

@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vpa
+  annotations:
+    argocd.argoproj.io/manifest-generate-paths: "."
+spec:
+  destination:
+    namespace: vpa
+    name: in-cluster
+  project: default
+  source:
+    path: gitops/vpa/vpa/
+    repoURL: 'https://github.com/dixneuf19/brassberry-gitops'
+    targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
+    syncOptions:
+      - CreateNamespace=true
