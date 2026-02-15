@@ -15,7 +15,7 @@ spec:
   resources:
     requests:
       memory: "256Mi"
-      cpu: "0.5"
+      cpu: "500m"
     limits:
       memory: "512Mi"
   bootstrap:
