@@ -20,3 +20,6 @@ tailscale-hosts:
 
 kubeconfig:
 	k0sctl kubeconfig >> ${KUBECONFIG}
+
+k0sctl:
+	k0sctl apply --config k0sctl.yaml
