@@ -20,18 +20,4 @@ spec:
       memory: "512Mi"
   bootstrap:
     initdb:
-      import:
-        type: microservice
-        databases:
-          - spliit
-        source:
-          externalCluster: bitnami-spliit-pg
-  externalClusters:
-  - name: bitnami-spliit-pg
-    connectionParameters:
-      host: spliit-postgresql
-      user: postgres
-      dbname: spliit
-    password:
-      name: postgresql-passwords
-      key: postgres-password
+      database: spliit

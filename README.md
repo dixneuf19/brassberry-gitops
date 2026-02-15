@@ -12,7 +12,7 @@ Monorepo for my homelab infrastructure: from bare-metal provisioning to GitOps-m
 │   ├── logging/         # loki, promtail
 │   ├── storage/         # nfs-client, local-path provisioners
 │   ├── ingress-nginx/
-│   ├── external-secrets/
+│   ├── external-secrets/ # ESO operator + Scaleway ClusterSecretStore
 │   ├── cert-manager/
 │   ├── cnpg-system/     # CloudNativePG operator
 │   ├── karakeep/        # Bookmark manager
@@ -23,6 +23,9 @@ Monorepo for my homelab infrastructure: from bare-metal provisioning to GitOps-m
 │   ├── lms-yoshi/       # Radio Yoshi
 │   ├── netflix/         # Media server apps (jellyfin, transmission)
 │   └── ...
+│
+├── scaleway/            # Scaleway: terraform (S3 bucket + Secret Manager)
+│   └── terraform/
 │
 ├── proxmox/             # Proxmox VE: terraform + playbooks + docs
 │   ├── terraform/
@@ -97,11 +100,27 @@ helm upgrade --install -n argocd --create-namespace argo-cd . -f values.yaml
 kubectl apply -f gitops/argocd/apps/argocd-apps.yaml
 ```
 
+## Secrets Management
+
+All secrets are managed centrally in **Scaleway Secret Manager** and flow to consumers through two paths:
+
+- **Terraform layers** (proxmox, oci-arm): direnv reads secrets from Scaleway SM via `scw` CLI and exports them as `TF_VAR_*` environment variables. No `.tfvars` files needed on disk.
+- **Kubernetes**: External Secrets Operator syncs secrets from Scaleway SM into K8s Secrets via `ExternalSecret` resources placed alongside each app's Helm chart.
+
+See [scaleway/README.md](scaleway/README.md) for bootstrap instructions.
+
+### Adding a new secret
+
+1. Add the `scaleway_secret` + `scaleway_secret_version` resource in `scaleway/terraform/`
+2. For TF-consumed secrets: add the `TF_VAR_*` export to `.envrc`
+3. For K8s secrets: add an `ExternalSecret` resource in the app's chart templates
+
 ## Technologies
 
 - **Kubernetes**: k0s on Raspberry Pi 4 cluster + Oracle Cloud ARM worker
 - **GitOps**: ArgoCD with Renovate + ArgoCD Image Updater
-- **IaC**: Terraform (Proxmox, OCI)
+- **IaC**: Terraform (Scaleway, Proxmox, OCI)
+- **Secrets**: Scaleway Secret Manager + External Secrets Operator
 - **Config Management**: Ansible
 - **Networking**: Tailscale mesh VPN
 - **Storage**: ZFS (Proxmox), NFS shared storage
