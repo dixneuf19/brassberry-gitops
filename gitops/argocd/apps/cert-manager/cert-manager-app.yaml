@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  annotations:
+    argocd.argoproj.io/manifest-generate-paths: "."
+spec:
+  destination:
+    namespace: cert-manager
+    name: in-cluster
+  project: default
+  source:
+    # directory:
+    #   jsonnet: {}
+    #   recurse: false
+    path: gitops/cert-manager/cert-manager/
+    repoURL: 'https://github.com/dixneuf19/brassberry-gitops'
+    targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
+    syncOptions:
+    - CreateNamespace=true

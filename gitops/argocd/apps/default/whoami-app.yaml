@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: whoami
+  annotations:
+    argocd.argoproj.io/manifest-generate-paths: "."
+spec:
+  destination:
+    namespace: default
+    name: in-cluster
+  project: default
+  source:
+    # directory:
+    #   jsonnet: {}
+    #   recurse: false
+    path: gitops/default/whoami/
+    repoURL: 'https://github.com/dixneuf19/brassberry-gitops'
+    targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
+    syncOptions:
+    - CreateNamespace=true
