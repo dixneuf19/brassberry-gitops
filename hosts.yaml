@@ -24,3 +24,19 @@ workers:
         type: NTFS
     oracle-arm:
       is_raspberry: false
+
+proxmox:
+  hosts:
+    jonbonas:
+      # No ansible_host: resolved via tailscale-hostmap (like brassberry hosts)
+      ansible_ssh_user: root
+      is_raspberry: false
+      # ZFS pool devices -- update after install based on lsblk output
+      fastpool_device: /dev/nvme1n1
+      # List HDD devices for tank pool. RAIDZ2 with 4 disks, RAIDZ1 with 3.
+      tank_devices:
+        - /dev/sda
+        - /dev/sdb
+        - /dev/sdc
+        - /dev/sdd
+      tank_vdev_type: raidz1

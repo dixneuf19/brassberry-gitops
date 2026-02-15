@@ -5,3 +5,9 @@ SHA256*
 *.kubeconfig.yaml
 **/k0s_backup*
 **/__pycache__/
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
