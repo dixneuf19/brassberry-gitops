@@ -1,0 +1,79 @@
+#################################################
+# Setup jellyfin on host with hardware acceleration
+
+# Sources:
+# - https://jellyfin.org/docs/general/administration/installing.html#ubuntu
+# - https://jellyfin.org/docs/general/administration/hardware-acceleration.html
+#################################################
+---
+- hosts: brassberry-26
+  become: true
+
+  tasks:
+
+  ## Jellyfin installation
+
+    - name: Install HTTPS transport for APT if you haven't already
+      apt: 
+        name:
+          - apt-transport-https
+        state: latest
+    
+    - name: Enable the Universe repository to obtain all the FFMpeg dependencies
+      # https://github.com/ansible/ansible/issues/48714
+      command: add-apt-repository universe
+
+    - name: Import the GPG signing key (signed by the Jellyfin Team)
+      apt_key:
+        url: https://repo.jellyfin.org/ubuntu/jellyfin_team.gpg.key
+        state: present
+
+    - name: Add a repository configuration at /etc/apt/sources.list.d/jellyfin.list
+      apt_repository:
+        repo: "deb [arch=arm64] https://repo.jellyfin.org/ubuntu {{ansible_distribution_release}} main"
+        state: present
+        filename: /etc/apt/sources.list.d/jellyfin.list
+
+    - name: Update apt and install jellyfin
+      apt:
+        name:
+          - jellyfin
+        update_cache: yes
+        state: latest
+    
+    - name: Manage the Jellyfin system service
+      systemd:
+        name: jellyfin
+        enabled: yes
+    
+  # Hardware acceleration
+
+    - name: Enable the render device on your Pi (1/2)
+      lineinfile:
+          path: /boot/firmware/usercfg.txt
+          create: false
+          line: gpu_mem=320
+
+    - name: Enable the render device on your Pi (2/2)
+      lineinfile:
+          path: /boot/firmware/usercfg.txt
+          create: false
+          line: dtoverlay=vc4-kms-v3d-pi4
+
+    - name: Reboot
+      reboot: {}
+
+    - name: Verify that a render device is now present in /dev/dri
+      debug: 
+        msg: 'ls -l /dev/dri'
+
+    - name: Add Jellyfin service user to the render group to allow Jellyfin's FFMpeg process access to the device
+      user: 
+        name: jellyfin
+        groups: 
+          - render
+
+    - name: Restart Jellyfin
+      systemd:
+        name: jellyfin
+        state: restarted

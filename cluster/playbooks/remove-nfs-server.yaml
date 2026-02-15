@@ -1,0 +1,26 @@
+#################################################
+# Setup Kubernetes
+#################################################
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Install required package
+      apt:
+        name:
+          - nfs-common 
+          - nfs-kernel-server
+        state: absent
+
+    - name: Enable service nfs-kernel-server
+      systemd:
+        name: nfs-kernel-server
+        enabled: false
+
+    - name: Configure exposed disk
+      lineinfile:
+        line: "/mnt/{{item.name}} 192.168.1.0/24(rw,root_squash)"
+        path: /etc/exports
+        state: absent
+      with_items: "{{disks}}"
+

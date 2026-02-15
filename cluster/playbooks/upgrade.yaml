@@ -1,0 +1,108 @@
+---
+- become: false
+  hosts: all
+  serial: 1
+  vars:
+    # Location for kubectl on the nodes.
+    bin_dir: "{{ lookup('env', 'BIN_DIR') }}"
+    # Period of time in seconds given to each pod to terminate gracefully. If
+    # negative, the default value specified in the pod will be used.
+    drain_grace_period: 300
+    # The length of time to wait before giving up, zero means infinite.
+    drain_timeout: 360s
+
+  tasks:
+    - name: Get the node's details
+      command: >-
+        {{ bin_dir }}/kubectl get node
+        {{ kube_override_hostname|default(inventory_hostname) }}
+        -o json
+      register: kubectl_get_node
+      delegate_to: 127.0.0.1
+      failed_when: false
+      changed_when: false
+
+    - name: Uncordon node in case a previous run has failed
+      command: >-
+        {{ bin_dir }}/kubectl uncordon
+        {{ kube_override_hostname|default(inventory_hostname) }}
+      delegate_to: 127.0.0.1
+      when: is_raspberry
+
+    - name: Update apt cache
+      become: true
+      apt:
+        update_cache: yes
+
+    - name: Check for available updates
+      become: true
+      command: apt list --upgradable
+      register: updates
+
+    - name: End the play for hosts whithout any upgrade
+      meta: end_host
+      when:
+        # Only one line with "Listing... Done"
+        - (updates.stdout_lines | length) == 1
+
+    - name: Drain the node
+      # cordon the node
+      block:
+        - name: Cordon node
+          command: >-
+            {{ bin_dir }}/kubectl cordon
+            {{ kube_override_hostname|default(inventory_hostname) }}
+          delegate_to: 127.0.0.1
+
+        - name: Wait for node to cordon
+          command: >-
+            {{ bin_dir }}/kubectl get node
+            {{ kube_override_hostname|default(inventory_hostname) }}
+            -o json
+          register: wait_for_cordon
+          retries: 10
+          delay: 10
+          # delegate_to: "{{ groups['kube-master'][0] }}"
+          changed_when: false
+          until: (wait_for_cordon['stdout'] | from_json).spec.unschedulable
+          delegate_to: 127.0.0.1
+
+        - name: Drain node
+          command: >-
+            {{ bin_dir }}/kubectl drain
+            --force
+            --ignore-daemonsets
+            --grace-period {{ drain_grace_period }}
+            --timeout {{ drain_timeout }}
+            --delete-emptydir-data {{ kube_override_hostname|default(inventory_hostname) }}
+          delegate_to: 127.0.0.1
+          failed_when: false
+      when: is_raspberry
+
+    - name: Update all packages
+      become: true
+      apt:
+        upgrade: dist
+        force_apt_get: true
+
+    - name: Check if reboot is required
+      become: true
+      stat:
+        path: /var/run/reboot-required
+      register: reboot_required
+
+    - name: Reboot the server
+      become: true
+      reboot:
+        post_reboot_delay: 30
+      when: reboot_required.stat.exists
+
+    # TODO
+    # wait until a valid response is received from kubectl
+
+    - name: Uncordon node
+      command: >-
+        {{ bin_dir }}/kubectl uncordon
+        {{ kube_override_hostname|default(inventory_hostname) }}
+      delegate_to: 127.0.0.1
+      when: is_raspberry

@@ -1,0 +1,49 @@
+#################################################
+# Setup Kubernetes
+#################################################
+---
+- hosts: all
+  become: true
+  # vars_files:
+  #   - vars/default.yml
+  tasks:
+    - name: Install required package
+      apt:
+        name:
+          - nfs-common 
+        update_cache: yes
+        state: latest
+
+    - name: Install required package
+      apt:
+        name:
+          - nfs-kernel-server
+        update_cache: yes
+        state: latest
+      when: "disks | length > 0"
+
+    - name: Enable service nfs-kernel-server
+      systemd:
+        name: nfs-kernel-server
+        enabled: yes
+      when: "disks | length > 0"
+
+    - name: Configure access rights
+      file:
+        path: "/mnt/{{item.name}}"
+        mode: "777"
+        state: directory
+        # recurse: true
+      with_items: "{{disks}}"
+
+    - name: Configure exposed disk
+      lineinfile:
+        line: "/mnt/{{item.name}} 192.168.1.0/24(rw,sync,no_root_squash)"
+        path: /etc/exports
+      with_items: "{{disks}}"
+      
+    - name: Restart nfs-kernel-server
+      systemd:
+        name: nfs-kernel-server
+        state: restarted
+      when: "disks | length > 0"

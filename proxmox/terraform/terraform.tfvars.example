@@ -1,0 +1,14 @@
+# Copy this file to terraform.tfvars and fill in your values
+# terraform.tfvars is gitignored
+
+proxmox_endpoint  = "https://jonbonas:8006"
+proxmox_api_token = "terraform@pam!terraform-token=your-secret-token-here"
+proxmox_node      = "jonbonas"
+
+ssh_public_key = "ssh-ed25519 AAAA... your-key-here"
+vm_user        = "dixneuf19"
+
+k8s_worker_count     = 2
+k8s_worker_cores     = 4
+k8s_worker_memory    = 8192
+k8s_worker_disk_size = 50

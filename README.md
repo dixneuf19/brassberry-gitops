@@ -1,95 +1,107 @@
-# brassberry-gitops: The state of my kubernetes cluster
+# brassberry-gitops
 
-## GitOps with ArgoCD
+Monorepo for my homelab infrastructure: from bare-metal provisioning to GitOps-managed Kubernetes applications.
 
-This is the current state of my home kubernetes cluster, running on Raspberry Pis. It uses ArgoCD, Renovate and ArgoCD Image Updater for a simple and automatic update process!
+## Repository Structure
 
-## Bootstrap
-
-### OS dependencies
-
-Make sure to run the initial ansible playbook for the [`ubuntu-image-raspberry` repository.](https://github.com/dixneuf19/ubuntu-image-raspberry)
-
-```bash
-make all
+```
+.
+├── gitops/              # ArgoCD-managed Kubernetes manifests
+│   ├── argocd/          # ArgoCD server config + Application definitions
+│   ├── monitoring/      # kps, kube-state-metrics, karma
+│   ├── logging/         # loki, promtail
+│   ├── storage/         # nfs-client, local-path provisioners
+│   ├── ingress-nginx/
+│   ├── external-secrets/
+│   ├── cert-manager/
+│   ├── cnpg-system/     # CloudNativePG operator
+│   ├── karakeep/        # Bookmark manager
+│   ├── spliit/          # Expense sharing
+│   ├── fip/             # FIP radio bots
+│   ├── dank-face-bot/   # Telegram/Slack bots
+│   ├── lms/             # Lyrion Music Server
+│   ├── lms-yoshi/       # Radio Yoshi
+│   ├── netflix/         # Media server apps (jellyfin, transmission)
+│   └── ...
+│
+├── proxmox/             # Proxmox VE: terraform + playbooks + docs
+│   ├── terraform/
+│   ├── playbooks/       # proxmox-bootstrap, proxmox-zfs
+│   ├── README.md
+│   └── ZFS.md
+│
+├── oci-arm/             # Oracle Cloud ARM VM: terraform
+│
+├── raspberry-pi/        # Pi provisioning: image scripts + playbooks
+│   ├── fix-ssh-on-pi.*  # Image customization
+│   ├── templates/       # Cloud-init templates
+│   └── playbooks/       # jellyfin, mounts
+│
+├── cluster/             # k8s cluster lifecycle
+│   ├── k0sctl.yaml      # k0s cluster config
+│   └── playbooks/       # kernel-modules, upgrade, nfs-server
+│
+├── ansible/             # Shared Ansible config
+│   ├── hosts.yaml       # Inventory (brassberry nodes, proxmox, etc.)
+│   ├── scripts/         # tailscale-hostmap
+│   └── playbooks/       # Generic: ping, reboot, tailscale
+│
+└── Makefile             # Convenience targets for all operations
 ```
 
-Install Kubernetes with `k0sctl`, in the same repository.
+## Quick Start
+
+### Raspberry Pi Image
 
 ```bash
-k0sctl apply --config k0sctl.yaml
-# Make sure you have a special kubeconfig for your project
-# Otherwise you overwrite your other configs
-k0sctl kubeconfig > $KUBECONFIG
+cd raspberry-pi
+sudo ./fix-ssh-on-pi.bash
 ```
 
-You should now be able to list your nodes and `kube-system` pods.
+### Ansible Playbooks
+
+All playbooks use the shared inventory. Run via Make:
 
 ```bash
-kubectl get nodes
-kubectl get -n kube-system pods
+make ping              # Test connectivity
+make kernel-modules    # Prepare nodes for k0s
+make mounts            # Mount external disks
+make nfs-server        # Set up NFS shared storage
+make upgrade           # Rolling k8s-aware upgrades
 ```
 
-### CRD and ns
-
-KPS CRD <https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack>
+### Kubernetes Cluster (k0s)
 
 ```bash
-kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.55.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagerconfigs.yaml
-kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.55.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml
-kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.55.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
-kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.55.0/example/prometheus-operator-crd/monitoring.coreos.com_probes.yaml
-kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.55.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml
-kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.55.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml
-kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.55.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
-kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.55.0/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml
+make k0sctl            # Bootstrap/update the cluster
+make kubeconfig        # Export kubeconfig
 ```
 
-Create namespace monitoring for service monitor
+### Proxmox
 
 ```bash
-kubectl create ns monitoring
+make proxmox-post-install   # Community post-install script (interactive)
+make proxmox-bootstrap      # Ansible bootstrap (packages, Tailscale, TF token)
+make proxmox-zfs            # Create ZFS pools and datasets
 ```
 
-### Create secrets
+See [proxmox/README.md](proxmox/README.md) and [proxmox/ZFS.md](proxmox/ZFS.md) for detailed setup instructions.
+
+### ArgoCD (GitOps)
+
+Bootstrap ArgoCD, then it manages itself and all applications:
 
 ```bash
-kubectl create ns ingress-nginx
-kubectl create ns fip
-kubectl create ns argocd
+cd gitops/argocd/argo-cd
+helm upgrade --install -n argocd --create-namespace argo-cd . -f values.yaml
+kubectl apply -f gitops/argocd/apps/argocd-apps.yaml
 ```
 
-```bash
-cd ~/codes/raspberry/brassberry-gitops/ingress-nginx/ingress-nginx
-make secret
-cd -
-```
+## Technologies
 
-- Nginx basic auth
-- Secrets applicatifs pour
-  - Whats-on-fip
-  - spotify-api
-  - telegram-bot
-  - slack-bot
-- Dank face bot
-- ArgoCD image updater
-
-```bash
-kubectl -n fip create secret generic radio-france-api-token --from-env-file ~/codes/python/whats-on-fip/.secret                                                                               
-kubectl -n fip create secret generic spotify-api-access --from-env-file ~/codes/python/spotify-api/.secret
-kubectl -n fip create secret generic fip-telegram-bot --from-env-file ~/codes/python/fip-telegram-bot/.secret
-kubectl -n fip create secret generic fip-slack-bot --from-env-file ~/codes/python/fip-slack-bot/.secret
-kubectl -n dank-face-bot create secret generic telegram-token --from-env-file ~/codes/python/dank-face-bot/.secret
-```
-
-### Deploy Argocd
-
-```bash
-cd /home/baloo/codes/raspberry/brassberry-gitops/argocd/argo-cd
-helm upgrade --install -n "argocd" --create-namespace "argo-cd" . -f values.yaml
-cd -
-```
-
-```bash
-kubectl apply -f ~/codes/raspberry/argocd/apps/argocd-apps.yaml
-```
+- **Kubernetes**: k0s on Raspberry Pi 4 cluster + Oracle Cloud ARM worker
+- **GitOps**: ArgoCD with Renovate + ArgoCD Image Updater
+- **IaC**: Terraform (Proxmox, OCI)
+- **Config Management**: Ansible
+- **Networking**: Tailscale mesh VPN
+- **Storage**: ZFS (Proxmox), NFS shared storage

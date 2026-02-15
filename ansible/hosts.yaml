@@ -1,0 +1,42 @@
+# Uses https://github.com/mxbi/tailscale-hostmap to avoid specifying tailscale IP
+all:
+  vars:
+    ansible_ssh_user: dixneuf19
+    disks: []
+    is_raspberry: true
+
+master:
+  hosts:
+    brassberry-24:
+
+workers:
+  hosts:
+    brassberry-25:
+      disks:
+      - name: tuyhoa_2T
+        uuid: 2b0a49ce-d6c4-456d-a5a6-52850f9b0213
+        type: EXT4
+    brassberry-26:
+    brassberry-27:
+      disks:
+      - name: magadi_3T
+        uuid: E6504EF8504ECECD
+        type: NTFS
+    oracle-arm:
+      is_raspberry: false
+
+proxmox:
+  hosts:
+    jonbonas:
+      # No ansible_host: resolved via tailscale-hostmap (like brassberry hosts)
+      ansible_ssh_user: root
+      is_raspberry: false
+      # ZFS pool devices -- update after install based on lsblk output
+      fastpool_device: /dev/nvme1n1
+      # List HDD devices for tank pool. RAIDZ2 with 4 disks, RAIDZ1 with 3.
+      tank_devices:
+        - /dev/sda
+        - /dev/sdb
+        - /dev/sdc
+        - /dev/sdd
+      tank_vdev_type: raidz1

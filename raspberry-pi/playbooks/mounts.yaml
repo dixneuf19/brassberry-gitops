@@ -1,0 +1,65 @@
+#################################################
+# Setup automount of disks
+
+# Sources:
+# - https://www.raspberrypi.org/documentation/configuration/external-storage.md
+# - https://www.shellhacks.com/raspberry-pi-mount-usb-drive-automatically/
+
+# If you need to create a linux file-system
+# > sudo mkfs.ext4 -L my_disk_label /dev/sdaX
+# Apply this playbook
+# > sudo reboot
+# > sudo chown ubuntu: /dev/sdaX
+#################################################
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Install disks related packages
+      apt:
+        name:
+        - ntfs-3g
+        - exfat-fuse
+        state: latest
+
+    - name: Automount FAT
+      lineinfile:
+        line: "UUID={{item.uuid}} /mnt/{{item.name}} vfat defaults,auto,users,rw,nofail,umask=000 0 0"
+        path: /etc/fstab
+      with_items: "{{disks}}"
+      when: 
+        - item.type == 'FAT'
+      register: automount_FAT
+
+    - name: Automount NTFS
+      lineinfile:
+        line: "UUID={{item.uuid}} /mnt/{{item.name}} ntfs defaults,auto,users,rw,nofail,umask=000 0 0"
+        path: /etc/fstab
+      with_items: "{{disks}}"
+      when: 
+        - item.type == 'NTFS'
+      register: automount_NTFS
+
+    - name: Automount exFAT
+      lineinfile:
+        line: "UUID={{item.uuid}} /mnt/{{item.name}} exfat defaults,auto,users,rw,nofail 0 0"
+        path: /etc/fstab
+      with_items: "{{disks}}"
+      when: 
+        - item.type == 'exFAT'
+      register: automount_exFAT
+
+    - name: Automount EXT4
+      lineinfile:
+        line: "UUID={{item.uuid}} /mnt/{{item.name}} ext4 defaults,auto,users,rw,nofail 0 0"
+        path: /etc/fstab
+      with_items: "{{disks}}"
+      when: 
+        - item.type == 'EXT4'
+      register: automount_EXT4
+
+
+    ## Add actual mounting to avoid rebooting
+    - name: Reboot
+      reboot: {}
+      when: "automount_FAT.changed or automount_NTFS.changed or automount_exFAT.changed or automount_EXT4.changed"

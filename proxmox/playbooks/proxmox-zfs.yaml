@@ -1,0 +1,91 @@
+#################################################
+# Configure ALL ZFS pools and datasets on Proxmox
+# - rpool: NVMe 1TB OS pool (tuning only, created by installer)
+# - fastpool: NVMe 2TB (single disk, lz4)
+# - tank: HDDs (RAIDZ1 or RAIDZ2, zstd)
+# - Datasets with tuned properties
+#
+# Requires: community.general >= 11.0.0
+#   ansible-galaxy collection install community.general
+#################################################
+---
+- hosts: proxmox
+  become: true
+  tasks:
+    #############################
+    # rpool: NVMe 1TB OS pool (tuning only)
+    #############################
+    - name: Enable lz4 compression on rpool
+      community.general.zfs:
+        name: rpool
+        state: present
+        extra_zfs_properties:
+          compression: lz4
+          atime: "off"
+
+    #############################
+    # fastpool: NVMe 2TB
+    #############################
+    - name: Create fastpool (NVMe 2TB performance pool)
+      community.general.zpool:
+        name: fastpool
+        force: true
+        vdevs:
+          - disks:
+              - "{{ fastpool_device }}"
+        pool_properties:
+          ashift: "12"
+          autoexpand: "on"
+        filesystem_properties:
+          compression: lz4
+          atime: "off"
+          xattr: sa
+          dnodesize: auto
+
+    - name: Create fastpool datasets
+      community.general.zfs:
+        name: "fastpool/{{ item }}"
+        state: present
+      loop:
+        - vm-disks
+        - ct-data
+
+    #############################
+    # tank: HDDs (RAIDZ1 or RAIDZ2)
+    #############################
+    - name: Create tank (HDD capacity + backup pool)
+      community.general.zpool:
+        name: tank
+        force: true
+        vdevs:
+          - type: "{{ tank_vdev_type }}"
+            disks: "{{ tank_devices }}"
+        pool_properties:
+          ashift: "12"
+          autoexpand: "on"
+        filesystem_properties:
+          compression: zstd
+          atime: "off"
+          xattr: sa
+          dnodesize: auto
+
+    # Large-file datasets: 1M recordsize for better HDD performance
+    - name: Create tank large-file datasets
+      community.general.zfs:
+        name: "tank/{{ item }}"
+        state: present
+        extra_zfs_properties:
+          recordsize: "1M"
+      loop:
+        - backups
+        - media
+        - iso
+
+    # Standard datasets: default 128K recordsize
+    - name: Create tank standard datasets
+      community.general.zfs:
+        name: "tank/{{ item }}"
+        state: present
+      loop:
+        - templates
+        - data
