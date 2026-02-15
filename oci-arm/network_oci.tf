@@ -157,8 +157,8 @@ data "oci_core_private_ips" "oracle_arm_private_ips" {
 
 # Remove the separate VNIC attachment resource and use the instance's private IP directly
 resource "oci_core_public_ip" "oracle_arm" {
-    compartment_id = var.oci_compartment_id
-    lifetime = "RESERVED"
-    display_name = "oracle-arm-public-ip"
-    private_ip_id = data.oci_core_private_ips.oracle_arm_private_ips.private_ips[0].id
+  compartment_id = var.oci_compartment_id
+  lifetime       = "RESERVED"
+  display_name   = "oracle-arm-public-ip"
+  private_ip_id  = data.oci_core_private_ips.oracle_arm_private_ips.private_ips[0].id
 }
