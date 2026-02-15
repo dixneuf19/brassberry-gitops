@@ -5,32 +5,32 @@ metadata:
   name: brassberry-k0s
 spec:
   hosts:
-  - role: controller+worker
-    # privateInterface: eth0
-    ssh:
-      address: brassberry-24
-      user: dixneuf19
-      keyPath: ~/.ssh/id_ed25519
-  - role: worker
-    privateInterface: eth0
-    ssh:
-      address: brassberry-25
-      user: dixneuf19
-      keyPath: ~/.ssh/id_ed25519
-  - role: worker
-    privateInterface: eth0
-    ssh:
-      address: brassberry-26
-      user: dixneuf19
-      keyPath: ~/.ssh/id_ed25519
-  - role: worker
-    privateInterface: eth0
-    ssh:
-      address: brassberry-27
-      user: dixneuf19
-      keyPath: ~/.ssh/id_ed25519
+    - role: controller+worker
+      # privateInterface: eth0
+      ssh:
+        address: brassberry-24
+        user: dixneuf19
+        keyPath: ~/.ssh/id_ed25519
+    - role: worker
+      privateInterface: eth0
+      ssh:
+        address: brassberry-25
+        user: dixneuf19
+        keyPath: ~/.ssh/id_ed25519
+    - role: worker
+      privateInterface: eth0
+      ssh:
+        address: brassberry-26
+        user: dixneuf19
+        keyPath: ~/.ssh/id_ed25519
+    - role: worker
+      privateInterface: eth0
+      ssh:
+        address: brassberry-27
+        user: dixneuf19
+        keyPath: ~/.ssh/id_ed25519
   k0s:
-    version: v1.31.2+k0s.0 
+    version: v1.34.3+k0s.0
     config:
       apiVersion: k0s.k0sproject.io/v1beta1
       kind: Cluster
@@ -40,8 +40,8 @@ spec:
         api:
           address: 100.79.160.31 # tailscale IP of main
           sans:
-           - brassberry-24
-           - 192.168.1.24
-           - brassberry.dixneuf19.fr
+            - brassberry-24
+            - 192.168.1.24
+            - brassberry.dixneuf19.fr
         telemetry:
           enabled: false
