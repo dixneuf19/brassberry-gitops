@@ -9,10 +9,9 @@ Monorepo for my homelab infrastructure: from bare-metal provisioning to GitOps-m
 ├── gitops/              # ArgoCD-managed Kubernetes manifests
 │   ├── argocd/          # ArgoCD server config + Application definitions
 │   ├── monitoring/      # kps, kube-state-metrics, karma
-│   ├── logging/         # loki, promtail
+│   ├── traefik/         # Traefik ingress controller
 │   ├── storage/         # nfs-client, local-path provisioners
-│   ├── ingress-nginx/
-│   ├── external-secrets/ # ESO operator + Scaleway ClusterSecretStore
+│   ├── external-secrets/ # ESO operator + Bitwarden ClusterSecretStore
 │   ├── cert-manager/
 │   ├── cnpg-system/     # CloudNativePG operator
 │   ├── karakeep/        # Bookmark manager
@@ -97,8 +96,10 @@ Bootstrap ArgoCD, then it manages itself and all applications:
 ```bash
 cd gitops/argocd/argo-cd
 helm upgrade --install -n argocd --create-namespace argo-cd . -f values.yaml
-kubectl apply -f gitops/argocd/apps/argocd-apps.yaml
+helm template argocd-apps gitops/argocd/apps/ | kubectl apply -n argocd -f -
 ```
+
+All applications are defined in `gitops/argocd/apps/values.yaml` and rendered by a Helm chart (app-of-apps pattern).
 
 ## Secrets Management
 
@@ -123,10 +124,15 @@ All secrets are managed centrally in **[Bitwarden Secrets Manager](https://vault
 2. For TF-consumed secrets: add the `TF_VAR_*` export to `.envrc`
 3. For K8s secrets: add an `ExternalSecret` resource in the app's chart templates
 
+## CI/CD
+
+- **[argocd-diff-preview](https://github.com/dag-andersen/argocd-diff-preview)**: Runs on every PR to main — renders all ArgoCD Application manifests on both branches and posts a diff as a PR comment. Uses `--traverse-app-of-apps` to recursively discover child applications from the Helm-based app-of-apps chart.
+- **Renovate**: Auto-merges minor/patch dependency updates; creates PRs for major versions.
+
 ## Technologies
 
 - **Kubernetes**: k0s on Raspberry Pi 4 cluster + Oracle Cloud ARM worker
-- **GitOps**: ArgoCD with Renovate + ArgoCD Image Updater
+- **GitOps**: ArgoCD with Renovate + ArgoCD Image Updater + [argocd-diff-preview](https://github.com/dag-andersen/argocd-diff-preview)
 - **IaC**: Terraform (Scaleway, Proxmox, OCI)
 - **Secrets**: Bitwarden Secrets Manager + External Secrets Operator
 - **Config Management**: Ansible
