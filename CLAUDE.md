@@ -60,8 +60,8 @@ kubectl apply -f gitops/argocd/apps/argocd-apps.yaml
 
 ArgoCD manages all Kubernetes resources. The app-of-apps pattern is used:
 
-1. `gitops/argocd/apps/argocd-apps.yaml` — root Application that recursively scans `gitops/argocd/apps/`
-2. `gitops/argocd/apps/<name>/<name>-app.yaml` — individual ArgoCD Application pointing to a Helm chart
+1. `gitops/argocd/apps/argocd-apps.yaml` — bootstrap Application (Helm source) that renders all app definitions
+2. `gitops/argocd/apps/values.yaml` — all ArgoCD Applications defined in a single file
 3. `gitops/<namespace>/<chart>/` — the actual Helm chart (Chart.yaml, values.yaml, templates/)
 
 All apps have automated sync with prune and self-heal enabled. Namespaces are auto-created.
@@ -87,7 +87,7 @@ Two paths from Bitwarden Secrets Manager:
 
 1. Create `gitops/<namespace>/<chart>/` with Chart.yaml, values.yaml, templates/
 2. Add a Makefile (copy from existing app — all follow the same pattern)
-3. Create `gitops/argocd/apps/<name>/<name>-app.yaml` pointing to the chart path
+3. Add an entry in `gitops/argocd/apps/values.yaml` with name, namespace, and path
 4. If secrets are needed: create secrets in Bitwarden Secrets Manager (via `bws` CLI or web UI) and add `ExternalSecret` in templates/
 
 ### CI/CD

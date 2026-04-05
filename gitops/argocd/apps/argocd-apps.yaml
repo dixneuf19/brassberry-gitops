@@ -1,3 +1,5 @@
+# Bootstrap Application - apply manually: kubectl apply -f argocd-apps.yaml
+# Edit values.yaml to add/remove/configure applications
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -11,7 +13,8 @@ spec:
   project: default
   source:
     path: gitops/argocd/apps/
-    repoURL: "https://github.com/dixneuf19/brassberry-gitops"
+    repoURL: https://github.com/dixneuf19/brassberry-gitops
     targetRevision: main
-    directory:
-      recurse: true
+    helm:
+      valueFiles:
+        - values.yaml
