@@ -42,13 +42,6 @@ spec:
   dnsNames:
     - bitwarden-sdk-server.external-secrets.svc.cluster.local
     - bitwarden-sdk-server
-    - localhost
-  ipAddresses:
-    - 127.0.0.1
-    - "::1"
-  privateKey:
-    algorithm: RSA
-    size: 2048
   issuerRef:
     name: bitwarden-ca-issuer
     kind: Issuer
