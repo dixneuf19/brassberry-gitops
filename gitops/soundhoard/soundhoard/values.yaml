@@ -15,13 +15,9 @@ generic:
     enabled: false
   configmap:
     DOWNLOAD_DIR: /music/SoundHoard
-    NAVIDROME_URL: http://navidrome:4533
-    NAVIDROME_USER: admin
   secrets:
     - name: soundhoard
       key: TELEGRAM_BOT_TOKEN
-    - name: soundhoard
-      key: NAVIDROME_PASSWORD
   volumeMounts:
     - name: music
       mountPath: /music
