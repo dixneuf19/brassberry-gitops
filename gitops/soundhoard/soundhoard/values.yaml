@@ -1,0 +1,43 @@
+generic:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/dixneuf19/soundhoard
+    tag: latest
+  container:
+    noProbes: true
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      memory: 128Mi
+      cpu: 100m
+  ingress:
+    enabled: false
+  configmap:
+    DOWNLOAD_DIR: /music/SoundHoard
+    NAVIDROME_URL: http://navidrome:4533
+    NAVIDROME_USER: admin
+  secrets:
+    - name: soundhoard
+      key: TELEGRAM_BOT_TOKEN
+    - name: soundhoard
+      key: NAVIDROME_PASSWORD
+  volumeMounts:
+    - name: music
+      mountPath: /music
+  volumes:
+    - name: music
+      persistentVolumeClaim:
+        claimName: soundhoard-music
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - soundhoard
+            topologyKey: kubernetes.io/hostname

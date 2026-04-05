@@ -1,0 +1,11 @@
+apiVersion: v2
+name: navidrome
+version: 1.0.0
+description: "Self-hosted music server (Subsonic-compatible)"
+appVersion: "0.54.5"
+home: https://www.navidrome.org/
+dependencies:
+  - name: base-helm-chart
+    alias: generic
+    version: 0.3.2
+    repository: https://dixneuf19.github.io/helm-charts-repo/

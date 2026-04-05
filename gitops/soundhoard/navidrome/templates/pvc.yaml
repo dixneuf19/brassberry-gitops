@@ -1,0 +1,40 @@
+---
+# Shared music PV/PVC — used by both Navidrome and SoundHoard
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: soundhoard-music
+spec:
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: "192.168.1.25"
+    path: "/mnt/tuyhoa_2T/soundhoard/music"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: soundhoard-music
+spec:
+  storageClassName: "" # deactivate dynamic provisioning
+  volumeName: soundhoard-music
+  resources:
+    requests:
+      storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+---
+# Navidrome internal data (database, cache)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: navidrome-data
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Mi
+  storageClassName: nfs-client

@@ -1,0 +1,58 @@
+generic:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/navidrome/navidrome
+    tag: "0.54.5"
+  container:
+    port: 4533
+  resources:
+    limits:
+      memory: 256Mi
+    requests:
+      memory: 128Mi
+      cpu: 100m
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+    hosts:
+      - host: navidrome.dixneuf19.fr
+        paths:
+          - path: /
+            type: Prefix
+    tls:
+      - secretName: navidrome-tls
+        hosts:
+          - navidrome.dixneuf19.fr
+  configmap:
+    ND_MUSICFOLDER: /music
+    ND_DATAFOLDER: /data
+    ND_SCANSCHEDULE: "@every 1m"
+    ND_LOGLEVEL: info
+    ND_BASEURL: ""
+  volumeMounts:
+    - name: music
+      mountPath: /music
+      readOnly: true
+    - name: data
+      mountPath: /data
+  volumes:
+    - name: music
+      persistentVolumeClaim:
+        claimName: soundhoard-music
+    - name: data
+      persistentVolumeClaim:
+        claimName: navidrome-data
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - navidrome
+            topologyKey: kubernetes.io/hostname

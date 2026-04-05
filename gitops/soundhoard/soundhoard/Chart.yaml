@@ -1,0 +1,11 @@
+apiVersion: v2
+name: soundhoard
+version: 1.0.0
+description: "Telegram bot that downloads YouTube audio to Navidrome"
+appVersion: "1.0.0"
+home: https://github.com/dixneuf19/playground
+dependencies:
+  - name: base-helm-chart
+    alias: generic
+    version: 0.3.2
+    repository: https://dixneuf19.github.io/helm-charts-repo/

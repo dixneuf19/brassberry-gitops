@@ -190,6 +190,17 @@ applications:
           - ".spec.template.spec.hostUsers"
 
   # =============================================================================
+  # SoundHoard (music pipeline)
+  # =============================================================================
+  - name: navidrome
+    namespace: soundhoard
+    path: gitops/soundhoard/navidrome
+
+  - name: soundhoard
+    namespace: soundhoard
+    path: gitops/soundhoard/soundhoard
+
+  # =============================================================================
   # Other apps
   # =============================================================================
   - name: vpa
