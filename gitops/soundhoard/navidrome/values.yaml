@@ -44,15 +44,3 @@ generic:
     - name: data
       persistentVolumeClaim:
         claimName: navidrome-data
-  affinity:
-    podAntiAffinity:
-      preferredDuringSchedulingIgnoredDuringExecution:
-        - weight: 100
-          podAffinityTerm:
-            labelSelector:
-              matchExpressions:
-                - key: app.kubernetes.io/name
-                  operator: In
-                  values:
-                    - navidrome
-            topologyKey: kubernetes.io/hostname

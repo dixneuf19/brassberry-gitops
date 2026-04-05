@@ -2,7 +2,7 @@ generic:
   replicaCount: 1
   image:
     repository: ghcr.io/dixneuf19/soundhoard
-    tag: latest
+    tag: main
   container:
     noProbes: true
   resources:
@@ -29,15 +29,3 @@ generic:
     - name: music
       persistentVolumeClaim:
         claimName: soundhoard-music
-  affinity:
-    podAntiAffinity:
-      preferredDuringSchedulingIgnoredDuringExecution:
-        - weight: 100
-          podAffinityTerm:
-            labelSelector:
-              matchExpressions:
-                - key: app.kubernetes.io/name
-                  operator: In
-                  values:
-                    - soundhoard
-            topologyKey: kubernetes.io/hostname

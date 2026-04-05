@@ -81,6 +81,15 @@ spec:
             helm:
               name: "generic.image.name"
               tag: "generic.image.tag"
+    # soundhoard namespace apps
+    - namePattern: "soundhoard"
+      images:
+        - alias: "soundhoard"
+          imageName: "ghcr.io/dixneuf19/soundhoard:main"
+          manifestTargets:
+            helm:
+              name: "generic.image.name"
+              tag: "generic.image.tag"
 ---
 # Semver-based updates for apps with standard image.repository/image.tag
 apiVersion: argocd-image-updater.argoproj.io/v1alpha1
