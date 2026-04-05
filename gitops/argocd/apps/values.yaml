@@ -126,6 +126,10 @@ applications:
     namespace: ingress-nginx
     path: gitops/ingress-nginx/ingress-nginx/
 
+  - name: traefik
+    namespace: traefik
+    path: gitops/traefik/traefik/
+
   - name: cert-manager
     namespace: cert-manager
     path: gitops/cert-manager/cert-manager/
