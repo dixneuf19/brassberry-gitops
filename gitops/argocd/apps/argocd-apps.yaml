@@ -11,13 +11,7 @@ spec:
   project: default
   source:
     path: gitops/argocd/apps/
-    repoURL: 'https://github.com/dixneuf19/brassberry-gitops'
+    repoURL: "https://github.com/dixneuf19/brassberry-gitops"
     targetRevision: main
     directory:
       recurse: true
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-    - CreateNamespace=true
