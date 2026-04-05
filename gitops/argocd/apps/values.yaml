@@ -5,6 +5,8 @@ defaults:
   type: helm
   selfHeal: true
   createNamespace: true
+  prune: true
+  finalizer: true
 
 applications:
   # =============================================================================
@@ -69,6 +71,12 @@ applications:
   # =============================================================================
   # ArgoCD
   # =============================================================================
+  - name: argocd-apps
+    namespace: argocd
+    path: gitops/argocd/apps/
+    prune: false
+    finalizer: false
+
   - name: argo-cd
     namespace: argocd
     path: gitops/argocd/argo-cd/
