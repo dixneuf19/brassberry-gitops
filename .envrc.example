@@ -18,6 +18,9 @@ export AWS_SECRET_ACCESS_KEY=$SCW_SECRET_KEY
 
 # Helper: read a secret by name from Bitwarden Secrets Manager (cached)
 _BWS_CACHE=$(bws secret list --output json 2>/dev/null)
+if [ -z "$_BWS_CACHE" ] || [ "$_BWS_CACHE" = "[]" ]; then
+  log_error "bws secret list returned no data. Check BWS_ACCESS_TOKEN."
+fi
 _bws_secret() {
   echo "$_BWS_CACHE" | jq -r --arg name "$1" '.[] | select(.key == $name) | .value'
 }
@@ -28,3 +31,4 @@ export TF_VAR_ssh_public_key=$(_bws_secret ssh-public-key)
 export TF_VAR_gandi_pat=$(_bws_secret gandi-pat)
 
 unset _BWS_CACHE
+unset -f _bws_secret
