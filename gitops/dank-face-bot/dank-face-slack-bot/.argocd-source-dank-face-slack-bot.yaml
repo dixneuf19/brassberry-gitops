@@ -4,5 +4,5 @@ helm:
     value: ghcr.io/dixneuf19/dank-face-slack-bot
     forcestring: true
   - name: generic.image.tag
-    value: main@sha256:62fe1f2159c7ab9b11b74c8ef2283c0f0d8bbeb8d4445d91ece042a9e24d5ba9
+    value: main@sha256:4770499f42d6a1a90c0a57693627d19bb82748b5e64ef2289af4bca9afc94653
     forcestring: true
