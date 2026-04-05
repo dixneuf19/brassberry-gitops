@@ -14,14 +14,14 @@ traefik:
     type: NodePort
   ports:
     web:
-      nodePort: 32081 # Temporary, switch to 32080 after ingress-nginx removal
+      nodePort: 32080
       http:
         redirections:
           entryPoint:
             to: websecure
             scheme: https
     websecure:
-      nodePort: 32444 # Temporary, switch to 32443 after ingress-nginx removal
+      nodePort: 32443
 
   resources:
     requests:
