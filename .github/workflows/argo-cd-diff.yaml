@@ -34,7 +34,8 @@ jobs:
             -e REPO=${{ github.repository }} \
             dagandersen/argocd-diff-preview:v0.2.2 \
             --diff-ignore "checksum" \
-            --traverse-app-of-apps
+            --traverse-app-of-apps \
+            --render-method repo-server-api
 
       - name: Post diff as comment
         run: |
