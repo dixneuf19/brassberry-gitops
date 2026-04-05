@@ -1,5 +1,2 @@
-# =============================================================================
-# Variables for the Scaleway layer
-# All secrets are populated manually via `scw secret version create`.
-# No variables needed.
-# =============================================================================
+# Secrets have been migrated to Bitwarden Secrets Manager.
+# No variables needed -- only the S3 bucket remains.

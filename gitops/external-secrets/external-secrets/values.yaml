@@ -8,3 +8,6 @@ external-secrets:
   serviceMonitor:
     # -- Specifies whether to create a ServiceMonitor resource for collecting Prometheus metrics
     enabled: false
+
+  bitwarden-sdk-server:
+    enabled: true
