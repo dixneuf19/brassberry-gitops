@@ -1,15 +1,4 @@
 {
-  "extends": [
-    "config:base",
-    ":dependencyDashboard",
-    ":automergeMinor",
-    ":maintainLockFilesWeekly"
-  ],
-  "packageRules": [
-    {
-      "matchPackagePatterns": ["superset"],
-      "description": "Last update broke the docker image by removing pg driver. Need to fix the docker image before updating",
-      "automerge": false
-    }
-  ]
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["local>dixneuf19/renovate-presets"]
 }
