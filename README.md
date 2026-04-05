@@ -102,16 +102,24 @@ kubectl apply -f gitops/argocd/apps/argocd-apps.yaml
 
 ## Secrets Management
 
-All secrets are managed centrally in **Scaleway Secret Manager** and flow to consumers through two paths:
+All secrets are managed centrally in **[Bitwarden Secrets Manager](https://vault.bitwarden.eu)** and flow to consumers through two paths:
 
-- **Terraform layers** (proxmox, oci-arm): direnv reads secrets from Scaleway SM via `scw` CLI and exports them as `TF_VAR_*` environment variables. No `.tfvars` files needed on disk.
-- **Kubernetes**: External Secrets Operator syncs secrets from Scaleway SM into K8s Secrets via `ExternalSecret` resources placed alongside each app's Helm chart.
+- **Terraform layers** (proxmox, oci-arm): direnv reads secrets from Bitwarden SM via `bws` CLI and exports them as `TF_VAR_*` environment variables. No `.tfvars` files needed on disk.
+- **Kubernetes**: External Secrets Operator syncs secrets from Bitwarden SM into K8s Secrets via `ExternalSecret` resources placed alongside each app's Helm chart.
 
-See [scaleway/README.md](scaleway/README.md) for bootstrap instructions.
+### Prerequisites
+
+1. Install the [Bitwarden Secrets Manager CLI](https://bitwarden.com/help/secrets-manager-cli/) (`bws`)
+2. Create a `.env` file at the repo root with your machine account access token:
+   ```
+   BWS_ACCESS_TOKEN=<your-token>
+   ```
+   Generate or retrieve the token from the [machine account page](https://vault.bitwarden.eu/#/sm/512cf254-9f26-4e35-b1d1-b42300bb3dca/machine-accounts/faf79659-0805-4440-a7e8-b42300e93f1e/access).
+3. Run `direnv allow` — the `.envrc` will load `.env` automatically
 
 ### Adding a new secret
 
-1. Add the `scaleway_secret` + `scaleway_secret_version` resource in `scaleway/terraform/`
+1. Add the secret in Bitwarden Secrets Manager
 2. For TF-consumed secrets: add the `TF_VAR_*` export to `.envrc`
 3. For K8s secrets: add an `ExternalSecret` resource in the app's chart templates
 
@@ -120,7 +128,7 @@ See [scaleway/README.md](scaleway/README.md) for bootstrap instructions.
 - **Kubernetes**: k0s on Raspberry Pi 4 cluster + Oracle Cloud ARM worker
 - **GitOps**: ArgoCD with Renovate + ArgoCD Image Updater
 - **IaC**: Terraform (Scaleway, Proxmox, OCI)
-- **Secrets**: Scaleway Secret Manager + External Secrets Operator
+- **Secrets**: Bitwarden Secrets Manager + External Secrets Operator
 - **Config Management**: Ansible
 - **Networking**: Tailscale mesh VPN
 - **Storage**: ZFS (Proxmox), NFS shared storage
