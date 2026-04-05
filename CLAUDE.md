@@ -51,7 +51,7 @@ make uninstall   # Remove helm release
 ```bash
 cd gitops/argocd/argo-cd
 helm upgrade --install -n argocd --create-namespace argo-cd . -f values.yaml
-kubectl apply -f gitops/argocd/apps/argocd-apps.yaml
+helm template argocd-apps gitops/argocd/apps/ | kubectl apply -n argocd -f -
 ```
 
 ## Architecture
@@ -60,8 +60,8 @@ kubectl apply -f gitops/argocd/apps/argocd-apps.yaml
 
 ArgoCD manages all Kubernetes resources. The app-of-apps pattern is used:
 
-1. `gitops/argocd/apps/argocd-apps.yaml` — bootstrap Application (Helm source) that renders all app definitions
-2. `gitops/argocd/apps/values.yaml` — all ArgoCD Applications defined in a single file
+1. `gitops/argocd/apps/` — Helm chart that generates all ArgoCD Applications (including itself)
+2. `gitops/argocd/apps/values.yaml` — all applications defined in a single file
 3. `gitops/<namespace>/<chart>/` — the actual Helm chart (Chart.yaml, values.yaml, templates/)
 
 All apps have automated sync with prune and self-heal enabled. Namespaces are auto-created.
