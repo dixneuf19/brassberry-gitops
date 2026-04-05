@@ -14,6 +14,7 @@ argo-cd:
   configs:
     params:
       server.disable.auth: true
+      server.insecure: true
       controller.status.processors: 10
       controller.operation.processors: 5
       controller.repo.server.timeout.seconds: 500
