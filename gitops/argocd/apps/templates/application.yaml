@@ -1,0 +1,47 @@
+{{- $defaults := .Values.defaults }}
+{{- range .Values.applications }}
+{{- $app := merge (dict) . $defaults }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ required "name is required" $app.name }}
+  annotations:
+    argocd.argoproj.io/manifest-generate-paths: "."
+spec:
+  project: default
+  source:
+    repoURL: {{ $app.repoURL | quote }}
+    targetRevision: {{ $app.targetRevision }}
+    path: {{ required "path is required" $app.path }}
+{{- if eq $app.type "helm" }}
+{{- $helmConfig := mustMergeOverwrite (dict "valueFiles" (list "values.yaml")) ($app.helm | default dict) }}
+    helm:
+{{ toYaml $helmConfig | indent 6 }}
+{{- else }}
+{{- with $app.directory }}
+    directory:
+{{ toYaml . | indent 6 }}
+{{- end }}
+{{- end }}
+  destination:
+    name: in-cluster
+    namespace: {{ required "namespace is required" $app.namespace }}
+{{- with $app.ignoreDifferences }}
+  ignoreDifferences:
+{{ toYaml . | indent 4 }}
+{{- end }}
+  syncPolicy:
+    automated:
+      prune: true
+      {{- /* hasKey on . (not $app) because merge overwrites boolean false with defaults */}}
+      selfHeal: {{ ternary .selfHeal $defaults.selfHeal (hasKey . "selfHeal") }}
+{{- $syncOptions := ternary (list) (list "CreateNamespace=true") (and (hasKey . "createNamespace") (not .createNamespace)) }}
+{{- $syncOptions = concat $syncOptions ($app.syncOptions | default list) }}
+{{- if $syncOptions }}
+    syncOptions:
+{{- range $syncOptions }}
+      - {{ . }}
+{{- end }}
+{{- end }}
+{{- end }}
