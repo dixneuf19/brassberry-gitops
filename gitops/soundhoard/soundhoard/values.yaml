@@ -1,0 +1,27 @@
+generic:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/dixneuf19/soundhoard
+    tag: main
+  container:
+    noProbes: true
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      memory: 128Mi
+      cpu: 100m
+  ingress:
+    enabled: false
+  configmap:
+    DOWNLOAD_DIR: /music/SoundHoard
+  secrets:
+    - name: soundhoard
+      key: TELEGRAM_BOT_TOKEN
+  volumeMounts:
+    - name: music
+      mountPath: /music
+  volumes:
+    - name: music
+      persistentVolumeClaim:
+        claimName: soundhoard-music

@@ -1,0 +1,13 @@
+---
+# Shared music PVC — used by both Navidrome and SoundHoard
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: soundhoard-music
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Mi
+  storageClassName: nfs-client

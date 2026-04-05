@@ -1,0 +1,9 @@
+apiVersion: v2
+name: navidrome
+version: 1.0.0
+description: "Self-hosted music server (Subsonic-compatible)"
+home: https://www.navidrome.org/
+dependencies:
+  - name: navidrome
+    version: 6.8.2
+    repository: https://djjudas21.github.io/charts/
