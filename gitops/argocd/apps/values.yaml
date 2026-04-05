@@ -122,10 +122,6 @@ applications:
   # =============================================================================
   # Infrastructure
   # =============================================================================
-  - name: ingress-nginx
-    namespace: ingress-nginx
-    path: gitops/ingress-nginx/ingress-nginx/
-
   - name: traefik
     namespace: traefik
     path: gitops/traefik/traefik/
@@ -192,6 +188,17 @@ applications:
         kind: Deployment
         jqPathExpressions:
           - ".spec.template.spec.hostUsers"
+
+  # =============================================================================
+  # SoundHoard (music pipeline)
+  # =============================================================================
+  - name: navidrome
+    namespace: soundhoard
+    path: gitops/soundhoard/navidrome
+
+  - name: soundhoard
+    namespace: soundhoard
+    path: gitops/soundhoard/soundhoard
 
   # =============================================================================
   # Other apps
