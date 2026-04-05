@@ -1,0 +1,47 @@
+traefik:
+  providers:
+    kubernetesIngress:
+      enabled: true
+      publishedService:
+        enabled: true
+    kubernetesCRD:
+      enabled: true
+      allowCrossNamespace: true
+    kubernetesGateway:
+      enabled: false # Phase B: Gateway API migration
+
+  service:
+    type: NodePort
+  ports:
+    web:
+      nodePort: 32081 # Temporary, switch to 32080 after ingress-nginx removal
+      http:
+        redirections:
+          entryPoint:
+            to: websecure
+            scheme: https
+    websecure:
+      nodePort: 32444 # Temporary, switch to 32443 after ingress-nginx removal
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      memory: 256Mi
+
+  deployment:
+    replicas: 2
+
+  metrics:
+    prometheus:
+      entryPoint: metrics
+      service:
+        enabled: true
+      serviceMonitor:
+        enabled: true
+        namespace: monitoring
+
+  logs:
+    general:
+      level: INFO
