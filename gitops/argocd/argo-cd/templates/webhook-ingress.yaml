@@ -1,9 +1,6 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  annotations:
-    traefik.ingress.kubernetes.io/service.serversscheme: "https"
-    traefik.ingress.kubernetes.io/service.serverstransport: argocd-argocd-skip-verify@kubernetescrd
   name: argocd-webhook
 spec:
   ingressClassName: traefik
