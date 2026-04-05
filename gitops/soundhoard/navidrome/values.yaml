@@ -1,46 +1,34 @@
-generic:
-  replicaCount: 1
-  image:
-    repository: ghcr.io/navidrome/navidrome
-    tag: "0.54.5"
-  container:
-    port: 4533
-  resources:
-    limits:
-      memory: 256Mi
-    requests:
-      memory: 128Mi
-      cpu: 100m
-  ingress:
-    enabled: true
-    ingressClassName: nginx
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt
-    hosts:
-      - host: navidrome.dixneuf19.fr
-        paths:
-          - path: /
-            type: Prefix
-    tls:
-      - secretName: navidrome-tls
-        hosts:
-          - navidrome.dixneuf19.fr
-  configmap:
+navidrome:
+  env:
     ND_MUSICFOLDER: /music
-    ND_DATAFOLDER: /data
-    ND_SCANSCHEDULE: "@every 1m"
     ND_LOGLEVEL: info
-    ND_BASEURL: ""
-  volumeMounts:
-    - name: music
-      mountPath: /music
-      readOnly: true
-    - name: data
+    ND_SCANSCHEDULE: "@every 1m"
+
+  ingress:
+    main:
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt
+      hosts:
+        - host: navidrome.dixneuf19.fr
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: navidrome-tls
+          hosts:
+            - navidrome.dixneuf19.fr
+
+  persistence:
+    config:
+      enabled: true
       mountPath: /data
-  volumes:
-    - name: music
-      persistentVolumeClaim:
-        claimName: soundhoard-music
-    - name: data
-      persistentVolumeClaim:
-        claimName: navidrome-data
+      storageClass: nfs-client
+      accessMode: ReadWriteMany
+      size: 1Mi
+    music:
+      enabled: true
+      mountPath: /music
+      existingClaim: soundhoard-music
+      readOnly: true

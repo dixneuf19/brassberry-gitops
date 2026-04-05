@@ -1,6 +1,6 @@
 dependencies:
-- name: base-helm-chart
-  repository: https://dixneuf19.github.io/helm-charts-repo/
-  version: 0.3.2
-digest: sha256:2d01586905eb74f7bd1d20d29f150f8f29c5566a1a8511f909ed80f22ecaadce
-generated: "2026-04-05T20:19:37.986921+02:00"
+- name: navidrome
+  repository: https://djjudas21.github.io/charts/
+  version: 6.8.2
+digest: sha256:68f54f49c7c0ba4627c985721f6b4cda9d4b1629b7edbb30ef65574023de4a7c
+generated: "2026-04-05T20:30:08.676641+02:00"
