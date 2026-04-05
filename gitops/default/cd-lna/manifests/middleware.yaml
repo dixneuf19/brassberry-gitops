@@ -1,0 +1,10 @@
+# NOTE: The cd-lna-auth secret must have key "users" (not "auth") for Traefik BasicAuth.
+# If the existing secret uses key "auth", recreate it:
+#   kubectl -n default create secret generic cd-lna-auth --from-literal=users='user:$(htpasswd -nbB "" "password" | cut -d: -f2)' --dry-run=client -o yaml | kubectl apply -f -
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: cd-lna-auth
+spec:
+  basicAuth:
+    secret: cd-lna-auth

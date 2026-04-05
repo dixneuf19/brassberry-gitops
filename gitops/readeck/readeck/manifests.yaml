@@ -105,9 +105,9 @@ metadata:
   name: readeck
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-body-size-50m@kubernetescrd
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   tls:
     - hosts:
         - readeck.dixneuf19.fr

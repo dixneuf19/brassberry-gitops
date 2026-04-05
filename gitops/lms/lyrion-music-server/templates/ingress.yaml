@@ -3,12 +3,11 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    nginx.ingress.kubernetes.io/auth-secret: ingress-nginx/basic-auth
-    nginx.ingress.kubernetes.io/auth-type: basic
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-basic-auth@kubernetescrd
   name: lms
   namespace: lms
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   rules:
   - host: lms.dixneuf19.fr
     http:

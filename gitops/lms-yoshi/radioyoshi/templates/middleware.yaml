@@ -1,0 +1,8 @@
+# NOTE: The yoshi-basic-auth secret must have key "users" (not "auth") for Traefik BasicAuth.
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: yoshi-basic-auth
+spec:
+  basicAuth:
+    secret: yoshi-basic-auth

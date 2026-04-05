@@ -70,7 +70,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   rules:
   - host: spliit.dixneuf19.fr
     http:

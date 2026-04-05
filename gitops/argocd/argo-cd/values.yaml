@@ -70,11 +70,9 @@ argo-cd:
     ingress:
       enabled: true
       annotations:
-        nginx.ingress.kubernetes.io/auth-secret: ingress-nginx/basic-auth
-        nginx.ingress.kubernetes.io/auth-type: basic
-        # GRPC, so the CLI won't work
-        nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-      ingressClassName: nginx
+        traefik.ingress.kubernetes.io/router.middlewares: traefik-basic-auth@kubernetescrd
+        traefik.ingress.kubernetes.io/service.serversscheme: "https"
+      ingressClassName: traefik
       tls: true
 
   ## Repo Server
