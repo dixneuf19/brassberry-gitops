@@ -1,6 +1,6 @@
 dependencies:
 - name: navidrome
   repository: https://djjudas21.github.io/charts/
-  version: 6.8.2
-digest: sha256:68f54f49c7c0ba4627c985721f6b4cda9d4b1629b7edbb30ef65574023de4a7c
-generated: "2026-04-05T20:30:08.676641+02:00"
+  version: 6.8.3
+digest: sha256:bdf6125b5be9d22c0d98795a71ce2de2fecb58c92836e235cf50c6476bdb1c8a
+generated: "2026-04-05T21:04:42.013225385Z"
