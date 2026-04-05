@@ -1,0 +1,34 @@
+navidrome:
+  env:
+    ND_MUSICFOLDER: /music
+    ND_LOGLEVEL: info
+    ND_SCANSCHEDULE: "@every 1m"
+
+  ingress:
+    main:
+      enabled: true
+      ingressClassName: traefik
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt
+      hosts:
+        - host: navidrome.dixneuf19.fr
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: navidrome-tls
+          hosts:
+            - navidrome.dixneuf19.fr
+
+  persistence:
+    config:
+      enabled: true
+      mountPath: /data
+      storageClass: nfs-client
+      accessMode: ReadWriteMany
+      size: 1Mi
+    music:
+      enabled: true
+      mountPath: /music
+      existingClaim: soundhoard-music
+      readOnly: true

@@ -10,7 +10,7 @@ generic:
     port: 80
   ingress:
     enabled: true
-    ingressClassName: nginx
+    ingressClassName: traefik
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt
     hosts:

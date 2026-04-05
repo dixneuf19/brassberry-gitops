@@ -46,10 +46,9 @@ metadata:
   name: cd-lna
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    nginx.ingress.kubernetes.io/auth-type: basic
-    nginx.ingress.kubernetes.io/auth-secret: cd-lna-auth
+    traefik.ingress.kubernetes.io/router.middlewares: default-cd-lna-auth@kubernetescrd
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   rules:
   - host: cd-lna.dixneuf19.fr
     http:

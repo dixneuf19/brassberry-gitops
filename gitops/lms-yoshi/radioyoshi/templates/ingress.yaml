@@ -3,11 +3,10 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    nginx.ingress.kubernetes.io/auth-secret: yoshi-basic-auth
-    nginx.ingress.kubernetes.io/auth-type: basic  
+    traefik.ingress.kubernetes.io/router.middlewares: lms-yoshi-yoshi-basic-auth@kubernetescrd
   name: lms
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   rules:
     - host: radioyoshi.dixneuf19.fr
       http:
