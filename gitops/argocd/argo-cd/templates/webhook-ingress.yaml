@@ -2,10 +2,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    traefik.ingress.kubernetes.io/service.serversscheme: "https"
   name: argocd-webhook
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   rules:
   - host: argocd.dixneuf19.fr
     http:

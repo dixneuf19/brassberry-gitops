@@ -64,9 +64,9 @@ metadata:
   name: og-baj-website
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-www@kubernetescrd
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   rules:
     - host: bandajoe.dixneuf19.fr
       http:

@@ -1,8 +1,8 @@
-HELM_RELEASE=ingress-nginx
-HELM_REPOSITORY=ingress-nginx
-HELM_CHART=ingress-nginx
+HELM_RELEASE=traefik
+HELM_REPOSITORY=traefik
+HELM_CHART=traefik
 
-NAMESPACE=ingress-nginx
+NAMESPACE=traefik
 
 get-latest-value:
 	helm show values "${HELM_REPOSITORY}/${HELM_CHART}" > values.yaml

@@ -46,10 +46,9 @@ metadata:
   name: files
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    nginx.ingress.kubernetes.io/auth-type: basic
-    nginx.ingress.kubernetes.io/auth-secret: files-auth
+    traefik.ingress.kubernetes.io/router.middlewares: default-files-auth@kubernetescrd
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   rules:
   - host: files.dixneuf19.fr
     http:

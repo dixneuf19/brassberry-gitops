@@ -1,0 +1,9 @@
+apiVersion: v2
+name: traefik
+version: 0.1.0
+description: Traefik ingress controller with Middleware CRDs
+type: application
+dependencies:
+  - name: traefik
+    version: 39.0.7
+    repository: https://traefik.github.io/charts

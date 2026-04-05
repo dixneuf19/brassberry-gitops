@@ -35,10 +35,9 @@ service:
 
 ingress:
   enabled: true
-  className: "nginx"
+  className: "traefik"
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
   hosts:
     - host: karakeep.dixneuf19.fr
       paths:
