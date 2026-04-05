@@ -21,15 +21,15 @@ kube-prometheus-stack:
       dashboardproviders.yaml:
         apiVersion: 1
         providers:
-          - name: nginx
+          - name: traefik
             orgId: 1
             type: file
-            folder: NGINX
+            folder: Traefik
             disableDeletion: false
             editable: false
             allowUiUpdates: false
             options:
-              path: /var/lib/grafana/dashboards/nginx
+              path: /var/lib/grafana/dashboards/traefik
           - name: vpa
             orgId: 1
             type: file
@@ -59,11 +59,11 @@ kube-prometheus-stack:
 
     # Organise dashboards by provider, with the provider's name as the key.
     dashboards:
-      nginx: # The "nginx" provider is defined above.
-        nginx-ingress-controller:
-          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json
-        ingress-request-performance:
-          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/request-handling-performance.json
+      traefik:
+        traefik-official:
+          gnetId: 17346 # https://grafana.com/grafana/dashboards/17346-traefik-official-standalone-dashboard
+          revision: 9
+          datasource: Prometheus
       vpa:
         vpa-recommendations:
           gnetId: 14588 # https://grafana.com/grafana/dashboards/14588-vpa-recommendations
@@ -121,11 +121,10 @@ kube-prometheus-stack:
 
     ingress:
       enabled: true
-      ingressClassName: nginx
+      ingressClassName: traefik
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt
-        nginx.ingress.kubernetes.io/auth-type: basic
-        nginx.ingress.kubernetes.io/auth-secret: ingress-nginx/basic-auth
+        traefik.ingress.kubernetes.io/router.middlewares: traefik-basic-auth@kubernetescrd
       labels: {}
       hosts:
         - grafana.dixneuf19.fr
@@ -165,11 +164,10 @@ kube-prometheus-stack:
 
     ingress:
       enabled: true
-      ingressClassName: nginx
+      ingressClassName: traefik
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt
-        nginx.ingress.kubernetes.io/auth-type: basic
-        nginx.ingress.kubernetes.io/auth-secret: ingress-nginx/basic-auth
+        traefik.ingress.kubernetes.io/router.middlewares: traefik-basic-auth@kubernetescrd
       labels: {}
       hosts:
         - prometheus.dixneuf19.fr
