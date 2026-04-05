@@ -2,35 +2,10 @@
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
-  name: bitwarden-bootstrap-issuer
+  name: bitwarden-selfsigned-issuer
   namespace: external-secrets
 spec:
   selfSigned: {}
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: bitwarden-ca
-  namespace: external-secrets
-spec:
-  isCA: true
-  commonName: bitwarden-ca
-  secretName: bitwarden-ca-secret
-  privateKey:
-    algorithm: RSA
-    size: 2048
-  issuerRef:
-    name: bitwarden-bootstrap-issuer
-    kind: Issuer
----
-apiVersion: cert-manager.io/v1
-kind: Issuer
-metadata:
-  name: bitwarden-ca-issuer
-  namespace: external-secrets
-spec:
-  ca:
-    secretName: bitwarden-ca-secret
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -43,5 +18,5 @@ spec:
     - bitwarden-sdk-server.external-secrets.svc.cluster.local
     - bitwarden-sdk-server
   issuerRef:
-    name: bitwarden-ca-issuer
+    name: bitwarden-selfsigned-issuer
     kind: Issuer
