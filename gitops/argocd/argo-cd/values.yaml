@@ -72,6 +72,7 @@ argo-cd:
       annotations:
         traefik.ingress.kubernetes.io/router.middlewares: traefik-basic-auth@kubernetescrd
         traefik.ingress.kubernetes.io/service.serversscheme: "https"
+        traefik.ingress.kubernetes.io/service.serverstransport: argocd-argocd-skip-verify@kubernetescrd
       ingressClassName: traefik
       tls: true
 

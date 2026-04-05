@@ -46,7 +46,6 @@ metadata:
   name: cd-lna
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    traefik.ingress.kubernetes.io/router.middlewares: default-cd-lna-auth@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:
