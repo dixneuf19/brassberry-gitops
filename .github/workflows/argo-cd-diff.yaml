@@ -32,8 +32,9 @@ jobs:
             -v $(pwd)/output:/output \
             -e TARGET_BRANCH=refs/pull/${{ github.event.number }}/merge \
             -e REPO=${{ github.repository }} \
-            dagandersen/argocd-diff-preview:v0.1.15 \
-            --diff-ignore "checksum"
+            dagandersen/argocd-diff-preview:v0.2.2 \
+            --diff-ignore "checksum" \
+            --traverse-app-of-apps
 
       - name: Post diff as comment
         run: |
