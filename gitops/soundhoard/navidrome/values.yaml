@@ -2,7 +2,7 @@ navidrome:
   env:
     ND_MUSICFOLDER: /music
     ND_LOGLEVEL: info
-    ND_SCANSCHEDULE: "* * * * *"
+    ND_SCANNER_SCHEDULE: "* * * * *"
 
   ingress:
     main:
