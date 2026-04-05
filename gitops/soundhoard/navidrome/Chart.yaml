@@ -5,5 +5,5 @@ description: "Self-hosted music server (Subsonic-compatible)"
 home: https://www.navidrome.org/
 dependencies:
   - name: navidrome
-    version: 6.8.2
+    version: 6.8.3
     repository: https://djjudas21.github.io/charts/
