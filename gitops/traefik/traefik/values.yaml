@@ -23,6 +23,13 @@ traefik:
     websecure:
       nodePort: 32444 # Temporary, switch to 32443 after ingress-nginx removal
 
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      memory: 256Mi
+
   deployment:
     replicas: 2
 
