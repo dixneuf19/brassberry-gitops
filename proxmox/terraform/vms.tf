@@ -79,6 +79,7 @@ resource "proxmox_virtual_environment_vm" "k8s_worker" {
   lifecycle {
     ignore_changes = [
       started,
+      disk[0].file_id,                       # Image ID changes on re-download, don't recreate VM
       initialization[0].vendor_data_file_id, # Added after first VM was already created
     ]
   }
