@@ -1,0 +1,6 @@
+dependencies:
+- name: immich
+  repository: oci://ghcr.io/immich-app/immich-charts
+  version: 0.11.1
+digest: sha256:15862956f3bbaaf0142389bd8bc007bd0278bfbe0cd0d7d308efa69ad7c1195e
+generated: "2026-04-06T19:30:12.542192+02:00"

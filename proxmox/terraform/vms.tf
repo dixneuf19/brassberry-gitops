@@ -26,7 +26,7 @@ resource "proxmox_virtual_environment_vm" "k8s_worker" {
   # Boot disk from cloud image on fastpool
   disk {
     datastore_id = proxmox_storage_zfspool.fastpool.id
-    file_id      = proxmox_download_file.ubuntu_cloud_image.id
+    file_id      = proxmox_virtual_environment_download_file.ubuntu_cloud_image.id
     interface    = "virtio0"
     size         = var.k8s_worker_disk_size
     discard      = "on"
