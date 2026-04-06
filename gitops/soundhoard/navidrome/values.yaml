@@ -2,7 +2,17 @@ navidrome:
   env:
     ND_MUSICFOLDER: /music
     ND_LOGLEVEL: info
-    ND_SCANNER_SCHEDULE: "* * * * *"
+    ND_SCANNER_SCHEDULE: "@every 15m"
+    ND_PROMETHEUS_ENABLED: "true"
+
+  envFrom:
+    - secretRef:
+        name: navidrome-secrets
+
+  service:
+    main:
+      monitor:
+        enabled: true
 
   ingress:
     main:
