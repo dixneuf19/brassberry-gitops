@@ -1,0 +1,58 @@
+immich:
+  immich:
+    persistence:
+      library:
+        existingClaim: immich-library
+
+  env:
+    DB_HOSTNAME: immich-rw
+    DB_PORT: "5432"
+    DB_USERNAME:
+      valueFrom:
+        secretKeyRef:
+          name: immich-app
+          key: username
+    DB_PASSWORD:
+      valueFrom:
+        secretKeyRef:
+          name: immich-app
+          key: password
+    DB_DATABASE_NAME: immich
+    DB_VECTOR_EXTENSION: vectorchord
+
+  defaultPodOptions:
+    nodeSelector:
+      kubernetes.io/hostname: k8s-worker-1
+
+  valkey:
+    enabled: true
+    persistence:
+      data:
+        storageClass: nfs-jonbonas
+        accessMode: ReadWriteOnce
+        size: 1Gi
+
+  server:
+    ingress:
+      main:
+        enabled: true
+        className: traefik
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt
+        hosts:
+          - host: immich.dixneuf19.fr
+            paths:
+              - path: /
+                service:
+                  identifier: main
+        tls:
+          - secretName: immich-dixneuf19-fr-tls
+            hosts:
+              - immich.dixneuf19.fr
+
+  machine-learning:
+    persistence:
+      cache:
+        storageClass: local-path
+        accessMode: ReadWriteOnce
+        size: 10Gi

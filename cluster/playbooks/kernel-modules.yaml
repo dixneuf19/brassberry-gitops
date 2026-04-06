@@ -2,17 +2,14 @@
 # Setup kernel modules
 #################################################
 ---
-- hosts: 'brassberry*'
+- hosts: 'brassberry*:proxmox_workers'
   become: true
-  # vars_files:
-  #   - vars/default.yml
 
   tasks:
     - name: Enable kernel modules
-      # source: https://docs.k0sproject.io/v1.21.3+k0s.0/raspberry-pi4/#kernel-modules
       blockinfile:
         path: /etc/modules-load.d/modules.conf
-        create: false
+        create: true
         block: |
           overlay
           nf_conntrack

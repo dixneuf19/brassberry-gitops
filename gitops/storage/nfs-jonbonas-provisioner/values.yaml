@@ -1,0 +1,24 @@
+nfs-jonbonas-provisioner:
+  image:
+    repository: registry.k8s.io/sig-storage/nfs-subdir-external-provisioner
+    tag: v4.0.2
+  nfs:
+    server: 192.168.1.30
+    path: /tank/data
+
+  storageClass:
+    create: true
+    name: nfs-jonbonas
+    defaultClass: false
+    allowVolumeExpansion: true
+    reclaimPolicy: Retain
+    archiveOnDelete: true
+    pathPattern: "${.PVC.namespace}/${.PVC.name}"
+    accessModes: ReadWriteMany
+
+  resources:
+    limits:
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi

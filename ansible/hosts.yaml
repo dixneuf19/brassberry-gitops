@@ -25,6 +25,11 @@ workers:
     oracle-arm:
       is_raspberry: false
 
+proxmox_workers:
+  hosts:
+    k8s-worker-1:
+      is_raspberry: false
+
 proxmox:
   hosts:
     jonbonas:

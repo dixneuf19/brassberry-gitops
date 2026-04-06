@@ -29,6 +29,12 @@ spec:
         address: brassberry-27
         user: dixneuf19
         keyPath: ~/.ssh/id_ed25519
+    - role: worker
+      privateInterface: ens18
+      ssh:
+        address: k8s-worker-1
+        user: dixneuf19
+        keyPath: ~/.ssh/id_ed25519
   k0s:
     version: v1.34.3+k0s.0
     config:

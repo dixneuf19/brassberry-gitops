@@ -102,6 +102,10 @@ applications:
     namespace: storage
     path: gitops/storage/nfs-client-provisioner
 
+  - name: nfs-jonbonas-provisioner
+    namespace: storage
+    path: gitops/storage/nfs-jonbonas-provisioner
+
   - name: local-path-provisioner
     namespace: storage
     path: gitops/storage/local-path-provisioner/
@@ -215,4 +219,12 @@ applications:
     namespace: tools
     path: gitops/tools/librespeed/manifests
     type: directory
+    selfHeal: true
+
+  # =============================================================================
+  # Immich (photo management)
+  # =============================================================================
+  - name: immich
+    namespace: immich
+    path: gitops/immich/immich
     selfHeal: true

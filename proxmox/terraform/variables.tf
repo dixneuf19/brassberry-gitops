@@ -30,7 +30,7 @@ variable "vm_user" {
 variable "k8s_worker_count" {
   description = "Number of Kubernetes worker VMs to create"
   type        = number
-  default     = 2
+  default     = 1
 }
 
 variable "k8s_worker_cores" {
@@ -48,5 +48,5 @@ variable "k8s_worker_memory" {
 variable "k8s_worker_disk_size" {
   description = "Disk size in GB per K8s worker VM"
   type        = number
-  default     = 50
+  default     = 200
 }
