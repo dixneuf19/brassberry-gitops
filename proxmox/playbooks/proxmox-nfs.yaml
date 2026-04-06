@@ -1,0 +1,35 @@
+#################################################
+# Setup NFS server on Proxmox (jonbonas)
+# Exports ZFS datasets to the local network
+#################################################
+---
+- hosts: proxmox
+  become: true
+  vars:
+    nfs_exports:
+      - /tank/media
+      - /tank/data
+  tasks:
+    - name: Install NFS server
+      apt:
+        name:
+          - nfs-kernel-server
+        update_cache: yes
+        state: latest
+
+    - name: Enable nfs-kernel-server
+      systemd:
+        name: nfs-kernel-server
+        enabled: yes
+
+    - name: Configure NFS exports
+      lineinfile:
+        line: "{{ item }} 192.168.1.0/24(rw,sync,no_root_squash)"
+        path: /etc/exports
+        create: yes
+      loop: "{{ nfs_exports }}"
+
+    - name: Restart nfs-kernel-server
+      systemd:
+        name: nfs-kernel-server
+        state: restarted

@@ -6,21 +6,6 @@
 # automatically on the first `terraform apply`.
 # =============================================
 
-import {
-  to = proxmox_virtual_environment_user.terraform
-  id = "terraform@pam"
-}
-
-import {
-  to = proxmox_virtual_environment_user_token.terraform
-  id = "terraform@pam!terraform-token"
-}
-
-import {
-  to = proxmox_virtual_environment_acl.terraform_admin
-  id = "/?terraform@pam?Administrator"
-}
-
 resource "proxmox_virtual_environment_user" "terraform" {
   user_id = "terraform@pam"
   comment = "Terraform automation"
@@ -35,10 +20,10 @@ resource "proxmox_virtual_environment_user" "terraform" {
 }
 
 resource "proxmox_virtual_environment_user_token" "terraform" {
-  user_id              = proxmox_virtual_environment_user.terraform.user_id
-  token_name           = "terraform-token"
+  user_id               = proxmox_virtual_environment_user.terraform.user_id
+  token_name            = "terraform-token"
   privileges_separation = false
-  comment              = "Terraform API token"
+  comment               = "Terraform API token"
 }
 
 resource "proxmox_virtual_environment_acl" "terraform_admin" {

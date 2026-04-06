@@ -75,4 +75,8 @@ proxmox-zfs:
 proxmox-grub-aspm:
 	ansible-playbook -i $(ANSIBLE_INVENTORY) proxmox/playbooks/proxmox-grub-aspm.yaml
 
-.PHONY: all ping reboot tailscale jellyfin mounts kernel-modules upgrade nfs-server remove-nfs-server kubeconfig k0sctl proxmox-post-install proxmox-bootstrap proxmox-zfs proxmox-grub-aspm tailscale-hostmap-pull tailscale-hosts
+# NFS server on Proxmox (exports tank/media + tank/data)
+proxmox-nfs:
+	ansible-playbook -i $(ANSIBLE_INVENTORY) proxmox/playbooks/proxmox-nfs.yaml
+
+.PHONY: all ping reboot tailscale jellyfin mounts kernel-modules upgrade nfs-server remove-nfs-server kubeconfig k0sctl proxmox-post-install proxmox-bootstrap proxmox-zfs proxmox-grub-aspm proxmox-nfs tailscale-hostmap-pull tailscale-hosts

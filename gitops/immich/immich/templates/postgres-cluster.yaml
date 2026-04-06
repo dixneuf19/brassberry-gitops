@@ -1,0 +1,29 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: immich
+spec:
+  instances: 1
+  enablePDB: false
+  imageName: ghcr.io/tensorchord/cloudnative-vectorchord:17.9-1.1.1
+  storage:
+    storageClass: local-path
+    size: 20Gi
+  postgresql:
+    shared_preload_libraries:
+      - "vchord.so"
+  bootstrap:
+    initdb:
+      database: immich
+      postInitSQL:
+        - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
+        - CREATE EXTENSION IF NOT EXISTS earthdistance CASCADE;
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+  affinity:
+    nodeSelector:
+      kubernetes.io/hostname: k8s-worker-1
