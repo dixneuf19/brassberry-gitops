@@ -21,38 +21,22 @@ resource "bitwarden-secrets_secret" "baj_mysql_root_password" {
   key        = "baj-mysql-root-password"
   project_id = var.bw_project_id
   note       = "MySQL root password for og-baj-website"
-
-  lifecycle {
-    ignore_changes = [value, length, special]
-  }
 }
 
 resource "bitwarden-secrets_secret" "baj_mysql_password" {
   key        = "baj-mysql-password"
   project_id = var.bw_project_id
   note       = "MySQL app password for og-baj-website"
-
-  lifecycle {
-    ignore_changes = [value, length, special]
-  }
 }
 
 resource "bitwarden-secrets_secret" "karakeep_nextauth_secret" {
   key        = "karakeep-nextauth-secret"
   project_id = var.bw_project_id
   note       = "NextAuth session signing key for Karakeep"
-
-  lifecycle {
-    ignore_changes = [value, length, special]
-  }
 }
 
 resource "bitwarden-secrets_secret" "karakeep_meili_master_key" {
   key        = "karakeep-meili-master-key"
   project_id = var.bw_project_id
   note       = "MeiliSearch master key for Karakeep"
-
-  lifecycle {
-    ignore_changes = [value, length, special]
-  }
 }
