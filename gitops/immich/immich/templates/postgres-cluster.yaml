@@ -15,7 +15,7 @@ spec:
   bootstrap:
     initdb:
       database: immich
-      postInitSQL:
+      postInitTemplateSQL:
         - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
         - CREATE EXTENSION IF NOT EXISTS earthdistance CASCADE;
   resources:

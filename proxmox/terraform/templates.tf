@@ -4,7 +4,7 @@
 # =============================================
 
 # Download Ubuntu 24.04 cloud image directly on the Proxmox node
-resource "proxmox_download_file" "ubuntu_cloud_image" {
+resource "proxmox_virtual_environment_download_file" "ubuntu_cloud_image" {
   content_type = "iso"
   datastore_id = "local"
   node_name    = var.proxmox_node
