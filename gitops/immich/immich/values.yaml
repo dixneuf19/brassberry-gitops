@@ -1,24 +1,34 @@
 immich:
+  controllers:
+    main:
+      containers:
+        main:
+          env:
+            DB_HOSTNAME: immich-rw
+            DB_PORT: "5432"
+            DB_USERNAME:
+              valueFrom:
+                secretKeyRef:
+                  name: immich-app
+                  key: username
+            DB_PASSWORD:
+              valueFrom:
+                secretKeyRef:
+                  name: immich-app
+                  key: password
+            DB_DATABASE_NAME: immich
+            DB_VECTOR_EXTENSION: vectorchord
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              memory: 2Gi
+
   immich:
     persistence:
       library:
         existingClaim: immich-library
-
-  env:
-    DB_HOSTNAME: immich-rw
-    DB_PORT: "5432"
-    DB_USERNAME:
-      valueFrom:
-        secretKeyRef:
-          name: immich-app
-          key: username
-    DB_PASSWORD:
-      valueFrom:
-        secretKeyRef:
-          name: immich-app
-          key: password
-    DB_DATABASE_NAME: immich
-    DB_VECTOR_EXTENSION: vectorchord
 
   defaultPodOptions:
     nodeSelector:
@@ -28,6 +38,7 @@ immich:
     enabled: true
     persistence:
       data:
+        type: persistentVolumeClaim
         storageClass: nfs-jonbonas
         accessMode: ReadWriteOnce
         size: 1Gi
@@ -51,8 +62,19 @@ immich:
               - immich.dixneuf19.fr
 
   machine-learning:
+    controllers:
+      main:
+        containers:
+          main:
+            resources:
+              requests:
+                cpu: 250m
+                memory: 512Mi
+              limits:
+                memory: 4Gi
     persistence:
       cache:
+        type: persistentVolumeClaim
         storageClass: local-path
         accessMode: ReadWriteOnce
         size: 10Gi
