@@ -26,10 +26,6 @@ generic:
       key: BOT_TELEGRAM_TOKEN
     - name: whats-on-fip
       key: RADIO_FRANCE_API_TOKEN
-    - name: whats-on-fip
-      key: SPOTIPY_CLIENT_ID
-    - name: whats-on-fip
-      key: SPOTIPY_CLIENT_SECRET
   affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
