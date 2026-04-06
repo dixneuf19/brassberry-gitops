@@ -1,9 +1,7 @@
 apiVersion: v2
 name: whats-on-fip
 version: 1.0.0
-description: "What's on FIP ? API chart" 
-appVersion: "1.0.0"
-home: https://github.com/dixneuf19/whatsOnFIP
+description: "FIP radio Telegram bot with Spotify enrichment"
 dependencies:
   - name: base-helm-chart
     alias: generic

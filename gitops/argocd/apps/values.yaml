@@ -40,18 +40,6 @@ applications:
     namespace: fip
     path: gitops/fip/whats-on-fip
 
-  - name: fip-slack-bot
-    namespace: fip
-    path: gitops/fip/fip-slack-bot
-
-  - name: fip-telegram-bot
-    namespace: fip
-    path: gitops/fip/fip-telegram-bot
-
-  - name: spotify-api
-    namespace: fip
-    path: gitops/fip/spotify-api
-
   # =============================================================================
   # Dank Face Bot apps
   # =============================================================================
