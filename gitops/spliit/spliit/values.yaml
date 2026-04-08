@@ -1,4 +1,4 @@
 image:
   # Overriden in .argocd-source-spliit.yaml
   repository: ghcr.io/spliit-app/spliit
-  tag: 1.19.0
+  tag: 1.19.0@sha256:2f0f44d58768bed6c7c9aed72f74e43a14599b459828cd87227a7c35ba29b9b8
