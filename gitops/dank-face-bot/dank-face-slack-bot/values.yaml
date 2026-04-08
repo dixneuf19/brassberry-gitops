@@ -2,8 +2,6 @@ generic:
   replicaCount: 1
   image:
     repository: ghcr.io/dixneuf19/dank-face-slack-bot
-    tag: main@sha256:14c2efa098017188d596898e9db39d5e570e73592ee853134a7e13774ffbcf04
-    pullPolicy: Always
   container:
     port: 3000
     probe:

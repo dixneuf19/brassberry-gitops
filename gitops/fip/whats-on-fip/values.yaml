@@ -2,8 +2,6 @@ generic:
   replicaCount: 1
   image:
     repository: ghcr.io/dixneuf19/whats-on-fip
-    tag: main@sha256:2f7a9b2801b55772ec5c8e9c32b2e331fc5a053f7f9bc5e464c1423ca97fafd0
-    pullPolicy: Always
   container:
     port: 80
     noProbes: true
