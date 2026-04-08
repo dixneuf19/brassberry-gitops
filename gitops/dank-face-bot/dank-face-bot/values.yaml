@@ -2,7 +2,6 @@ generic:
   replicaCount: 1
   image:
     repository: ghcr.io/dixneuf19/dank-face-bot
-    tag: "1d0c6e0fc8e016eb2f45d888fb462a53321e4b2d@sha256:047b957aa3ba19abe2a90a9beab84f888f4dd35f51d134602da4c0bcdd3c773f"
   container:
     noProbes: true
   resources:

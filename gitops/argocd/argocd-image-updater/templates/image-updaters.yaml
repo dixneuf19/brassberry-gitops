@@ -24,30 +24,6 @@ spec:
     updateStrategy: "digest"
   applicationRefs:
     # fip namespace apps
-    - namePattern: "fip-slack-bot"
-      images:
-        - alias: "fip-slack-bot"
-          imageName: "ghcr.io/dixneuf19/fip-slack-bot:main"
-          manifestTargets:
-            helm:
-              name: "generic.image.name"
-              tag: "generic.image.tag"
-    - namePattern: "fip-telegram-bot"
-      images:
-        - alias: "fip-telegram-bot"
-          imageName: "ghcr.io/dixneuf19/fip-telegram-bot:master"
-          manifestTargets:
-            helm:
-              name: "generic.image.name"
-              tag: "generic.image.tag"
-    - namePattern: "spotify-api"
-      images:
-        - alias: "spotify-api"
-          imageName: "ghcr.io/dixneuf19/spotify-api:master"
-          manifestTargets:
-            helm:
-              name: "generic.image.name"
-              tag: "generic.image.tag"
     - namePattern: "whats-on-fip"
       images:
         - alias: "whats-on-fip"
