@@ -1,7 +1,7 @@
 nfs-client-provisioner:
   image:
     repository: registry.k8s.io/sig-storage/nfs-subdir-external-provisioner
-    tag: v4.0.2
+    tag: v4.0.2@sha256:63d5e04551ec8b5aae83b6f35938ca5ddc50a88d85492d9731810c31591fa4c9
   nfs:
     server: 192.168.1.25
     path: /mnt/tuyhoa_2T

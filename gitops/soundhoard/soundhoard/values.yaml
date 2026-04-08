@@ -2,7 +2,7 @@ generic:
   replicaCount: 1
   image:
     repository: ghcr.io/dixneuf19/soundhoard
-    tag: main
+    tag: main@sha256:5c1315a2ff48849f3fd59230686ef69035835c06a600529a2d3bb97751025913
   container:
     noProbes: true
   resources:
