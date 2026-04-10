@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grist
+  labels:
+    app.kubernetes.io/name: grist
+    app.kubernetes.io/instance: grist
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: grist
+      app.kubernetes.io/instance: grist
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: grist
+        app.kubernetes.io/instance: grist
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: grist
+          image: gristlabs/grist:1.7.12
+          ports:
+            - name: http
+              containerPort: 8484
+              protocol: TCP
+          env:
+            - name: GRIST_SESSION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: grist-secrets
+                  key: password
+            - name: GRIST_DEFAULT_EMAIL
+              value: "grist@dixneuf19.fr"
+            - name: GRIST_SANDBOX_FLAVOR
+              value: "gvisor"
+            - name: APP_HOME_URL
+              value: "https://grist.dixneuf19.fr"
+            - name: GRIST_SINGLE_ORG
+              value: "grist"
+          volumeMounts:
+            - name: data
+              mountPath: /persist
+          securityContext:
+            capabilities:
+              add:
+                - SYS_PTRACE
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            failureThreshold: 3
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            failureThreshold: 3
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 512Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: grist-data
+      # gvisor sandbox requires x86_64 (Sandy Bridge+), no ARM support
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values:
+                      - amd64
