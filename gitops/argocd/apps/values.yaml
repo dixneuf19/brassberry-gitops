@@ -210,6 +210,12 @@ applications:
     path: gitops/spliit/spliit
     selfHeal: true
 
+  - name: grist
+    namespace: grist
+    path: gitops/grist/grist
+    type: directory
+    selfHeal: true
+
   - name: readeck
     namespace: readeck
     path: gitops/readeck/readeck

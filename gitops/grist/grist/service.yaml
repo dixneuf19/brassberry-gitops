@@ -1,0 +1,43 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grist
+  labels:
+    app.kubernetes.io/name: grist
+    app.kubernetes.io/instance: grist
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8484
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: grist
+    app.kubernetes.io/instance: grist
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grist
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-basic-auth@kubernetescrd
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - grist.dixneuf19.fr
+      secretName: grist-dixneuf19-fr-tls
+  rules:
+    - host: grist.dixneuf19.fr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grist
+                port:
+                  name: http
