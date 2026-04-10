@@ -48,13 +48,15 @@ spec:
               add:
                 - SYS_PTRACE
           livenessProbe:
-            tcpSocket:
+            httpGet:
+              path: /status
               port: 8484
             initialDelaySeconds: 10
             failureThreshold: 3
             periodSeconds: 10
           readinessProbe:
-            tcpSocket:
+            httpGet:
+              path: /status
               port: 8484
             initialDelaySeconds: 5
             failureThreshold: 3
