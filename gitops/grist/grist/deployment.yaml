@@ -40,8 +40,6 @@ spec:
               value: "gvisor"
             - name: APP_HOME_URL
               value: "https://grist.dixneuf19.fr"
-            - name: GRIST_SINGLE_ORG
-              value: "grist"
           volumeMounts:
             - name: data
               mountPath: /persist
@@ -50,16 +48,14 @@ spec:
               add:
                 - SYS_PTRACE
           livenessProbe:
-            httpGet:
-              path: /
-              port: http
+            tcpSocket:
+              port: 8484
             initialDelaySeconds: 10
             failureThreshold: 3
             periodSeconds: 10
           readinessProbe:
-            httpGet:
-              path: /
-              port: http
+            tcpSocket:
+              port: 8484
             initialDelaySeconds: 5
             failureThreshold: 3
             periodSeconds: 10
