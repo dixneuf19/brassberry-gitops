@@ -73,6 +73,7 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: grist-data
+      # gvisor sandbox requires x86_64 (Sandy Bridge+), no ARM support
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
