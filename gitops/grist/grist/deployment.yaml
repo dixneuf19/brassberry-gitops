@@ -35,11 +35,15 @@ spec:
                   name: grist-secrets
                   key: password
             - name: GRIST_DEFAULT_EMAIL
-              value: "grist@dixneuf19.fr"
+              value: "baloo"
             - name: GRIST_SANDBOX_FLAVOR
               value: "gvisor"
             - name: APP_HOME_URL
               value: "https://grist.dixneuf19.fr"
+            - name: GRIST_FORWARD_AUTH_HEADER
+              value: "X-Forwarded-User"
+            - name: GRIST_FORCE_LOGIN
+              value: "true"
             - name: GRIST_SINGLE_ORG
               value: "grist"
           volumeMounts:
@@ -51,15 +55,15 @@ spec:
                 - SYS_PTRACE
           livenessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /status
+              port: 8484
             initialDelaySeconds: 10
             failureThreshold: 3
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /status
+              port: 8484
             initialDelaySeconds: 5
             failureThreshold: 3
             periodSeconds: 10
