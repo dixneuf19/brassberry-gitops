@@ -35,17 +35,11 @@ spec:
                   name: grist-secrets
                   key: password
             - name: GRIST_DEFAULT_EMAIL
-              value: "baloo"
+              value: "grist@dixneuf19.fr"
             - name: GRIST_SANDBOX_FLAVOR
               value: "gvisor"
             - name: APP_HOME_URL
               value: "https://grist.dixneuf19.fr"
-            - name: GRIST_FORWARD_AUTH_HEADER
-              value: "X-Forwarded-User"
-            - name: GRIST_FORCE_LOGIN
-              value: "true"
-            - name: GRIST_SINGLE_ORG
-              value: "grist"
           volumeMounts:
             - name: data
               mountPath: /persist
