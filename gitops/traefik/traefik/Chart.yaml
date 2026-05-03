@@ -5,5 +5,5 @@ description: Traefik ingress controller with Middleware CRDs
 type: application
 dependencies:
   - name: traefik
-    version: 39.0.7
+    version: 39.0.8
     repository: https://traefik.github.io/charts
