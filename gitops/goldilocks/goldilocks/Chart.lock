@@ -1,6 +1,6 @@
 dependencies:
 - name: goldilocks
   repository: https://charts.fairwinds.com/stable
-  version: 10.3.0
-digest: sha256:b63757193b4475e4cd0bf2f931c7b398b1ee2390a60dff426a48a361d5fbbf09
-generated: "2026-02-24T19:36:03.289629302Z"
+  version: 10.4.1
+digest: sha256:c01e93a350fe72c268d9cc74410320c048a5a1d0d38590feb68a6f7848e0d3ee
+generated: "2026-07-31T01:57:01.250878695Z"
