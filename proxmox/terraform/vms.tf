@@ -73,6 +73,13 @@ resource "proxmox_virtual_environment_vm" "k8s_worker" {
   # Start on boot
   on_boot = true
 
+  # Start order. No up_delay: it delays the NEXT guest, not this one, so it never
+  # helped the fastpool import race it was added for. fastpool is now imported at
+  # boot via zpool.cache instead (see playbooks/proxmox-zfs.yaml).
+  startup {
+    order = 1
+  }
+
   # Start immediately after creation
   started = true
 
