@@ -36,6 +36,11 @@
         pool_properties:
           ashift: "12"
           autoexpand: "on"
+          # Must be in the cachefile so zfs-import-cache.service imports it at boot,
+          # before pve-guests.service starts the VMs. Without it PVE imports the pool
+          # lazily from inside qmstart (with -o cachefile=none, which is self-perpetuating)
+          # and the VM start fails. See proxmox/ZFS.md.
+          cachefile: /etc/zfs/zpool.cache
         filesystem_properties:
           compression: lz4
           atime: "off"
@@ -63,6 +68,9 @@
         pool_properties:
           ashift: "12"
           autoexpand: "on"
+          # Declared explicitly rather than relying on the default, so the boot-import
+          # invariant is stated for every pool PVE has storages on (see fastpool above).
+          cachefile: /etc/zfs/zpool.cache
         filesystem_properties:
           compression: zstd
           atime: "off"
