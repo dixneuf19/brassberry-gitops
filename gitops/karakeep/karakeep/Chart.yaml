@@ -17,6 +17,6 @@ maintainers:
 
 dependencies:
   - name: meilisearch
-    version: "0.35.0"
+    version: "0.36.0"
     repository: https://meilisearch.github.io/meilisearch-kubernetes
 
