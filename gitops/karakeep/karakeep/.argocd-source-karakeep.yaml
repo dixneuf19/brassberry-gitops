@@ -4,5 +4,5 @@ helm:
     value: ghcr.io/karakeep-app/karakeep
     forcestring: true
   - name: image.tag
-    value: 0.33.1
+    value: 0.33.2-arm64
     forcestring: true
