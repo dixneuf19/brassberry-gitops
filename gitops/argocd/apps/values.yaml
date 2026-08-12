@@ -181,6 +181,11 @@ applications:
         jqPathExpressions:
           - ".spec.template.spec.hostUsers"
 
+  - name: files
+    namespace: netflix
+    path: gitops/netflix/files
+    type: directory
+
   # =============================================================================
   # SoundHoard (music pipeline)
   # =============================================================================
