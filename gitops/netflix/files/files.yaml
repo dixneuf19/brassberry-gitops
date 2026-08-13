@@ -46,7 +46,7 @@ metadata:
   name: files
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    traefik.ingress.kubernetes.io/router.middlewares: default-files-auth@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: netflix-files-auth@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:
