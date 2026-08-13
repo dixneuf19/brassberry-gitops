@@ -221,11 +221,6 @@ applications:
     type: directory
     selfHeal: true
 
-  - name: readeck
-    namespace: readeck
-    path: gitops/readeck/readeck
-    type: directory
-
   - name: librespeed
     namespace: tools
     path: gitops/tools/librespeed/manifests
