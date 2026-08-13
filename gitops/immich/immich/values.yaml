@@ -50,6 +50,9 @@ immich:
         className: traefik
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt
+          # Upstream chart defaults this to "0" to lift the upload limit on ingress-nginx.
+          # Traefik enforces no body limit, so drop it; restore if the controller changes.
+          nginx.ingress.kubernetes.io/proxy-body-size: null
         hosts:
           - host: immich.dixneuf19.fr
             paths:
