@@ -3,7 +3,7 @@ kind: ScheduledBackup
 metadata:
   name: spliit-weekly
 spec:
-  schedule: "0 0 4 * * 0"
+  schedule: "0 19 4 * * 0"
   immediate: true
   backupOwnerReference: self
   cluster:
