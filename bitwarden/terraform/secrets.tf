@@ -9,6 +9,25 @@ resource "bitwarden-secrets_secret" "navidrome_password_encryption_key" {
   special = false
 }
 
+# ── Secrets sourced from another Terraform root ───────────────────────────────
+# Apply scaleway/terraform first, these read its outputs from the remote state.
+
+resource "bitwarden-secrets_secret" "cnpg_backup_access_key_id" {
+  key        = "cnpg-backup-access-key-id"
+  project_id = var.bw_project_id
+  note       = "Scaleway API key ID for CloudNativePG backups"
+
+  value = data.terraform_remote_state.scaleway.outputs.cnpg_backup_access_key_id
+}
+
+resource "bitwarden-secrets_secret" "cnpg_backup_secret_access_key" {
+  key        = "cnpg-backup-secret-access-key"
+  project_id = var.bw_project_id
+  note       = "Scaleway API secret key for CloudNativePG backups"
+
+  value = data.terraform_remote_state.scaleway.outputs.cnpg_backup_secret_access_key
+}
+
 # ── Imported secrets ─────────────────────────────────────────────────────────
 # These already exist in Bitwarden. Terraform adopts them without recreating.
 #
