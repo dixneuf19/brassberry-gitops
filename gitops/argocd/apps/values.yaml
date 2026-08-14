@@ -95,6 +95,10 @@ applications:
     namespace: monitoring
     path: gitops/monitoring/kube-state-metrics/
 
+  - name: weather-exporter
+    namespace: monitoring
+    path: gitops/monitoring/weather-exporter
+
   # =============================================================================
   # Storage
   # =============================================================================

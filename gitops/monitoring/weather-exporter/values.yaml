@@ -1,0 +1,37 @@
+prometheus-json-exporter:
+  configuration:
+    config: |
+      ---
+      modules:
+        openmeteo:
+          metrics:
+            - name: weather_temperature_celsius
+              path: "{.current.temperature_2m}"
+              help: Outside temperature in Celsius (Open-Meteo)
+            - name: weather_apparent_temperature_celsius
+              path: "{.current.apparent_temperature}"
+              help: Outside apparent temperature in Celsius (Open-Meteo)
+            - name: weather_relative_humidity_percent
+              path: "{.current.relative_humidity_2m}"
+              help: Outside relative humidity in percent (Open-Meteo)
+
+  serviceMonitor:
+    enabled: true
+    defaults:
+      # Open-Meteo refreshes its current weather every 15 min, but keep the
+      # scrape interval under Prometheus' 5m staleness window
+      interval: 2m
+      scrapeTimeout: 30s
+    targets:
+      - name: paris
+        url: https://api.open-meteo.com/v1/forecast?latitude=48.8566&longitude=2.3522&current=temperature_2m,relative_humidity_2m,apparent_temperature
+        module: openmeteo
+        additionalMetricsRelabels:
+          city: paris
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 64Mi

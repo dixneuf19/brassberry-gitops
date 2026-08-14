@@ -79,4 +79,8 @@ proxmox-grub-aspm:
 proxmox-nfs:
 	ansible-playbook -i $(ANSIBLE_INVENTORY) proxmox/playbooks/proxmox-nfs.yaml
 
-.PHONY: all ping reboot tailscale jellyfin mounts kernel-modules upgrade nfs-server remove-nfs-server kubeconfig k0sctl proxmox-post-install proxmox-bootstrap proxmox-zfs proxmox-grub-aspm proxmox-nfs tailscale-hostmap-pull tailscale-hosts
+# node_exporter on the Proxmox host (CPU/NVMe/HDD temperatures)
+proxmox-node-exporter:
+	ansible-playbook -i $(ANSIBLE_INVENTORY) proxmox/playbooks/proxmox-node-exporter.yaml
+
+.PHONY: all ping reboot tailscale jellyfin mounts kernel-modules upgrade nfs-server remove-nfs-server kubeconfig k0sctl proxmox-post-install proxmox-bootstrap proxmox-zfs proxmox-grub-aspm proxmox-nfs proxmox-node-exporter tailscale-hostmap-pull tailscale-hosts
