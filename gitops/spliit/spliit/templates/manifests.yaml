@@ -14,6 +14,10 @@ spec:
       labels:
         app: spliit
     spec:
+      # Multi-arch image: each arch is a separate next build, so replicas on
+      # different arches serve mutually incompatible JS chunk hashes.
+      nodeSelector:
+        kubernetes.io/arch: arm64
       containers:
         - name: spliit
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
