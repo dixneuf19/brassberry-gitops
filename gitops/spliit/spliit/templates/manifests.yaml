@@ -116,7 +116,9 @@ spec:
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: spliit
+  # Not "spliit": the CNPG Cluster of that name owns the PDB names it derives
+  # from itself, and deletes this one on every reconcile (enablePDB: false).
+  name: spliit-web
 spec:
   selector:
     matchLabels:
