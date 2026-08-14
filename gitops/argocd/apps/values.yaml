@@ -208,7 +208,7 @@ applications:
   - name: karakeep
     namespace: karakeep
     path: gitops/karakeep/karakeep
-    selfHeal: false # Temporary: data migration to local-path in progress
+    selfHeal: true
 
   - name: spliit
     namespace: spliit
