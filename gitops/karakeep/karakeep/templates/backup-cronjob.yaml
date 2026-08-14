@@ -1,0 +1,82 @@
+{{- if .Values.backup.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "karakeep.fullname" . }}-backups
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false
+  labels:
+    {{- include "karakeep.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.backup.persistence.size }}
+  storageClassName: {{ .Values.backup.persistence.storageClass }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "karakeep.fullname" . }}-backup
+  labels:
+    {{- include "karakeep.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.backup.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      activeDeadlineSeconds: 1800
+      template:
+        metadata:
+          labels:
+            # Not karakeep.selectorLabels: the Service selects on those and
+            # would route traffic to this pod
+            app.kubernetes.io/name: {{ include "karakeep.name" . }}-backup
+            app.kubernetes.io/instance: {{ .Release.Name }}
+        spec:
+          restartPolicy: Never
+          # Must co-locate with the app: the data PVC is local-path RWO
+          nodeSelector:
+            {{- toYaml .Values.nodeSelector | nindent 12 }}
+          containers:
+            - name: backup
+              image: {{ .Values.backup.image }}
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -eu
+                  apk add --no-cache sqlite tar
+                  stamp=$(date +%Y-%m-%d-%H%M)
+                  work=/backup/work
+                  rm -rf "$work" && mkdir -p "$work"
+                  sqlite3 /data/db.db ".backup '$work/db.db'"
+                  sqlite3 /data/queue.db ".backup '$work/queue.db'"
+                  sqlite3 "$work/db.db" "PRAGMA integrity_check;" | grep -qx ok
+                  tar czf "/backup/karakeep-$stamp.tar.gz" -C "$work" db.db queue.db -C /data assets
+                  rm -rf "$work"
+                  find /backup -maxdepth 1 -name 'karakeep-*.tar.gz' -mtime +{{ .Values.backup.retentionDays }} -delete
+                  echo "backup done:" && ls -lh /backup
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  memory: 256Mi
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+                - name: backups
+                  mountPath: /backup
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                claimName: {{ include "karakeep.fullname" . }}-data
+            - name: backups
+              persistentVolumeClaim:
+                claimName: {{ include "karakeep.fullname" . }}-backups
+{{- end }}

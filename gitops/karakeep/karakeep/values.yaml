@@ -124,6 +124,16 @@ readinessProbe:
   timeoutSeconds: 3
   failureThreshold: 3
 
+# Nightly consistent backup (sqlite3 .backup + assets tar) to the NAS
+backup:
+  enabled: true
+  schedule: "30 3 * * *"
+  retentionDays: 14
+  image: alpine:3.22
+  persistence:
+    storageClass: "nfs-jonbonas"
+    size: 20Gi
+
 # Autoscaling
 autoscaling:
   enabled: false
