@@ -1,0 +1,31 @@
+#################################################
+# Install prometheus-node-exporter on Proxmox (jonbonas)
+# Exposes hwmon temperatures (CPU, NVMe, SATA HDDs via drivetemp)
+# Scraped by the in-cluster Prometheus (see gitops/monitoring/kps)
+#################################################
+---
+- hosts: proxmox
+  become: true
+  tasks:
+    - name: Install prometheus-node-exporter
+      apt:
+        name:
+          - prometheus-node-exporter
+        update_cache: yes
+        state: present
+
+    - name: Load drivetemp kernel module for SATA disk temperatures
+      community.general.modprobe:
+        name: drivetemp
+        state: present
+
+    - name: Load drivetemp at boot
+      copy:
+        content: "drivetemp\n"
+        dest: /etc/modules-load.d/drivetemp.conf
+
+    - name: Enable and start prometheus-node-exporter
+      systemd:
+        name: prometheus-node-exporter
+        enabled: yes
+        state: started

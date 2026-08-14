@@ -1,0 +1,11 @@
+apiVersion: v2
+name: weather-exporter
+description: Outside weather metrics from Open-Meteo via prometheus-json-exporter
+version: 0.1.0
+sources:
+  - https://github.com/prometheus-community/json_exporter
+  - https://open-meteo.com/en/docs
+dependencies:
+- name: prometheus-json-exporter
+  version: "0.19.2"
+  repository: https://prometheus-community.github.io/helm-charts
