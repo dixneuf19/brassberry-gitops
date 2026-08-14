@@ -1,4 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["local>dixneuf19/renovate-presets"]
+  "extends": ["local>dixneuf19/renovate-presets"],
+  "packageRules": [
+    {
+      "description": "Meilisearch chart minors bundle engine upgrades that may need DB migration steps",
+      "matchPackageNames": ["meilisearch"],
+      "automerge": false
+    }
+  ]
 }
