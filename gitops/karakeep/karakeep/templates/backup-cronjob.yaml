@@ -1,0 +1,88 @@
+{{- if .Values.backup.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "karakeep.fullname" . }}-backups
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false
+  labels:
+    {{- include "karakeep.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.backup.persistence.size }}
+  storageClassName: {{ .Values.backup.persistence.storageClass }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "karakeep.fullname" . }}-backup-script
+  labels:
+    {{- include "karakeep.labels" . | nindent 4 }}
+data:
+  backup.sh: |
+    {{- .Files.Get "files/backup.sh" | nindent 4 }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "karakeep.fullname" . }}-backup
+  labels:
+    {{- include "karakeep.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.backup.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      activeDeadlineSeconds: 1800
+      template:
+        metadata:
+          labels:
+            # Not karakeep.selectorLabels: the Service selects on those and
+            # would route traffic to this pod
+            app.kubernetes.io/name: {{ include "karakeep.name" . }}-backup
+            app.kubernetes.io/instance: {{ .Release.Name }}
+        spec:
+          restartPolicy: Never
+          # Must co-locate with the app: the data PVC is local-path RWO
+          nodeSelector:
+            {{- toYaml .Values.nodeSelector | nindent 12 }}
+          containers:
+            - name: backup
+              image: {{ .Values.backup.image }}
+              command:
+                - /bin/sh
+                - -c
+                - apk add --no-cache bash sqlite tar >/dev/null && exec bash /scripts/backup.sh
+              env:
+                - name: RETENTION_DAYS
+                  value: {{ .Values.backup.retentionDays | quote }}
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  memory: 256Mi
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+                - name: backups
+                  mountPath: /backup
+                - name: script
+                  mountPath: /scripts
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                claimName: {{ include "karakeep.fullname" . }}-data
+            - name: backups
+              persistentVolumeClaim:
+                claimName: {{ include "karakeep.fullname" . }}-backups
+            - name: script
+              configMap:
+                name: {{ include "karakeep.fullname" . }}-backup-script
+{{- end }}
