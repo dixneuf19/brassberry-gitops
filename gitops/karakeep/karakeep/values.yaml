@@ -57,7 +57,7 @@ resources:
     memory: 256Mi
 
 nodeSelector:
-  kubernetes.io/arch: arm64
+  kubernetes.io/hostname: k8s-worker-1
 
 tolerations: []
 
@@ -90,7 +90,7 @@ secretEnvVars:
 
 persistence:
   enabled: true
-  storageClass: "nfs-client"
+  storageClass: "local-path"
   accessMode: ReadWriteOnce
   size: 10Gi
   mountPath: "/data"
