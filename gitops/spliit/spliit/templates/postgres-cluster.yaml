@@ -10,6 +10,11 @@ spec:
     kind: ClusterImageCatalog
     name: postgresql-minimal-trixie
     major: 18
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: spliit-backup
   storage:
     size: 10Gi
   resources:

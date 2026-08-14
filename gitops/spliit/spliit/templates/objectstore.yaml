@@ -1,0 +1,28 @@
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: spliit-backup
+spec:
+  retentionPolicy: 30d
+  configuration:
+    destinationPath: s3://dixneuf19-cnpg-backups/physical/{{ .Release.Namespace }}
+    endpointURL: https://s3.fr-par.scw.cloud
+    s3Credentials:
+      accessKeyId:
+        name: spliit-backup-s3
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: spliit-backup-s3
+        key: ACCESS_SECRET_KEY
+    wal:
+      compression: zstd
+  instanceSidecarConfiguration:
+    env:
+      # s3Credentials.region does not reach boto3 (cloudnative-pg#9724), and
+      # Scaleway rejects signatures scoped to the default us-east-1
+      - name: AWS_DEFAULT_REGION
+        value: fr-par
+      - name: AWS_REQUEST_CHECKSUM_CALCULATION
+        value: when_required
+      - name: AWS_RESPONSE_CHECKSUM_VALIDATION
+        value: when_required
