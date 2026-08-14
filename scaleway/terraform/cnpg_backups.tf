@@ -17,7 +17,8 @@ resource "scaleway_object_bucket" "cnpg_backups" {
     enabled = true
 
     transition {
-      days          = 30
+      # Scaleway minimum for GLACIER transitions
+      days          = 90
       storage_class = "GLACIER"
     }
 
@@ -55,4 +56,8 @@ resource "scaleway_iam_api_key" "cnpg_backups" {
 
   # S3 clients cannot pass a project ID, the key's default project is used instead.
   default_project_id = scaleway_account_project.cnpg_backups.id
+
+  # Org policy mandates an expiry. WAL archiving breaks silently past this date,
+  # rotate by bumping it and re-running both TF roots.
+  expires_at = "2030-01-01T00:00:00Z"
 }
