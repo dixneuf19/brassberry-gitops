@@ -139,7 +139,7 @@ meilisearch:
   environment:
     MEILI_ENV: production
     MEILI_NO_ANALYTICS: true
-    MEILI_EXPERIMENTAL_DUMPLESS_UPGRADE: true # Otherwise every minor upgrade requires a full dump/restore
+    MEILI_UPGRADE_DB: true # Otherwise every engine upgrade requires a full dump/restore (renamed from MEILI_EXPERIMENTAL_DUMPLESS_UPGRADE in v1.51)
   persistence:
     enabled: true
     size: 1Gi
