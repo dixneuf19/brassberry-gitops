@@ -9,6 +9,11 @@ spec:
   storage:
     storageClass: local-path
     size: 20Gi
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: immich-backup
   postgresql:
     shared_preload_libraries:
       - "vchord.so"
