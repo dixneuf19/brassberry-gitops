@@ -15,6 +15,16 @@ spec:
       storage: {{ .Values.backup.persistence.size }}
   storageClassName: {{ .Values.backup.persistence.storageClass }}
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "karakeep.fullname" . }}-backup-script
+  labels:
+    {{- include "karakeep.labels" . | nindent 4 }}
+data:
+  backup.sh: |
+    {{- .Files.Get "files/backup.sh" | nindent 4 }}
+---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -48,19 +58,10 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - |
-                  set -eu
-                  apk add --no-cache sqlite tar
-                  stamp=$(date +%Y-%m-%d-%H%M)
-                  work=/backup/work
-                  rm -rf "$work" && mkdir -p "$work"
-                  sqlite3 /data/db.db ".backup '$work/db.db'"
-                  sqlite3 /data/queue.db ".backup '$work/queue.db'"
-                  sqlite3 "$work/db.db" "PRAGMA integrity_check;" | grep -qx ok
-                  tar czf "/backup/karakeep-$stamp.tar.gz" -C "$work" db.db queue.db -C /data assets
-                  rm -rf "$work"
-                  find /backup -maxdepth 1 -name 'karakeep-*.tar.gz' -mtime +{{ .Values.backup.retentionDays }} -delete
-                  echo "backup done:" && ls -lh /backup
+                - apk add --no-cache bash sqlite tar >/dev/null && exec bash /scripts/backup.sh
+              env:
+                - name: RETENTION_DAYS
+                  value: {{ .Values.backup.retentionDays | quote }}
               resources:
                 requests:
                   cpu: 50m
@@ -72,6 +73,8 @@ spec:
                   mountPath: /data
                 - name: backups
                   mountPath: /backup
+                - name: script
+                  mountPath: /scripts
           volumes:
             - name: data
               persistentVolumeClaim:
@@ -79,4 +82,7 @@ spec:
             - name: backups
               persistentVolumeClaim:
                 claimName: {{ include "karakeep.fullname" . }}-backups
+            - name: script
+              configMap:
+                name: {{ include "karakeep.fullname" . }}-backup-script
 {{- end }}
