@@ -59,5 +59,5 @@ resource "scaleway_iam_api_key" "cnpg_backups" {
 
   # Org policy mandates an expiry. WAL archiving breaks silently past this date,
   # rotate by bumping it and re-running both TF roots.
-  expires_at = "2030-01-01T00:00:00Z"
+  expires_at = "2027-05-20T00:00:00Z"
 }
