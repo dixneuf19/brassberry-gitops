@@ -65,15 +65,35 @@ needed for burrito.
    bws secret create burrito-github-app-installation-id <ID> 23028f7d-c2dd-4049-a1ef-b42300e91f30
    ```
 
-6. Adopt the 4 secrets in `terraform/bitwarden` (import blocks, see
-   `terraform/bitwarden/github_app.tf`) and apply that root.
+6. Adopt the 4 secrets in **`terraform/bitwarden`**. That root reads other
+   roots' remote state, so any root whose outputs it consumes must be applied
+   first (e.g. `terraform/scaleway` for the burrito datastore keys — an
+   `Unsupported attribute ... outputs` error on plan means a source root is
+   behind).
 
-7. `direnv reload`, then here:
+   The import blocks are committed in `terraform/bitwarden/imports.tf` (secret
+   IDs, not values; they are no-ops once the secrets are in the state). If a
+   secret was ever recreated, refresh the IDs with
+   `bws secret list --output json | jq -r '.[] | select(.key | test("github")) | "\(.key) = \(.id)"'`.
 
    ```bash
+   cd terraform/scaleway
+   terraform apply          # only if it has pending changes
+
+   cd ../bitwarden
+   terraform plan           # expect: 4 to import, no duplicate creates
+   terraform apply
+   ```
+
+7. Finally in **`terraform/github`** (reads the bitwarden remote state, so
+   step 6 must be applied first). The adoptions (app installation binding,
+   pre-existing ArgoCD hook) are committed as import blocks in `imports.tf`:
+
+   ```bash
+   direnv reload            # picks up TF_VAR_burrito_github_app_installation_id
+   cd terraform/github
    terraform init
-   # the app was installed on the repo in step 5, adopt the binding:
-   terraform import github_app_installation_repository.burrito_brassberry_gitops <installation-id>:brassberry-gitops
+   terraform plan           # expect: 2 to import
    terraform apply
    ```
 
@@ -93,11 +113,8 @@ read here through its remote state). ArgoCD receives the same value through an
 `ExternalSecret` merged into `argocd-secret`
 (`gitops/argocd/argo-cd/templates/external-secret-webhook.yaml`).
 
-Adopt the existing hook before the first apply:
-
-```bash
-terraform import github_repository_webhook.argocd brassberry-gitops/442446137
-```
+The existing hook (id 442446137) is adopted by an import block in
+`imports.tf`.
 
 Apply order for the secret: `terraform/bitwarden` first (creates the secret),
 then this root (sets it on the hook). ArgoCD accepts unsigned deliveries until
