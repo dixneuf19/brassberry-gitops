@@ -1,7 +1,7 @@
 provider "oci" {
   tenancy_ocid     = "ocid1.tenancy.oc1..aaaaaaaag3xw32hdfohhaxtbrgqn7bukopofevsijbhbh6y6fgo5u3vnirpq"
   user_ocid        = "ocid1.user.oc1..aaaaaaaa3bnkhue5jyet7ny2wdtj4y2ll4mcb57ijqv2eylpqnxbwkuovhea"
-  private_key_path = "~/.oci/oci_api_key.pem"
+  private_key_path = var.oci_private_key_path
   fingerprint      = "b0:56:46:49:33:1d:e5:b5:7d:64:26:c8:e7:ef:90:fc"
   region           = "eu-paris-1"
 }

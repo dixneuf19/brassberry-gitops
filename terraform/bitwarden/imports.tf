@@ -20,3 +20,28 @@ import {
   to = bitwarden-secrets_secret.burrito_github_webhook_secret
   id = "db403ea6-90b3-4680-835f-b4a700b6a5c4"
 }
+
+import {
+  to = bitwarden-secrets_secret.github_user
+  id = "4a5f4a0d-5969-4e87-8f81-b4a700e613dc"
+}
+
+import {
+  to = bitwarden-secrets_secret.oci_compartment_id
+  id = "a57bab3f-ada8-4769-8157-b4a700e6140d"
+}
+
+import {
+  to = bitwarden-secrets_secret.oci_node_ips
+  id = "da31b3ef-ce27-4a71-85ac-b4a700e6143e"
+}
+
+import {
+  to = bitwarden-secrets_secret.tailscale_auth_key
+  id = "fb8ee74d-3c26-4a3e-b35e-b4a700e61490"
+}
+
+import {
+  to = bitwarden-secrets_secret.oci_api_private_key
+  id = "dcdcc394-4d04-4a40-9ac6-b4a700e634b9"
+}

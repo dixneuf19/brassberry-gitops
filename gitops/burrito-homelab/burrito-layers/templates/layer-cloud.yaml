@@ -1,0 +1,30 @@
+apiVersion: config.terraform.padok.cloud/v1alpha1
+kind: TerraformLayer
+metadata:
+  name: cloud
+spec:
+  path: terraform/cloud
+  branch: main
+  repository:
+    name: brassberry-gitops
+    namespace: burrito-homelab
+  overrideRunnerSpec:
+    # arrays replace wholesale on merge, so re-list burrito-runner-common
+    envFrom:
+      - secretRef:
+          name: burrito-runner-common
+      - secretRef:
+          name: burrito-runner-cloud
+    volumes:
+      - name: oci-key
+        secret:
+          secretName: burrito-runner-cloud
+          items:
+            - key: oci_api_key.pem
+              path: oci_api_key.pem
+          defaultMode: 0400
+    volumeMounts:
+      - name: oci-key
+        mountPath: /home/burrito/.oci/oci_api_key.pem
+        subPath: oci_api_key.pem
+        readOnly: true

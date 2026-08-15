@@ -19,3 +19,8 @@ variable "gandi_pat" {
 variable "node_ips" {
   type = list(string)
 }
+
+variable "oci_private_key_path" {
+  type    = string
+  default = "~/.oci/oci_api_key.pem"
+}
