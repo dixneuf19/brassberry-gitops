@@ -71,34 +71,18 @@ needed for burrito.
    `Unsupported attribute ... outputs` error on plan means a source root is
    behind).
 
+   The import blocks are committed in `terraform/bitwarden/imports.tf` (secret
+   IDs, not values; they are no-ops once the secrets are in the state). If a
+   secret was ever recreated, refresh the IDs with
+   `bws secret list --output json | jq -r '.[] | select(.key | test("github")) | "\(.key) = \(.id)"'`.
+
    ```bash
    cd terraform/scaleway
    terraform apply          # only if it has pending changes
 
    cd ../bitwarden
-   # one-time imports.tf; get the IDs with:
-   #   bws secret list --output json | jq -r '.[] | select(.key | test("github")) | "\(.key) = \(.id)"'
-   cat > imports.tf <<'EOF'
-   import {
-     to = bitwarden-secrets_secret.burrito_github_app_id
-     id = "<ID>"
-   }
-   import {
-     to = bitwarden-secrets_secret.burrito_github_app_installation_id
-     id = "<ID>"
-   }
-   import {
-     to = bitwarden-secrets_secret.burrito_github_app_private_key
-     id = "<ID>"
-   }
-   import {
-     to = bitwarden-secrets_secret.burrito_github_webhook_secret
-     id = "<ID>"
-   }
-   EOF
    terraform plan           # expect: 4 to import, no duplicate creates
    terraform apply
-   rm imports.tf
    ```
 
 7. Finally in **`terraform/github`** (reads the bitwarden remote state, so

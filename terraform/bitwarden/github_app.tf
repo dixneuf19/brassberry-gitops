@@ -1,9 +1,7 @@
 # ── burrito-brassberry GitHub App ─────────────────────────────────────────────
 # The app is created once by hand and these secrets are written with bws during
-# that procedure (terraform/github/README.md). Terraform adopts them: add import
-# blocks with the IDs from
-#   bws secret list --output json | jq -r '.[] | select(.key | test("github")) | "\(.key) = \(.id)"'
-# then plan/apply and drop the import blocks.
+# that procedure (terraform/github/README.md). Terraform adopts them via the
+# import blocks in imports.tf.
 
 resource "bitwarden-secrets_secret" "burrito_github_app_id" {
   key        = "burrito-github-app-id"
