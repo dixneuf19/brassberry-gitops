@@ -22,7 +22,7 @@ spec:
           items:
             - key: oci_api_key.pem
               path: oci_api_key.pem
-          defaultMode: 0400
+          defaultMode: 0444
     volumeMounts:
       - name: oci-key
         mountPath: /home/burrito/.oci/oci_api_key.pem
