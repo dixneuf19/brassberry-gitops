@@ -1,0 +1,22 @@
+apiVersion: config.terraform.padok.cloud/v1alpha1
+kind: TerraformRepository
+metadata:
+  name: brassberry-gitops
+spec:
+  repository:
+    url: https://github.com/dixneuf19/brassberry-gitops
+  terraform:
+    enabled: true
+  remediationStrategy:
+    autoApply: false
+  overrideRunnerSpec:
+    serviceAccountName: runner-homelab
+    envFrom:
+      - secretRef:
+          name: burrito-runner-common
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        memory: 2Gi
