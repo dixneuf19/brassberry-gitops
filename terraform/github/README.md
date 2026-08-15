@@ -45,10 +45,14 @@ needed for burrito.
    bws secret create burrito-github-app-id <APP_ID> 23028f7d-c2dd-4049-a1ef-b42300e91f30
    ```
 
-4. Still on the app page, "Generate a private key" (downloads a `.pem`), then:
+4. Still on the app page, "Generate a private key" (downloads a `.pem`), then
+   store it (the `--` is required: the PEM value starts with `-----` and would
+   otherwise be parsed as a flag) and check it against the `SHA256:...`
+   fingerprint shown on the app page before deleting the file:
 
    ```bash
-   bws secret create burrito-github-app-private-key "$(cat ~/Downloads/burrito-brassberry.*.private-key.pem)" 23028f7d-c2dd-4049-a1ef-b42300e91f30
+   bws secret create burrito-github-app-private-key -- "$(cat ~/Downloads/burrito-brassberry.*.private-key.pem)" 23028f7d-c2dd-4049-a1ef-b42300e91f30
+   openssl rsa -in ~/Downloads/burrito-brassberry.*.private-key.pem -pubout -outform DER | openssl sha256 -binary | openssl base64
    rm ~/Downloads/burrito-brassberry.*.private-key.pem
    ```
 

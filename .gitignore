@@ -68,6 +68,7 @@ Temporary Items
 ### Secrets ###
 **/*.secret
 *.htpasswd
+*.pem
 
 ### Terraform ###
 **/.terraform/*
