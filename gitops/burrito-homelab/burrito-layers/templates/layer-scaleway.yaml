@@ -1,0 +1,17 @@
+apiVersion: config.terraform.padok.cloud/v1alpha1
+kind: TerraformLayer
+metadata:
+  name: scaleway
+spec:
+  path: terraform/scaleway
+  branch: main
+  repository:
+    name: brassberry-gitops
+    namespace: burrito-homelab
+  overrideRunnerSpec:
+    # arrays replace wholesale on merge, so re-list burrito-runner-common
+    envFrom:
+      - secretRef:
+          name: burrito-runner-common
+      - secretRef:
+          name: burrito-runner-scaleway

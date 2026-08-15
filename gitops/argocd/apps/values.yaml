@@ -156,6 +156,11 @@ applications:
     syncOptions:
       - ServerSideApply=true
 
+  - name: burrito-layers
+    namespace: burrito-homelab
+    path: gitops/burrito-homelab/burrito-layers
+    createNamespace: false
+
   # =============================================================================
   # CNPG (CloudNative PostgreSQL)
   # =============================================================================

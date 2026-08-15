@@ -84,14 +84,6 @@ resource "bitwarden-secrets_secret" "burrito_datastore_encryption_key" {
   special = false
 }
 
-resource "bitwarden-secrets_secret" "burrito_admin_password" {
-  key        = "burrito-admin-password"
-  project_id = var.bw_project_id
-  note       = "Burrito UI admin password (auto-generated)"
-
-  length  = 32
-  special = false
-}
 
 resource "bitwarden-secrets_secret" "burrito_datastore_access_key_id" {
   key        = "burrito-datastore-access-key-id"
@@ -107,4 +99,36 @@ resource "bitwarden-secrets_secret" "burrito_datastore_secret_access_key" {
   note       = "Scaleway API secret key for the Burrito datastore"
 
   value = data.terraform_remote_state.scaleway.outputs.burrito_datastore_secret_access_key
+}
+
+resource "bitwarden-secrets_secret" "burrito_runner_access_key_id" {
+  key        = "burrito-runner-access-key-id"
+  project_id = var.bw_project_id
+  note       = "Scaleway API key ID for burrito runner pods"
+
+  value = data.terraform_remote_state.scaleway.outputs.burrito_runner_access_key_id
+}
+
+resource "bitwarden-secrets_secret" "burrito_runner_secret_access_key" {
+  key        = "burrito-runner-secret-access-key"
+  project_id = var.bw_project_id
+  note       = "Scaleway API secret key for burrito runner pods"
+
+  value = data.terraform_remote_state.scaleway.outputs.burrito_runner_secret_access_key
+}
+
+resource "bitwarden-secrets_secret" "scaleway_organization_id" {
+  key        = "scaleway-organization-id"
+  project_id = var.bw_project_id
+  note       = "Scaleway organization ID"
+
+  value = data.terraform_remote_state.scaleway.outputs.scaleway_organization_id
+}
+
+resource "bitwarden-secrets_secret" "scaleway_default_project_id" {
+  key        = "scaleway-default-project-id"
+  project_id = var.bw_project_id
+  note       = "Scaleway default project ID"
+
+  value = data.terraform_remote_state.scaleway.outputs.scaleway_default_project_id
 }
