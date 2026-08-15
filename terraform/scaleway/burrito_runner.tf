@@ -9,24 +9,21 @@ resource "scaleway_iam_application" "burrito_runner" {
 
 resource "scaleway_iam_policy" "burrito_runner" {
   name           = "burrito-runner"
-  description    = "Plan-only: read everything, write Object Storage on the default project (tfstates backend + locks)"
+  description    = "autoApply on the scaleway layer: manage IAM/projects/Object Storage, read the rest"
   application_id = scaleway_iam_application.burrito_runner.id
 
   # A rule cannot mix scope types: org-scope sets (IAM, projects) and
   # projects-scope sets (products) go in separate rules.
+  # IAMManager means this key can escalate its own permissions (documented
+  # Scaleway caveat), accepted for autoApply on the scaleway root.
   rule {
     organization_id      = data.scaleway_account_project.homelab.organization_id
-    permission_set_names = ["IAMReadOnly", "ProjectReadOnly"]
+    permission_set_names = ["IAMManager", "ProjectManager"]
   }
 
   rule {
     organization_id      = data.scaleway_account_project.homelab.organization_id
-    permission_set_names = ["AllProductsReadOnly"]
-  }
-
-  rule {
-    project_ids          = [data.scaleway_account_project.homelab.id]
-    permission_set_names = ["ObjectStorageFullAccess"]
+    permission_set_names = ["AllProductsReadOnly", "ObjectStorageFullAccess"]
   }
 }
 
