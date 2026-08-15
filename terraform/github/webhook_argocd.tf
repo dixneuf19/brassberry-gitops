@@ -1,5 +1,4 @@
-# Pre-existing hook (id 442446137), import with:
-#   terraform import github_repository_webhook.argocd brassberry-gitops/442446137
+# Pre-existing hook, adopted via imports.tf.
 # Adding the secret authenticates deliveries; ArgoCD gets the same value through
 # an ExternalSecret merged into argocd-secret (webhook.github.secret).
 resource "github_repository_webhook" "argocd" {

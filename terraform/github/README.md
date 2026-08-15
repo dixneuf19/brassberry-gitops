@@ -86,16 +86,14 @@ needed for burrito.
    ```
 
 7. Finally in **`terraform/github`** (reads the bitwarden remote state, so
-   step 6 must be applied first):
+   step 6 must be applied first). The adoptions (app installation binding,
+   pre-existing ArgoCD hook) are committed as import blocks in `imports.tf`:
 
    ```bash
    direnv reload            # picks up TF_VAR_burrito_github_app_installation_id
    cd terraform/github
    terraform init
-   # the app was installed on the repo in step 5, adopt the binding:
-   terraform import github_app_installation_repository.burrito_brassberry_gitops <installation-id>:brassberry-gitops
-   # pre-existing ArgoCD hook (see the ArgoCD webhook section below):
-   terraform import github_repository_webhook.argocd brassberry-gitops/442446137
+   terraform plan           # expect: 2 to import
    terraform apply
    ```
 
@@ -115,11 +113,8 @@ read here through its remote state). ArgoCD receives the same value through an
 `ExternalSecret` merged into `argocd-secret`
 (`gitops/argocd/argo-cd/templates/external-secret-webhook.yaml`).
 
-Adopt the existing hook before the first apply:
-
-```bash
-terraform import github_repository_webhook.argocd brassberry-gitops/442446137
-```
+The existing hook (id 442446137) is adopted by an import block in
+`imports.tf`.
 
 Apply order for the secret: `terraform/bitwarden` first (creates the secret),
 then this root (sets it on the hook). ArgoCD accepts unsigned deliveries until
