@@ -1,0 +1,23 @@
+# GitHub webhook deliveries must bypass the basic-auth middleware; the webhook
+# secret authenticates them. The TLS secret is issued by the chart's UI ingress.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: burrito-server-webhook
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: burrito.dixneuf19.fr
+      http:
+        paths:
+          - path: /api/webhook
+            pathType: Prefix
+            backend:
+              service:
+                name: burrito-server
+                port:
+                  number: 80
+  tls:
+    - secretName: burrito-dixneuf19-fr-tls
+      hosts:
+        - burrito.dixneuf19.fr

@@ -1,0 +1,50 @@
+burrito:
+  config:
+    burrito:
+      controller:
+        timers:
+          driftDetection: 24h
+          repositorySync: 24h
+        maxConcurrentRunnerPods: 2
+        terraformMaxRetries: 2
+      datastore:
+        storage:
+          s3:
+            bucket: dixneuf19-burrito-datastore
+            usePathStyle: true
+          encryption:
+            enabled: true
+      server:
+        session:
+          secure: true
+
+  datastore:
+    tls:
+      enabled: true
+    deployment:
+      envFrom:
+        - secretRef:
+            name: burrito-datastore-s3
+        - secretRef:
+            name: burrito-datastore-encryption-key
+
+  server:
+    ingress:
+      enabled: true
+      ingressClassName: traefik
+      metadata:
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt
+          traefik.ingress.kubernetes.io/router.middlewares: burrito-system-basic-auth@kubernetescrd
+      host: burrito.dixneuf19.fr
+      tls:
+        - secretName: burrito-dixneuf19-fr-tls
+          hosts:
+            - burrito.dixneuf19.fr
+
+  tenants:
+    - namespace:
+        create: true
+        name: burrito-homelab
+      serviceAccounts:
+        - name: runner-homelab
