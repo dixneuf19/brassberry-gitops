@@ -65,15 +65,53 @@ needed for burrito.
    bws secret create burrito-github-app-installation-id <ID> 23028f7d-c2dd-4049-a1ef-b42300e91f30
    ```
 
-6. Adopt the 4 secrets in `terraform/bitwarden` (import blocks, see
-   `terraform/bitwarden/github_app.tf`) and apply that root.
-
-7. `direnv reload`, then here:
+6. Adopt the 4 secrets in **`terraform/bitwarden`**. That root reads other
+   roots' remote state, so any root whose outputs it consumes must be applied
+   first (e.g. `terraform/scaleway` for the burrito datastore keys — an
+   `Unsupported attribute ... outputs` error on plan means a source root is
+   behind).
 
    ```bash
+   cd terraform/scaleway
+   terraform apply          # only if it has pending changes
+
+   cd ../bitwarden
+   # one-time imports.tf; get the IDs with:
+   #   bws secret list --output json | jq -r '.[] | select(.key | test("github")) | "\(.key) = \(.id)"'
+   cat > imports.tf <<'EOF'
+   import {
+     to = bitwarden-secrets_secret.burrito_github_app_id
+     id = "<ID>"
+   }
+   import {
+     to = bitwarden-secrets_secret.burrito_github_app_installation_id
+     id = "<ID>"
+   }
+   import {
+     to = bitwarden-secrets_secret.burrito_github_app_private_key
+     id = "<ID>"
+   }
+   import {
+     to = bitwarden-secrets_secret.burrito_github_webhook_secret
+     id = "<ID>"
+   }
+   EOF
+   terraform plan           # expect: 4 to import, no duplicate creates
+   terraform apply
+   rm imports.tf
+   ```
+
+7. Finally in **`terraform/github`** (reads the bitwarden remote state, so
+   step 6 must be applied first):
+
+   ```bash
+   direnv reload            # picks up TF_VAR_burrito_github_app_installation_id
+   cd terraform/github
    terraform init
    # the app was installed on the repo in step 5, adopt the binding:
    terraform import github_app_installation_repository.burrito_brassberry_gitops <installation-id>:brassberry-gitops
+   # pre-existing ArgoCD hook (see the ArgoCD webhook section below):
+   terraform import github_repository_webhook.argocd brassberry-gitops/442446137
    terraform apply
    ```
 
