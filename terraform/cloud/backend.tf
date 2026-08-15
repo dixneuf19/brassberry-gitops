@@ -1,8 +1,9 @@
 terraform {
   backend "s3" {
-    bucket = "dixneuf19-tfstates"
-    key    = "oci-arm/terraform.tfstate"
-    region = "fr-par"
+    bucket       = "dixneuf19-tfstates"
+    key          = "oci-arm/terraform.tfstate"
+    region       = "fr-par"
+    use_lockfile = true
 
     endpoints = {
       s3 = "https://s3.fr-par.scw.cloud"

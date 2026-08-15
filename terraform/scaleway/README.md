@@ -18,7 +18,7 @@ Manages Scaleway resources: Object Storage (S3 bucket for Terraform state) and S
 2. Initialize and import the existing S3 bucket:
 
    ```bash
-   cd scaleway/terraform
+   cd terraform/scaleway
    terraform init
    terraform import scaleway_object_bucket.tfstates fr-par/dixneuf19-tfstates
    ```
@@ -52,7 +52,7 @@ After bootstrapping, direnv (`.envrc`) reads `/terraform/*` secrets from Scalewa
 
 ```bash
 # From the repo root, direnv loads automatically
-cd scaleway/terraform
+cd terraform/scaleway
 terraform plan
 ```
 

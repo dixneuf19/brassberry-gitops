@@ -96,7 +96,7 @@ Before running, verify `hosts.yaml` has the correct devices:
 ### 6. Run Terraform (Tailscale)
 
 ```bash
-cd proxmox/terraform
+cd terraform/proxmox
 cp terraform.tfvars.example terraform.tfvars
 # Edit terraform.tfvars with your values (API token from step 3, SSH key)
 

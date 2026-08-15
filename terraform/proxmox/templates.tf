@@ -19,7 +19,7 @@ resource "proxmox_virtual_environment_file" "k8s_worker_cloud_config" {
   node_name    = var.proxmox_node
 
   source_raw {
-    data = <<-EOF
+    data      = <<-EOF
       #cloud-config
       package_update: true
       packages:

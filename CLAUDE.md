@@ -27,12 +27,13 @@ make k0sctl            # Bootstrap or update the k0s cluster
 make kubeconfig        # Export kubeconfig to $KUBECONFIG
 ```
 
-### Terraform (3 separate roots)
+### Terraform (4 roots under `terraform/`)
 
 ```bash
-cd scaleway/terraform && terraform plan   # Scaleway S3 (TF state backend)
-cd proxmox/terraform && terraform plan    # Proxmox VMs, storage, users
-cd oci-arm && terraform plan              # Oracle Cloud ARM + DigitalOcean + Gandi DNS
+cd terraform/scaleway && terraform plan   # Scaleway S3 (TF state backend, backups)
+cd terraform/proxmox && terraform plan    # Proxmox VMs, storage, users
+cd terraform/cloud && terraform plan      # Oracle Cloud ARM + DigitalOcean + Gandi DNS
+cd terraform/bitwarden && terraform plan  # Bitwarden Secrets Manager secrets
 ```
 
 All Terraform state is stored in a Scaleway S3 bucket. Credentials are injected via `direnv` from the `scw` CLI (see `.envrc.example`).
@@ -70,17 +71,19 @@ Image updates are handled by ArgoCD Image Updater (configured via ImageUpdater C
 
 ### Infrastructure Layers
 
-- **`scaleway/terraform/`** — Foundation layer. Manages the S3 bucket (Terraform state backend).
-- **`proxmox/terraform/`** — Proxmox VE resources (VMs, storage, users, cloud-init). Depends on secrets from Bitwarden Secrets Manager.
-- **`oci-arm/`** — Cloud worker nodes (Oracle Cloud ARM, DigitalOcean droplet, Gandi DNS).
-- **`cluster/`** — k0s cluster config (`k0sctl.yaml`) and lifecycle playbooks.
+- **`terraform/scaleway/`** — Foundation layer. Manages the S3 buckets (Terraform state backend, backups).
+- **`terraform/proxmox/`** — Proxmox VE resources (VMs, storage, users, cloud-init). Depends on secrets from Bitwarden Secrets Manager.
+- **`terraform/cloud/`** — Cloud worker nodes (Oracle Cloud ARM, DigitalOcean droplet, Gandi DNS).
+- **`terraform/bitwarden/`** — Secrets in Bitwarden Secrets Manager.
+- **`cluster/`** — k0s cluster config (`k0sctl.yaml`).
 - **`raspberry-pi/`** — Pi provisioning (cloud-init templates, image customization scripts).
-- **`ansible/`** — Shared inventory and generic playbooks. All nodes are on the Tailscale mesh VPN.
+- **`ansible/`** — Inventory and ALL playbooks, prefixed by area (`cluster-*`, `proxmox-*`, `pi-*`, generic). All nodes are on the Tailscale mesh VPN.
+- **`proxmox/`** — Proxmox host documentation (README, ZFS, BIOS notes).
 
 ### Secrets Flow
 
 Two paths from Bitwarden Secrets Manager:
-- **Terraform**: `direnv` reads secrets via `bws secret list` → exports as `TF_VAR_*`
+- **Terraform** (all roots under `terraform/`): `direnv` reads secrets via `bws secret list` → exports as `TF_VAR_*`
 - **Kubernetes**: External Secrets Operator syncs via `ExternalSecret` resources in each app's Helm templates, using a `ClusterSecretStore` named `bitwarden-secrets-manager` (backed by `bitwarden-sdk-server` running in the `external-secrets` namespace)
 
 ### Adding a New Kubernetes App

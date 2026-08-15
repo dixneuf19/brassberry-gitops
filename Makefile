@@ -17,7 +17,7 @@ tailscale-hostmap-pull:
 tailscale-hosts:
 	@sudo uv run $(TS_HOSTMAP_SCRIPT) --ts-binary $(TS_BINARY) --include-shared
 
-# --- Generic playbooks (ansible/) ---
+# --- Generic playbooks (ansible/playbooks/) ---
 ping:
 	ansible-playbook -i $(ANSIBLE_INVENTORY) ansible/playbooks/ping.yaml
 
@@ -27,25 +27,25 @@ reboot:
 tailscale:
 	ansible-playbook -i $(ANSIBLE_INVENTORY) ansible/playbooks/tailscale.yaml
 
-# --- Raspberry Pi playbooks (raspberry-pi/) ---
+# --- Raspberry Pi playbooks (ansible/playbooks/pi-*) ---
 jellyfin:
-	ansible-playbook -i $(ANSIBLE_INVENTORY) raspberry-pi/playbooks/jellyfin.yaml
+	ansible-playbook -i $(ANSIBLE_INVENTORY) ansible/playbooks/pi-jellyfin.yaml
 
 mounts:
-	ansible-playbook -i $(ANSIBLE_INVENTORY) raspberry-pi/playbooks/mounts.yaml
+	ansible-playbook -i $(ANSIBLE_INVENTORY) ansible/playbooks/pi-mounts.yaml
 
-# --- Cluster lifecycle playbooks (cluster/) ---
+# --- Cluster lifecycle playbooks (ansible/playbooks/cluster-*) ---
 kernel-modules:
-	ansible-playbook -i $(ANSIBLE_INVENTORY) cluster/playbooks/kernel-modules.yaml
+	ansible-playbook -i $(ANSIBLE_INVENTORY) ansible/playbooks/cluster-kernel-modules.yaml
 
 upgrade:
-	ansible-playbook -i $(ANSIBLE_INVENTORY) cluster/playbooks/upgrade.yaml
+	ansible-playbook -i $(ANSIBLE_INVENTORY) ansible/playbooks/cluster-upgrade.yaml
 
 nfs-server:
-	ansible-playbook -i $(ANSIBLE_INVENTORY) cluster/playbooks/nfs-server.yaml
+	ansible-playbook -i $(ANSIBLE_INVENTORY) ansible/playbooks/cluster-nfs-server.yaml
 
 remove-nfs-server:
-	ansible-playbook -i $(ANSIBLE_INVENTORY) cluster/playbooks/remove-nfs-server.yaml
+	ansible-playbook -i $(ANSIBLE_INVENTORY) ansible/playbooks/cluster-remove-nfs-server.yaml
 
 # --- Cluster (k0s) ---
 kubeconfig:
@@ -65,22 +65,22 @@ proxmox-post-install:
 # Handles: ZFS rpool tuning, packages, Tailscale, Terraform API token
 # After this: run 'ssh root@192.168.1.30 tailscale up' then 'make tailscale-hosts'
 proxmox-bootstrap:
-	ansible-playbook -i $(ANSIBLE_INVENTORY) proxmox/playbooks/proxmox-bootstrap.yaml -e "ansible_host=192.168.1.30"
+	ansible-playbook -i $(ANSIBLE_INVENTORY) ansible/playbooks/proxmox-bootstrap.yaml -e "ansible_host=192.168.1.30"
 
 # Step 3+: Use Tailscale address (run 'make tailscale-hosts' first after joining tailnet)
 proxmox-zfs:
-	ansible-playbook -i $(ANSIBLE_INVENTORY) proxmox/playbooks/proxmox-zfs.yaml
+	ansible-playbook -i $(ANSIBLE_INVENTORY) ansible/playbooks/proxmox-zfs.yaml
 
 # Force PCIe ASPM via GRUB (fixes broken ACPI FADT on CWWK N355)
 proxmox-grub-aspm:
-	ansible-playbook -i $(ANSIBLE_INVENTORY) proxmox/playbooks/proxmox-grub-aspm.yaml
+	ansible-playbook -i $(ANSIBLE_INVENTORY) ansible/playbooks/proxmox-grub-aspm.yaml
 
 # NFS server on Proxmox (exports tank/media + tank/data)
 proxmox-nfs:
-	ansible-playbook -i $(ANSIBLE_INVENTORY) proxmox/playbooks/proxmox-nfs.yaml
+	ansible-playbook -i $(ANSIBLE_INVENTORY) ansible/playbooks/proxmox-nfs.yaml
 
 # node_exporter on the Proxmox host (CPU/NVMe/HDD temperatures)
 proxmox-node-exporter:
-	ansible-playbook -i $(ANSIBLE_INVENTORY) proxmox/playbooks/proxmox-node-exporter.yaml
+	ansible-playbook -i $(ANSIBLE_INVENTORY) ansible/playbooks/proxmox-node-exporter.yaml
 
 .PHONY: all ping reboot tailscale jellyfin mounts kernel-modules upgrade nfs-server remove-nfs-server kubeconfig k0sctl proxmox-post-install proxmox-bootstrap proxmox-zfs proxmox-grub-aspm proxmox-nfs proxmox-node-exporter tailscale-hostmap-pull tailscale-hosts
