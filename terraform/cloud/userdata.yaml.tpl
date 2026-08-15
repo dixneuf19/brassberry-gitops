@@ -122,7 +122,7 @@ runcmd:
   # Generate an auth key from your Admin console
   # https://login.tailscale.com/admin/settings/keys
   # Setup tailscale connection
-  - tailscale up -authkey ${tailscale_auth_key}
+  - tailscale up -authkey ${tailscale_auth_key} --advertise-tags=tag:edge
 
   # Open port 22 for SSH access
   # To use for debugging

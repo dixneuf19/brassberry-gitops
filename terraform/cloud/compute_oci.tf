@@ -56,4 +56,13 @@ resource "oci_core_instance" "oracle-arm" {
       name          = "Compute Instance Monitoring"
     }
   }
+
+  # Blue/green rotation: the replacement VM boots and finishes cloud-init while
+  # the old edge keeps serving; the reserved public IP re-attaches afterwards.
+  # 2 OCPU/12GB = half the Always Free ARM quota, so both fit during the swap
+  # (but the two 100GB boot volumes use the full 200GB block storage quota).
+  # If OCI is out of ARM capacity the create fails and the old edge stays up.
+  lifecycle {
+    create_before_destroy = true
+  }
 }
