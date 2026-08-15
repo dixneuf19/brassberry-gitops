@@ -341,6 +341,127 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "24h moving average of the same series: the day/night cycle is averaged out, leaving only the multi-day tendency. Parallel curves confirm the servers track the outside temperature.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Paris (outside)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 3
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "12.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(avg_over_time(node_thermal_zone_temp{type=\"cpu-thermal\"}[24h]) or avg_over_time(node_hwmon_temp_celsius{chip=\"platform_coretemp_0\",sensor=\"temp1\"}[24h])) * on(instance) group_left(nodename) node_uname_info",
+          "interval": "30m",
+          "legendFormat": "{{nodename}}",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "avg(avg_over_time(weather_temperature_celsius{city=\"paris\"}[24h]))",
+          "interval": "30m",
+          "legendFormat": "Paris (outside)",
+          "refId": "B"
+        }
+      ],
+      "title": "Trend: 24h moving average",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "description": "CPU temperature minus outside temperature. This removes the weather from the picture: a flat line means the node only follows ambient temperature, a rising line means its own load or cooling changed.",
       "fieldConfig": {
         "defaults": {
@@ -384,7 +505,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 16
+        "y": 25
       },
       "id": 5,
       "options": {
@@ -467,7 +588,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 16
+        "y": 25
       },
       "id": 6,
       "options": {
