@@ -29,7 +29,10 @@ resource "bitwarden-secrets_secret" "cnpg_backup_secret_access_key" {
 }
 
 # ── Imported secrets ─────────────────────────────────────────────────────────
-# These already exist in Bitwarden. Terraform adopts them without recreating.
+# These already exist in Bitwarden. CAUTION: every generation attribute of this
+# provider is Optional+Computed, so an adopted resource without ignore_changes
+# gets its value REGENERATED on the first apply after import (happened
+# 2026-04-06 and 2026-08-15).
 #
 # To get the secret IDs, run:
 #   bws secret list --output json | jq -r '.[] | select(.key | test("baj-mysql|karakeep")) | "\(.key) = \(.id)"'
@@ -40,24 +43,36 @@ resource "bitwarden-secrets_secret" "baj_mysql_root_password" {
   key        = "baj-mysql-root-password"
   project_id = var.bw_project_id
   note       = "MySQL root password for og-baj-website"
+  lifecycle {
+    ignore_changes = [value, length]
+  }
 }
 
 resource "bitwarden-secrets_secret" "baj_mysql_password" {
   key        = "baj-mysql-password"
   project_id = var.bw_project_id
   note       = "MySQL app password for og-baj-website"
+  lifecycle {
+    ignore_changes = [value, length]
+  }
 }
 
 resource "bitwarden-secrets_secret" "karakeep_nextauth_secret" {
   key        = "karakeep-nextauth-secret"
   project_id = var.bw_project_id
   note       = "NextAuth session signing key for Karakeep"
+  lifecycle {
+    ignore_changes = [value, length]
+  }
 }
 
 resource "bitwarden-secrets_secret" "karakeep_meili_master_key" {
   key        = "karakeep-meili-master-key"
   project_id = var.bw_project_id
   note       = "MeiliSearch master key for Karakeep"
+  lifecycle {
+    ignore_changes = [value, length]
+  }
 }
 
 resource "bitwarden-secrets_secret" "burrito_datastore_encryption_key" {
