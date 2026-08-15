@@ -1,0 +1,24 @@
+apiVersion: config.terraform.padok.cloud/v1alpha1
+kind: TerraformLayer
+metadata:
+  name: proxmox
+spec:
+  path: terraform/proxmox
+  branch: main
+  repository:
+    name: brassberry-gitops
+    namespace: burrito-homelab
+  # autoApply stays false forever: an apply here can recreate the VM worker
+  # hosted by the very Proxmox node this layer manages
+  remediationStrategy:
+    autoApply: false
+  overrideRunnerSpec:
+    # never schedule on k8s-worker-1 (the Proxmox-hosted VM, the only amd64 node)
+    nodeSelector:
+      kubernetes.io/arch: arm64
+    # arrays replace wholesale on merge, so re-list burrito-runner-common
+    envFrom:
+      - secretRef:
+          name: burrito-runner-common
+      - secretRef:
+          name: burrito-runner-proxmox
