@@ -12,9 +12,16 @@ resource "scaleway_iam_policy" "burrito_runner" {
   description    = "Plan-only: read everything, write Object Storage on the default project (tfstates backend + locks)"
   application_id = scaleway_iam_application.burrito_runner.id
 
+  # A rule cannot mix scope types: org-scope sets (IAM, projects) and
+  # projects-scope sets (products) go in separate rules.
   rule {
     organization_id      = data.scaleway_account_project.homelab.organization_id
-    permission_set_names = ["AllProductsReadOnly", "IAMReadOnly"]
+    permission_set_names = ["IAMReadOnly", "ProjectReadOnly"]
+  }
+
+  rule {
+    organization_id      = data.scaleway_account_project.homelab.organization_id
+    permission_set_names = ["AllProductsReadOnly"]
   }
 
   rule {
