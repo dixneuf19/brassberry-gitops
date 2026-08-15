@@ -148,6 +148,15 @@ applications:
       include: "*.yaml"
 
   # =============================================================================
+  # Burrito (Terraform automation)
+  # =============================================================================
+  - name: burrito
+    namespace: burrito-system
+    path: gitops/burrito-system/burrito
+    syncOptions:
+      - ServerSideApply=true
+
+  # =============================================================================
   # CNPG (CloudNative PostgreSQL)
   # =============================================================================
   - name: cloudnative-pg

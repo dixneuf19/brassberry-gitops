@@ -1,0 +1,9 @@
+apiVersion: v2
+name: burrito
+description: Burrito TACoS operator (wraps the upstream OCI chart)
+version: 0.1.0
+
+dependencies:
+  - name: burrito
+    version: "0.13.0"
+    repository: oci://ghcr.io/padok-team/charts
