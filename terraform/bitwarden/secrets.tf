@@ -132,3 +132,55 @@ resource "bitwarden-secrets_secret" "scaleway_default_project_id" {
 
   value = data.terraform_remote_state.scaleway.outputs.scaleway_default_project_id
 }
+
+# ── Cloud layer (adopted, values written with bws; see the regen CAUTION above) ──
+
+resource "bitwarden-secrets_secret" "github_user" {
+  key        = "github-user"
+  project_id = var.bw_project_id
+  note       = "GitHub username for cloud-init user (cloud layer)"
+
+  lifecycle {
+    ignore_changes = [value, length]
+  }
+}
+
+resource "bitwarden-secrets_secret" "oci_compartment_id" {
+  key        = "oci-compartment-id"
+  project_id = var.bw_project_id
+  note       = "OCI compartment OCID (cloud layer)"
+
+  lifecycle {
+    ignore_changes = [value, length]
+  }
+}
+
+resource "bitwarden-secrets_secret" "oci_node_ips" {
+  key        = "oci-node-ips"
+  project_id = var.bw_project_id
+  note       = "Tailscale IPs of cluster nodes, JSON list for TF_VAR_node_ips (cloud layer)"
+
+  lifecycle {
+    ignore_changes = [value, length]
+  }
+}
+
+resource "bitwarden-secrets_secret" "tailscale_auth_key" {
+  key        = "tailscale-auth-key"
+  project_id = var.bw_project_id
+  note       = "Tailscale auth key baked into OCI instance user_data; rotate before any instance recreate"
+
+  lifecycle {
+    ignore_changes = [value, length]
+  }
+}
+
+resource "bitwarden-secrets_secret" "oci_api_private_key" {
+  key        = "oci-api-private-key"
+  project_id = var.bw_project_id
+  note       = "OCI API private key PEM (cloud layer provider)"
+
+  lifecycle {
+    ignore_changes = [value, length]
+  }
+}
