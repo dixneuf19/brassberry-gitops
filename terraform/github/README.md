@@ -1,7 +1,6 @@
 # terraform/github
 
-GitHub-side resources for brassberry-gitops: the burrito GitHub App installation
-scope and the ArgoCD push webhook.
+GitHub-side resources for brassberry-gitops: the ArgoCD push webhook.
 
 The provider authenticates with `GITHUB_TOKEN`, exported by the repo `.envrc`
 from `gh auth token`.
@@ -9,9 +8,11 @@ from `gh auth token`.
 ## The burrito-brassberry GitHub App
 
 GitHub has no API to create Apps, so the app itself cannot be a Terraform
-resource. It is created once by hand with the settings below; everything
-downstream (installation scope, secrets in Bitwarden, cluster consumption via
-ESO) is IaC.
+resource. It is created once by hand with the settings below; the secrets flow
+(Bitwarden, cluster consumption via ESO) is IaC. The installation scope is
+also managed by hand (step 5): the `/user/installations/*` endpoints behind
+`github_app_installation_repository` only accept a classic PAT, whose
+account-wide `repo` scope is not worth a single repo binding.
 
 The webhook is app-level: it is configured on the app itself and delivers the
 subscribed events for every installed repository. No separate repo webhook is
@@ -86,14 +87,13 @@ needed for burrito.
    ```
 
 7. Finally in **`terraform/github`** (reads the bitwarden remote state, so
-   step 6 must be applied first). The adoptions (app installation binding,
-   pre-existing ArgoCD hook) are committed as import blocks in `imports.tf`:
+   step 6 must be applied first). The pre-existing ArgoCD hook is adopted via
+   the import block in `imports.tf`:
 
    ```bash
-   direnv reload            # picks up TF_VAR_burrito_github_app_installation_id
    cd terraform/github
    terraform init
-   terraform plan           # expect: 2 to import
+   terraform plan           # expect: 1 to import, 1 to change (hook gains its secret)
    terraform apply
    ```
 
