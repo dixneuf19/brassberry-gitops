@@ -23,30 +23,29 @@ Monorepo for my homelab infrastructure: from bare-metal provisioning to GitOps-m
 │   ├── netflix/         # Media server apps (jellyfin, transmission)
 │   └── ...
 │
-├── scaleway/            # Scaleway: terraform (S3 bucket + Secret Manager)
-│   └── terraform/
+├── terraform/           # All Terraform roots (state in Scaleway S3)
+│   ├── scaleway/        # S3 buckets (TF state backend, backups)
+│   ├── proxmox/         # Proxmox VE: VMs, storage, users, cloud-init
+│   ├── cloud/           # Oracle Cloud ARM VM + DigitalOcean droplet + Gandi DNS
+│   └── bitwarden/       # Bitwarden Secrets Manager secrets
 │
-├── proxmox/             # Proxmox VE: terraform + playbooks + docs
-│   ├── terraform/
-│   ├── playbooks/       # proxmox-bootstrap, proxmox-zfs
-│   ├── README.md
-│   └── ZFS.md
-│
-├── oci-arm/             # Oracle Cloud ARM VM: terraform
-│
-├── raspberry-pi/        # Pi provisioning: image scripts + playbooks
-│   ├── fix-ssh-on-pi.*  # Image customization
-│   ├── templates/       # Cloud-init templates
-│   └── playbooks/       # jellyfin, mounts
-│
-├── cluster/             # k8s cluster lifecycle
-│   ├── k0sctl.yaml      # k0s cluster config
-│   └── playbooks/       # kernel-modules, upgrade, nfs-server
-│
-├── ansible/             # Shared Ansible config
+├── ansible/             # All Ansible: inventory + playbooks
 │   ├── hosts.yaml       # Inventory (brassberry nodes, proxmox, etc.)
 │   ├── scripts/         # tailscale-hostmap
-│   └── playbooks/       # Generic: ping, reboot, tailscale
+│   └── playbooks/       # Prefixed by area:
+│                        #   ping, reboot, tailscale (generic)
+│                        #   cluster-* (kernel-modules, upgrade, nfs-server)
+│                        #   proxmox-* (bootstrap, zfs, nfs, grub-aspm, node-exporter)
+│                        #   pi-* (jellyfin, mounts)
+│
+├── cluster/             # k8s cluster config
+│   └── k0sctl.yaml      # k0s cluster config
+│
+├── proxmox/             # Proxmox docs: README.md, ZFS.md, bios.md
+│
+├── raspberry-pi/        # Pi provisioning: image scripts + cloud-init templates
+│   ├── fix-ssh-on-pi.*  # Image customization
+│   └── templates/       # Cloud-init templates
 │
 └── Makefile             # Convenience targets for all operations
 ```
@@ -105,7 +104,7 @@ All applications are defined in `gitops/argocd/apps/values.yaml` and rendered by
 
 All secrets are managed centrally in **[Bitwarden Secrets Manager](https://vault.bitwarden.eu)** and flow to consumers through two paths:
 
-- **Terraform layers** (proxmox, oci-arm): direnv reads secrets from Bitwarden SM via `bws` CLI and exports them as `TF_VAR_*` environment variables. No `.tfvars` files needed on disk.
+- **Terraform roots** (`terraform/*`): direnv reads secrets from Bitwarden SM via `bws` CLI and exports them as `TF_VAR_*` environment variables. No `.tfvars` files needed on disk.
 - **Kubernetes**: External Secrets Operator syncs secrets from Bitwarden SM into K8s Secrets via `ExternalSecret` resources placed alongside each app's Helm chart.
 
 ### Prerequisites
