@@ -26,6 +26,34 @@ Unfortunately, while NAT gateways are Free, they are not available on Free accou
 not have a payment method, so I left out the private IP config, which is why the VM still
 must have a public IP.
 
+## tailscale auth key (terraform-managed)
+
+The auth key the reverse proxy VM joins with is a `tailscale_tailnet_key` resource
+(`tailscale.tf`). It expires after 90 days and `recreate_if_invalid` recreates
+it on the next plan, so with Burrito autoApply the rotation is automatic. A
+key-only rotation does not rebuild the VM: the resulting `user_data` diff is
+ignored and rebuilds are driven by the `hostname_suffix` keepers, whose
+userdata fingerprint excludes the key. Any other userdata or variable change
+still triggers the blue/green rebuild, and the replacement VM boots with the
+current key from state.
+
+One-time setup for the provider credentials:
+
+1. Create an OAuth client in the
+   [Tailscale admin console](https://login.tailscale.com/admin/settings/oauth)
+   with the `auth_keys` write scope restricted to `tag:brassberry`
+   (add the `policy_file` scope too if/when the ACL becomes terraform-managed)
+2. Apply `terraform/bitwarden` to create the `tailscale-oauth-client-id` and
+   `tailscale-oauth-client-secret` secrets (created with placeholder values)
+   and delete the old manual `tailscale-auth-key` secret
+3. Write the real values: `bws secret list` to get the IDs, then
+   `bws secret edit <secret-id> --value <oauth-client-id-or-secret>`
+4. `direnv reload` locally; in the cluster the `burrito-runner-cloud`
+   ExternalSecret refreshes within 1h (delete the k8s secret to force it)
+5. Revoke the old manual auth key in the
+   [admin console](https://login.tailscale.com/admin/settings/keys)
+   (the running node stays connected, keys only matter at join time)
+
 ## pre-reqs
 
 - Oracle Cloud Account

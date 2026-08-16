@@ -1,19 +1,25 @@
+locals {
+  userdata_vars = {
+    github_user = var.github_user
+    ip_addrs    = var.node_ips
+  }
+}
+
 # Used to have a unique hostname for the VM
 resource "random_id" "hostname_suffix" {
   byte_length = 3
   keepers = {
-    # This will change when the userdata template changes
-    userdata_template = filemd5("userdata.yaml.tpl")
+    # Userdata render with the auth key redacted and the suffix pinned, so a
+    # key-only rotation never rebuilds the VM on its own
+    userdata_fingerprint = sha256(templatefile("userdata.yaml.tpl", merge(local.userdata_vars, {
+      tailscale_auth_key = "redacted"
+      hostname_suffix    = "fingerprint"
+    })))
     # This will change when the compute_oci.tf file itself changes
     compute_file = filemd5("compute_oci.tf")
     # This will change when the available images change
     available_images = jsonencode(data.oci_core_images.ampere-ubuntu-images.images)
-    # This will change when any variables change
-    all_vars = md5(jsonencode([
-      var.github_user,
-      var.tailscale_auth_key,
-      var.node_ips,
-      var.oci_compartment_id,
-    ]))
+    # This will change when the remaining variables change
+    oci_compartment_id = var.oci_compartment_id
   }
 }

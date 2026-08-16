@@ -165,10 +165,20 @@ resource "bitwarden-secrets_secret" "oci_node_ips" {
   }
 }
 
-resource "bitwarden-secrets_secret" "tailscale_auth_key" {
-  key        = "tailscale-auth-key"
+resource "bitwarden-secrets_secret" "tailscale_oauth_client_id" {
+  key        = "tailscale-oauth-client-id"
   project_id = var.bw_project_id
-  note       = "Tailscale auth key baked into OCI instance user_data; rotate before any instance recreate"
+  note       = "Tailscale OAuth client ID for the terraform tailscale provider (cloud layer)"
+
+  lifecycle {
+    ignore_changes = [value, length]
+  }
+}
+
+resource "bitwarden-secrets_secret" "tailscale_oauth_client_secret" {
+  key        = "tailscale-oauth-client-secret"
+  project_id = var.bw_project_id
+  note       = "Tailscale OAuth client secret for the terraform tailscale provider (cloud layer)"
 
   lifecycle {
     ignore_changes = [value, length]
