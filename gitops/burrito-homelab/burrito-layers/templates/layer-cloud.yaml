@@ -8,8 +8,6 @@ spec:
   repository:
     name: brassberry-gitops
     namespace: burrito-homelab
-  remediationStrategy:
-    autoApply: true
   overrideRunnerSpec:
     # arrays replace wholesale on merge, so re-list burrito-runner-common
     envFrom:
