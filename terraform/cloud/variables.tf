@@ -6,11 +6,6 @@ variable "oci_compartment_id" {
   type = string
 }
 
-variable "tailscale_auth_key" {
-  type      = string
-  sensitive = true
-}
-
 variable "gandi_pat" {
   type      = string
   sensitive = true
