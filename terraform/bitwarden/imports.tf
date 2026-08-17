@@ -37,11 +37,6 @@ import {
 }
 
 import {
-  to = bitwarden-secrets_secret.tailscale_auth_key
-  id = "fb8ee74d-3c26-4a3e-b35e-b4a700e61490"
-}
-
-import {
   to = bitwarden-secrets_secret.oci_api_private_key
   id = "dcdcc394-4d04-4a40-9ac6-b4a700e634b9"
 }
