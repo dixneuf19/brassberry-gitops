@@ -37,12 +37,20 @@ userdata fingerprint excludes the key. Any other userdata or variable change
 still triggers the blue/green rebuild, and the replacement VM boots with the
 current key from state.
 
+After each rebuild, a `local-exec` step (`scripts/tailnet-adopt.sh`) waits for
+the new device to join, deletes the stale `oracle-arm*` records and renames
+the new device to the stable `oracle-arm`, so MagicDNS and the ansible
+inventory keep working across swaps. To force a rebuild of a broken VM:
+`terraform apply -replace=random_id.hostname_suffix`.
+
 One-time setup for the provider credentials:
 
 1. Create an OAuth client in the
    [Tailscale admin console](https://login.tailscale.com/admin/settings/oauth)
-   with the `auth_keys` write scope restricted to `tag:brassberry`
-   (add the `policy_file` scope too if/when the ACL becomes terraform-managed)
+   with the `auth_keys` and `devices:core` write scopes restricted to
+   `tag:brassberry` (add the `policy_file` scope too if/when the ACL becomes
+   terraform-managed). Scopes cannot be edited afterwards: changing them means
+   creating a new client and updating both bws secrets
 2. Apply `terraform/bitwarden` to create the `tailscale-oauth-client-id` and
    `tailscale-oauth-client-secret` secrets (created with placeholder values)
    and delete the old manual `tailscale-auth-key` secret
