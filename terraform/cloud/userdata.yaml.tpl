@@ -1,4 +1,6 @@
 #cloud-config
+# Any change to this rendered template (except the auth key) triggers a
+# blue/green rebuild of the VM; see the hostname_suffix keepers in utils.tf.
 
 hostname: "oracle-arm-${hostname_suffix}"
 timezone: Europe/Paris
