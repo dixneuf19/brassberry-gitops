@@ -34,10 +34,10 @@ resource "bitwarden-secrets_secret" "cnpg_backup_secret_access_key" {
 # gets its value REGENERATED on the first apply after import (happened
 # 2026-04-06 and 2026-08-15).
 #
-# To get the secret IDs, run:
-#   bws secret list --output json | jq -r '.[] | select(.key | test("baj-mysql|karakeep")) | "\(.key) = \(.id)"'
-#
-# Then fill in the IDs in imports.tf and run: terraform plan
+# To adopt another existing secret: add a resource with the ignore_changes
+# below, add an import block with the ID from `bws secret list`, apply, then
+# delete the import block (a leftover block whose resource config is later
+# removed breaks apply with a bogus "Resource has no configuration" error).
 
 resource "bitwarden-secrets_secret" "baj_mysql_root_password" {
   key        = "baj-mysql-root-password"
