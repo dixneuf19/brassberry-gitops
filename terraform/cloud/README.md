@@ -45,6 +45,13 @@ fails the apply if nginx does not accept TCP on the public 80/443 within
 5 minutes. To force a rebuild of a broken VM:
 `terraform apply -replace=random_id.hostname_suffix`.
 
+The Burrito layer runs with `autoApply: true` on a custom runner image
+(`images/burrito-runner`: the official burrito image plus curl, jq and
+netcat-openbsd for the scripts above), built by the `build-burrito-runner`
+GitHub workflow and published to `ghcr.io/dixneuf19/burrito-runner` with the
+burrito version as tag. One-time step after the first build: make the package
+public in its GitHub settings so the cluster pulls it anonymously.
+
 One-time setup for the provider credentials:
 
 1. Create an OAuth client in the

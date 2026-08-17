@@ -8,7 +8,11 @@ spec:
   repository:
     name: brassberry-gitops
     namespace: burrito-homelab
+  remediationStrategy:
+    autoApply: true
   overrideRunnerSpec:
+    # default runner + curl/jq/nc for the local-exec scripts (images/burrito-runner)
+    image: ghcr.io/dixneuf19/burrito-runner:v0.13.0
     # arrays replace wholesale on merge, so re-list burrito-runner-common
     envFrom:
       - secretRef:
