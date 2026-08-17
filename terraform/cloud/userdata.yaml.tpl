@@ -1,4 +1,6 @@
 #cloud-config
+# Any change to this rendered template (except the auth key) triggers a
+# blue/green rebuild of the VM; see the hostname_suffix keepers in utils.tf.
 
 hostname: "oracle-arm-${hostname_suffix}"
 timezone: Europe/Paris
@@ -122,11 +124,12 @@ runcmd:
   # Generate an auth key from your Admin console
   # https://login.tailscale.com/admin/settings/keys
   # Setup tailscale connection
-  - tailscale up -authkey ${tailscale_auth_key}
+  - tailscale up -authkey ${tailscale_auth_key} --advertise-tags=tag:brassberry
 
-  # Open port 22 for SSH access
-  # To use for debugging
-  # - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 22 -j ACCEPT
+  # Open port 22 for SSH access, only in debug mode
+%{ if debug }
+  - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 22 -j ACCEPT
+%{ endif }
 
   # Open port 80 and 443 for ingress
   - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80 -j ACCEPT

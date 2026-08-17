@@ -7,7 +7,7 @@
 #         "userdata.yaml.tpl",
 #         {
 #           github_user        = var.github_user,
-#           tailscale_auth_key = var.tailscale_auth_key,
+#           tailscale_auth_key = tailscale_tailnet_key.reverse_proxy.key,
 #           ip_addrs           = var.node_ips
 #         }
 #       )

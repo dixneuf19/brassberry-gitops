@@ -17,12 +17,10 @@ resource "oci_core_instance" "oracle-arm" {
     "user_data" = base64encode(
       templatefile(
         "userdata.yaml.tpl",
-        {
-          github_user        = var.github_user,
-          tailscale_auth_key = var.tailscale_auth_key,
-          ip_addrs           = var.node_ips
+        merge(local.userdata_vars, {
+          tailscale_auth_key = tailscale_tailnet_key.reverse_proxy.key
           hostname_suffix    = random_id.hostname_suffix.hex
-        }
+        })
       )
     )
   }
@@ -55,5 +53,19 @@ resource "oci_core_instance" "oracle-arm" {
       desired_state = "ENABLED"
       name          = "Compute Instance Monitoring"
     }
+  }
+
+  # Blue/green rotation: the replacement VM boots and finishes cloud-init while
+  # the old edge keeps serving; the reserved public IP re-attaches afterwards.
+  # 2 OCPU/12GB = half the Always Free ARM quota, so both fit during the swap
+  # (but the two 100GB boot volumes use the full 200GB block storage quota).
+  # If OCI is out of ARM capacity the create fails and the old edge stays up.
+  # The auth key only matters at boot, so a key-only rotation must not replace
+  # the VM: the user_data diff is ignored and replacement is driven instead by
+  # the hostname_suffix keepers, whose userdata fingerprint excludes the key.
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes        = [metadata]
+    replace_triggered_by  = [random_id.hostname_suffix]
   }
 }

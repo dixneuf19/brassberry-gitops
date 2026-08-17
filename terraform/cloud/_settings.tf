@@ -26,9 +26,17 @@ terraform {
       source  = "hashicorp/random"
       version = "~> 3.0"
     }
+
+    tailscale = {
+      source  = "tailscale/tailscale"
+      version = "~> 0.29"
+    }
   }
 }
 
 provider "gandi" {
   personal_access_token = var.gandi_pat
 }
+
+# Credentials via TAILSCALE_OAUTH_CLIENT_ID / TAILSCALE_OAUTH_CLIENT_SECRET
+provider "tailscale" {}

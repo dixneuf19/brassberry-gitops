@@ -36,16 +36,18 @@ resource "oci_core_default_security_list" "main_security_list" {
     protocol    = "1" // ICMP
   }
 
-  # To use for debugging
-  # ingress_security_rules {
-  #   description = "allow http"
-  #   source      = "0.0.0.0/0"
-  #   protocol    = "6" // TCP
-  #   tcp_options {
-  #     min = 22
-  #     max = 22
-  #   }
-  # }
+  dynamic "ingress_security_rules" {
+    for_each = var.debug ? [1] : []
+    content {
+      description = "allow ssh (debug)"
+      source      = "0.0.0.0/0"
+      protocol    = "6" // TCP
+      tcp_options {
+        min = 22
+        max = 22
+      }
+    }
+  }
 
   ingress_security_rules {
     description = "allow http"
@@ -161,4 +163,15 @@ resource "oci_core_public_ip" "oracle_arm" {
   lifetime       = "RESERVED"
   display_name   = "oracle-arm-public-ip"
   private_ip_id  = data.oci_core_private_ips.oracle_arm_private_ips.private_ips[0].id
+}
+
+# Post-swap smoke test: nginx must accept TCP on the public ports for the
+# apply to succeed (cluster upstreams intentionally not required)
+resource "terraform_data" "public_check" {
+  triggers_replace = oci_core_instance.oracle-arm.id
+
+  provisioner "local-exec" {
+    working_dir = path.module
+    command     = "./scripts/public-check.sh ${oci_core_public_ip.oracle_arm.ip_address} 80 443"
+  }
 }

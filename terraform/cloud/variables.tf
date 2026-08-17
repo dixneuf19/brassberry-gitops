@@ -6,11 +6,6 @@ variable "oci_compartment_id" {
   type = string
 }
 
-variable "tailscale_auth_key" {
-  type      = string
-  sensitive = true
-}
-
 variable "gandi_pat" {
   type      = string
   sensitive = true
@@ -23,4 +18,10 @@ variable "node_ips" {
 variable "oci_private_key_path" {
   type    = string
   default = "~/.oci/oci_api_key.pem"
+}
+
+# Rebuilds the VM with SSH open on the public IP: terraform apply -var debug=true
+variable "debug" {
+  type    = bool
+  default = false
 }

@@ -26,6 +26,44 @@ Unfortunately, while NAT gateways are Free, they are not available on Free accou
 not have a payment method, so I left out the private IP config, which is why the VM still
 must have a public IP.
 
+## tailscale auth key (terraform-managed)
+
+The auth key the reverse proxy VM joins with is a `tailscale_tailnet_key` resource
+(`tailscale.tf`). It expires after 90 days and `recreate_if_invalid` recreates
+it on the next plan, so with Burrito autoApply the rotation is automatic. A
+key-only rotation does not rebuild the VM: the resulting `user_data` diff is
+ignored and rebuilds are driven by the `hostname_suffix` keepers, whose
+userdata fingerprint excludes the key. Any other userdata or variable change
+still triggers the blue/green rebuild, and the replacement VM boots with the
+current key from state.
+
+After each rebuild, a `local-exec` step (`scripts/tailnet-adopt.sh`) waits for
+the new device to join, deletes the stale `oracle-arm*` records and renames
+the new device to the stable `oracle-arm`, so MagicDNS and the ansible
+inventory keep working across swaps. A second step (`scripts/public-check.sh`)
+fails the apply if nginx does not accept TCP on the public 80/443 within
+5 minutes. To force a rebuild of a broken VM:
+`terraform apply -replace=random_id.hostname_suffix`.
+
+One-time setup for the provider credentials:
+
+1. Create an OAuth client in the
+   [Tailscale admin console](https://login.tailscale.com/admin/settings/oauth)
+   with the `auth_keys` and `devices:core` write scopes restricted to
+   `tag:brassberry` (add the `policy_file` scope too if/when the ACL becomes
+   terraform-managed). Scopes cannot be edited afterwards: changing them means
+   creating a new client and updating both bws secrets
+2. Apply `terraform/bitwarden` to create the `tailscale-oauth-client-id` and
+   `tailscale-oauth-client-secret` secrets (created with placeholder values)
+   and delete the old manual `tailscale-auth-key` secret
+3. Write the real values: `bws secret list` to get the IDs, then
+   `bws secret edit <secret-id> --value <oauth-client-id-or-secret>`
+4. `direnv reload` locally; in the cluster the `burrito-runner-cloud`
+   ExternalSecret refreshes within 1h (delete the k8s secret to force it)
+5. Revoke the old manual auth key in the
+   [admin console](https://login.tailscale.com/admin/settings/keys)
+   (the running node stays connected, keys only matter at join time)
+
 ## pre-reqs
 
 - Oracle Cloud Account
@@ -116,6 +154,12 @@ Maybe try minting a new tailscale key.
 
 Alternatively, modify the Virtual Cloud Network's "Security List" to allow SSH on tcp/22 via the public IP, so you
 can login over the internet and debug what's going wrong.
+
+In this fork that fallback is built in: `terraform apply -var debug=true`
+rebuilds the VM with SSH open on the public IP (security list + instance
+iptables), reachable as `ssh <github_user>@<public-ip>` with your GitHub keys.
+Check `/var/log/cloud-init-output.log` and `tailscale status` there. Re-apply
+without the var to rebuild closed again.
 
 ## gotchas
 
