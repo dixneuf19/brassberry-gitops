@@ -9,6 +9,10 @@ locals {
 # Used to have a unique hostname for the VM
 resource "random_id" "hostname_suffix" {
   byte_length = 3
+  # If this rotates in an apply where the key fails to create, the VM
+  # replacement is stranded (replace_triggered_by only fires on same-plan
+  # changes), so order the key first.
+  depends_on = [tailscale_tailnet_key.reverse_proxy]
   keepers = {
     # Userdata render with the auth key redacted and the suffix pinned, so a
     # key-only rotation never rebuilds the VM on its own
