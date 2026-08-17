@@ -1,0 +1,75 @@
+name: Build burrito runner image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - images/burrito-runner/**
+      - .github/workflows/build-burrito-runner.yaml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - images/burrito-runner/**
+      - .github/workflows/build-burrito-runner.yaml
+  workflow_dispatch:
+
+env:
+  TARGET_PLATFORMS: linux/amd64,linux/arm64
+  REGISTRY: ghcr.io
+  IMAGE_NAME: dixneuf19/burrito-runner
+
+jobs:
+  build_and_release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Extract the burrito version from the base image tag
+        id: burrito
+        run: echo "version=$(sed -n 's|^FROM ghcr.io/padok-team/burrito:\([^@ ]*\).*|\1|p' images/burrito-runner/Dockerfile)" >> "$GITHUB_OUTPUT"
+
+      - name: Check the chart and the cloud layer pin the same burrito version
+        run: |
+          version="${{ steps.burrito.outputs.version }}"
+          grep -q "version: \"${version#v}\"" gitops/burrito-system/burrito/Chart.yaml || {
+            echo "Chart.yaml does not pin burrito ${version#v}"; exit 1; }
+          grep -q "image: ghcr.io/dixneuf19/burrito-runner:${version}$" gitops/burrito-homelab/burrito-layers/templates/layer-cloud.yaml || {
+            echo "layer-cloud.yaml does not pin burrito-runner:${version}"; exit 1; }
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{ steps.burrito.outputs.version }}
+            type=sha
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: images/burrito-runner
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: ${{ env.TARGET_PLATFORMS }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

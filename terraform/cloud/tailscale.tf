@@ -1,6 +1,6 @@
 # Post-swap adoption: stable tailnet name for the new device, stale sibling
-# records deleted. Runs where terraform runs (needs bash, curl, jq), fine
-# while the layer is applied from the laptop; revisit before any autoApply.
+# records deleted. Runs where terraform runs and needs bash, curl, jq: present
+# on the laptop, and in the burrito runner via images/burrito-runner.
 resource "terraform_data" "tailnet_adopt" {
   triggers_replace = oci_core_instance.oracle-arm.id
 

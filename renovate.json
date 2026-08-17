@@ -1,4 +1,25 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["local>dixneuf19/renovate-presets"]
+  "extends": ["local>dixneuf19/renovate-presets"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Track the burrito-runner tag in the cloud layer; it mirrors upstream burrito versions",
+      "managerFilePatterns": [
+        "/gitops/burrito-homelab/burrito-layers/templates/layer-cloud\\.yaml$/"
+      ],
+      "matchStrings": [
+        "image: ghcr\\.io/dixneuf19/burrito-runner:(?<currentValue>[^\\s@]+)"
+      ],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "ghcr.io/padok-team/burrito"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Bump the burrito chart, the runner base image and the layer image tag in one PR",
+      "groupName": "burrito",
+      "matchPackageNames": ["burrito", "ghcr.io/padok-team/burrito"]
+    }
+  ]
 }
