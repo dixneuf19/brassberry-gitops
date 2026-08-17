@@ -2,7 +2,7 @@
 # records deleted. Runs where terraform runs (needs bash, curl, jq), fine
 # while the layer is applied from the laptop; revisit before any autoApply.
 resource "terraform_data" "tailnet_adopt" {
-  input = oci_core_instance.oracle-arm.id
+  triggers_replace = oci_core_instance.oracle-arm.id
 
   provisioner "local-exec" {
     working_dir = path.module
