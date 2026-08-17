@@ -164,3 +164,14 @@ resource "oci_core_public_ip" "oracle_arm" {
   display_name   = "oracle-arm-public-ip"
   private_ip_id  = data.oci_core_private_ips.oracle_arm_private_ips.private_ips[0].id
 }
+
+# Post-swap smoke test: nginx must accept TCP on the public ports for the
+# apply to succeed (cluster upstreams intentionally not required)
+resource "terraform_data" "public_check" {
+  triggers_replace = oci_core_instance.oracle-arm.id
+
+  provisioner "local-exec" {
+    working_dir = path.module
+    command     = "./scripts/public-check.sh ${oci_core_public_ip.oracle_arm.ip_address} 80 443"
+  }
+}

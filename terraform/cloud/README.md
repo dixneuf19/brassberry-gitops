@@ -40,7 +40,9 @@ current key from state.
 After each rebuild, a `local-exec` step (`scripts/tailnet-adopt.sh`) waits for
 the new device to join, deletes the stale `oracle-arm*` records and renames
 the new device to the stable `oracle-arm`, so MagicDNS and the ansible
-inventory keep working across swaps. To force a rebuild of a broken VM:
+inventory keep working across swaps. A second step (`scripts/public-check.sh`)
+fails the apply if nginx does not accept TCP on the public 80/443 within
+5 minutes. To force a rebuild of a broken VM:
 `terraform apply -replace=random_id.hostname_suffix`.
 
 One-time setup for the provider credentials:
