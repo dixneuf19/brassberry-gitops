@@ -19,3 +19,9 @@ variable "oci_private_key_path" {
   type    = string
   default = "~/.oci/oci_api_key.pem"
 }
+
+# Rebuilds the VM with SSH open on the public IP: terraform apply -var debug=true
+variable "debug" {
+  type    = bool
+  default = false
+}

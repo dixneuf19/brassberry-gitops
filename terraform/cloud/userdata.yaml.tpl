@@ -124,9 +124,10 @@ runcmd:
   # Setup tailscale connection
   - tailscale up -authkey ${tailscale_auth_key} --advertise-tags=tag:brassberry
 
-  # Open port 22 for SSH access
-  # To use for debugging
-  # - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 22 -j ACCEPT
+  # Open port 22 for SSH access, only in debug mode
+%{ if debug }
+  - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 22 -j ACCEPT
+%{ endif }
 
   # Open port 80 and 443 for ingress
   - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80 -j ACCEPT

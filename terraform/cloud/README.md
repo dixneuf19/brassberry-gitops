@@ -145,6 +145,12 @@ Maybe try minting a new tailscale key.
 Alternatively, modify the Virtual Cloud Network's "Security List" to allow SSH on tcp/22 via the public IP, so you
 can login over the internet and debug what's going wrong.
 
+In this fork that fallback is built in: `terraform apply -var debug=true`
+rebuilds the VM with SSH open on the public IP (security list + instance
+iptables), reachable as `ssh <github_user>@<public-ip>` with your GitHub keys.
+Check `/var/log/cloud-init-output.log` and `tailscale status` there. Re-apply
+without the var to rebuild closed again.
+
 ## gotchas
 
 If your Oracle Cloud Account is brand-new, you'll get free trial credits and

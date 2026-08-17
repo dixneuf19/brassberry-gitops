@@ -2,6 +2,7 @@ locals {
   userdata_vars = {
     github_user = var.github_user
     ip_addrs    = var.node_ips
+    debug       = var.debug
   }
 }
 
