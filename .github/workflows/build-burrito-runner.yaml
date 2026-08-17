@@ -33,6 +33,14 @@ jobs:
         id: burrito
         run: echo "version=$(sed -n 's|^FROM ghcr.io/padok-team/burrito:\([^@ ]*\).*|\1|p' images/burrito-runner/Dockerfile)" >> "$GITHUB_OUTPUT"
 
+      - name: Check the chart and the cloud layer pin the same burrito version
+        run: |
+          version="${{ steps.burrito.outputs.version }}"
+          grep -q "version: \"${version#v}\"" gitops/burrito-system/burrito/Chart.yaml || {
+            echo "Chart.yaml does not pin burrito ${version#v}"; exit 1; }
+          grep -q "image: ghcr.io/dixneuf19/burrito-runner:${version}$" gitops/burrito-homelab/burrito-layers/templates/layer-cloud.yaml || {
+            echo "layer-cloud.yaml does not pin burrito-runner:${version}"; exit 1; }
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
