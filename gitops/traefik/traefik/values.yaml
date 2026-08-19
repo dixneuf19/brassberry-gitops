@@ -46,6 +46,5 @@ traefik:
         enabled: true
         namespace: monitoring
 
-  logs:
-    general:
-      level: INFO
+  log:
+    level: INFO
