@@ -11,7 +11,8 @@ traefik:
       enabled: false # Phase B: Gateway API migration
 
   service:
-    type: NodePort
+    spec:
+      type: NodePort
   ports:
     web:
       nodePort: 32080
