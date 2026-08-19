@@ -35,6 +35,10 @@ traefik:
 
   metrics:
     prometheus:
+      # The chart hard-fails rendering when monitoring.coreos.com/v1 is absent.
+      # The CI diff-preview cluster has no Prometheus Operator, so keep the
+      # ServiceMonitor renderable there; the real cluster has the CRD.
+      disableAPICheck: true
       entryPoint: metrics
       service:
         enabled: true
