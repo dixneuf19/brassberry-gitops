@@ -2,23 +2,34 @@
 # Manual edits may be lost in future updates.
 
 provider "registry.terraform.io/scaleway/scaleway" {
-  version     = "2.69.0"
+  version     = "2.81.0"
   constraints = "~> 2.0"
   hashes = [
-    "h1:XoldiE4S+zPwo6/wRO4c925Ln+NXBtjonW5+gMCaEdQ=",
-    "zh:10994e9826255cab33394843ebbb3ffa4744afe99adc073df257afd232a53a32",
-    "zh:28a0134c4d3ef5535dc993e516c4585fb66c28b8eb8668e4f6a6f6b26219430f",
-    "zh:3a85e5cf7e143b3e030d27819063b73c98441079ae3330d83eb4fb74fc2e1574",
-    "zh:3ba33b84b4a8a8db56152fd4d82e5c06b821968e2c3924b5982f62ff58aa02bd",
-    "zh:53f6848c05298e76200bacec54b6cfc51c348dfa98725e6d7aee8c228527ba74",
-    "zh:6988bda8f8605d93b93354324ef46ea60f1a8790df8ab57dd6eea1f060337f6b",
-    "zh:6abece78f301850f6b48c2aa6ff8c54008929bd2e3ccdd4e2143b63b889fe479",
-    "zh:ab177664b7f09fb81cd3285a5048d24881d22e55585c4f98c977fd9988d84149",
-    "zh:c436acf4a6c013f947f3ab6423d74b2795afacbf7e378c437223aefc4e4eb5e5",
-    "zh:d13d87f0327adafde9d9f744ae0cfa337491d2f6e4b42c4cea3e710fa0583f0f",
-    "zh:de2e2cb08848e1fb0547d455707a7192de5df48171ed65541fa24ff767fccbd7",
-    "zh:e7e8fb202523b132f3dc57c7d8128e28aafefd4898f7b199a9dc7b643f24601a",
-    "zh:f70308cc302920e6bd4467fd277d39e8db4e205d405ae927cdcb8c1946f88ccc",
-    "zh:f7e9959d34f3f74e6447556f7c234c48b5e69a03bf79c258adea3b13a3702ed8",
+    "h1:0vTtD0rNpW9OdUd1G1Ijycsyfqgizy0TPVf3sWE53zs=",
+    "h1:3QiD3lVxySbFziuVsbR3J+iCl9DM7sXVJqeEQIN2Dj8=",
+    "h1:8zXBJNRoQcdg5L8RT8Yp7RGVzwvGRkyci11qJ9k0Tmk=",
+    "h1:GrJvLWDLlvpzWlwcfqXTBkDr86GZdjWlwMxC9gGD5J4=",
+    "h1:JXqkqEkPvdQCj2F4wkGCmTZVBhDJM97kEyel0oGjblI=",
+    "h1:NZy0qwIWavhaW1LTqavft8NMhu+ikhmQC9oNqdTVoik=",
+    "h1:PY1M0XfwzSd9qOCvo89D2M3cMvVQIo86ubEy6soNRaM=",
+    "h1:ScWek0Jt0aVCFN3Eb0cv+idIDyGjnoGkzXJ2ZRL0c60=",
+    "h1:Tsj5yiixIZS4KtR+kxDdqPTluSYo0pJsQni/+F2CzhM=",
+    "h1:bmNGobzQjQifbnaeAWRamQRJLcszm1OGMkesUvBjyJY=",
+    "h1:cWsiiPfCxihYXATyTiI/M0JxnXDNFXcchNSb60UOgCI=",
+    "h1:rL5+qBYXy3iKp11uHyFvYfJOnD6kIxZS4DX4L4AahtI=",
+    "h1:tc0JaNNuvs4QojRZYz34PU5tt5kkiO6eCORCAqC4o7g=",
+    "zh:585a967339fd4e0e8cf6895a4af77f64d03d0e5fe16b5dc060110a5a1f4f4375",
+    "zh:718cb84adfd8fe5a33bae9a525c0f9d9e70ab70195d48af847d9d15c9ebac73b",
+    "zh:7a7f89e351c6625a1b4001512a3f5aa9d01fa2e6f63c7e61abe1e3d2b5f4cd24",
+    "zh:7c1167ad7c148a121730577d9fb26b67593b97c9746b2a75ceaf0aa22e222971",
+    "zh:8a0c691fb3d66bcc7a688eee0527ed1118e8196683a8385db98e9bccecf34e51",
+    "zh:8e72f654dd67bd1280048f5dc58dd7d2fa64ce5108acf55edcab60f3cee2d121",
+    "zh:a1117fb961b741b3bf4793ae8b5ff0355f370ec51edd1231bb1c564c6889aa42",
+    "zh:a444c0d5bd8a49893c81b74992446e6340cd92ec898e19925c42cbe9e339b732",
+    "zh:ad313c31572f1be4b23187ffbe8c941cd0262a9fb320c5508d28b67bea2c3f69",
+    "zh:aee9c82069f6c58597a644aff86ca488a381b6aa6109804ea472e17bedca3db6",
+    "zh:d2f78c7a8238aa17895557bea3b8bbf2ad08045fdcac4e19ab44145f4de4cc49",
+    "zh:da778130b98f508800fe42e05c9a049234fe172484147e1752570b6e7281b3c3",
+    "zh:e83eb05748d29f48ac9c3394f077dda65ff53dd268fa3787f7deb8b6fb4cc61a",
   ]
 }
