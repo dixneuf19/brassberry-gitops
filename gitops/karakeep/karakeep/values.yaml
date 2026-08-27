@@ -75,6 +75,9 @@ env:
   INFERENCE_TEXT_MODEL: "mistral-small-latest"
   INFERENCE_IMAGE_MODEL: "mistral-small-latest"
   INFERENCE_JOB_TIMEOUT_SEC: "120"
+  EMBEDDING_TEXT_MODEL: "mistral-embed"
+  EMBEDDING_DIMENSIONS: "1024" # Fixed for mistral-embed; changing it forces a full re-embed
+  EMBEDDING_ENABLE_AUTO_INDEXING: "true" # Only defaults to true on stock OpenAI, so semantic search stays off without it
 
 # Secrets imported as environment variables
 secretEnvVars:
