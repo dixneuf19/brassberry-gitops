@@ -1,0 +1,120 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "calibre-web.fullname" . }}
+  labels:
+    {{- include "calibre-web.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    # The PVCs are RWO local-path: the old pod must release them before the new one starts
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "calibre-web.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "calibre-web.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "calibre-web.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        # Calibre-Web refuses an empty library dir; seed upstream's empty metadata.db on first boot
+        - name: seed-library
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -eu
+              if [ ! -f /books/metadata.db ]; then
+                curl -fsSL -o /books/metadata.db.seed "{{ .Values.seedLibrary.url }}"
+                echo "{{ .Values.seedLibrary.sha256 }}  /books/metadata.db.seed" | sha256sum -c -
+                mv /books/metadata.db.seed /books/metadata.db
+                chown {{ .Values.env.PUID }}:{{ .Values.env.PGID }} /books /books/metadata.db
+                echo "seeded empty calibre library"
+              fi
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
+          volumeMounts:
+            - name: books
+              mountPath: /books
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          env:
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- range .Values.secretEnvVars }}
+            - name: {{ .name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .secretName }}
+                  key: {{ .secretKey }}
+            {{- end }}
+          startupProbe:
+            {{- toYaml .Values.startupProbe | nindent 12 }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            {{- range $name, $pvc := .Values.persistence }}
+            - name: {{ $name }}
+              mountPath: {{ $pvc.mountPath }}
+            {{- end }}
+            {{- if .Values.customInit.enabled }}
+            - name: custom-init
+              mountPath: /custom-cont-init.d
+              readOnly: true
+            {{- end }}
+      volumes:
+        {{- range $name, $pvc := .Values.persistence }}
+        - name: {{ $name }}
+          persistentVolumeClaim:
+            claimName: {{ include "calibre-web.fullname" $ }}-{{ $name }}
+        {{- end }}
+        {{- if .Values.customInit.enabled }}
+        - name: custom-init
+          configMap:
+            name: {{ include "calibre-web.fullname" . }}-custom-init
+            defaultMode: 0755
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

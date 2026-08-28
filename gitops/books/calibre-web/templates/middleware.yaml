@@ -1,0 +1,12 @@
+# Calibre-Web only recognises X-Scheme / X-Forwarded-Host (not X-Forwarded-Proto) to build the
+# absolute https:// URLs it hands to Kobo devices; without it the Kobo gets http:// download links
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ include "calibre-web.fullname" . }}-headers
+  labels:
+    {{- include "calibre-web.labels" . | nindent 4 }}
+spec:
+  headers:
+    customRequestHeaders:
+      X-Scheme: https

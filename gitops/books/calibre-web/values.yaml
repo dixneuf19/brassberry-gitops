@@ -1,0 +1,135 @@
+replicaCount: 1
+
+image:
+  repository: lscr.io/linuxserver/calibre-web
+  tag: "0.6.27"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+# linuxserver s6 image: starts as root to chown the volumes, then drops to PUID/PGID
+securityContext:
+  runAsUser: 0
+  runAsNonRoot: false
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
+    add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - FOWNER
+      - SETGID
+      - SETUID
+      - KILL
+
+service:
+  type: ClusterIP
+  port: 8083
+  targetPort: 8083
+
+ingress:
+  enabled: true
+  className: "traefik"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt"
+    # No basic-auth here: Kobo devices authenticate with the token in the /kobo/<token>/ URL
+    traefik.ingress.kubernetes.io/router.middlewares: books-calibre-web-headers@kubernetescrd
+  hosts:
+    - host: books.dixneuf19.fr
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: books-dixneuf19-fr-tls
+      hosts:
+        - books.dixneuf19.fr
+
+resources:
+  limits:
+    cpu: 2
+    memory: 1Gi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+nodeSelector:
+  kubernetes.io/hostname: k8s-worker-1
+
+tolerations: []
+
+affinity: {}
+
+env:
+  PUID: "1000"
+  PGID: "1000"
+  TZ: "Europe/Paris"
+
+secretEnvVars: []
+
+# files/10-kobo-fixes.sh, run as root by the linuxserver image before the app starts: works around
+# two 0.6.27 bugs that break Kobo sync (janeczku/calibre-web#3691, #3679)
+customInit:
+  enabled: true
+
+# Empty Calibre library copied into /books on first boot (Calibre-Web cannot create one itself)
+seedLibrary:
+  url: https://raw.githubusercontent.com/janeczku/calibre-web/0.6.27/library/metadata.db
+  sha256: fac2f7e37ef4bc0fb2955e9a3f612604707d4ef573af5c28bd7a8369339f4bd4
+
+persistence:
+  config:
+    storageClass: "local-path"
+    accessMode: ReadWriteOnce
+    size: 2Gi
+    mountPath: /config
+  books:
+    storageClass: "local-path"
+    accessMode: ReadWriteOnce
+    size: 20Gi
+    mountPath: /books
+
+startupProbe:
+  httpGet:
+    path: /login
+    port: 8083
+  periodSeconds: 5
+  failureThreshold: 36
+
+livenessProbe:
+  httpGet:
+    path: /login
+    port: 8083
+  periodSeconds: 30
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /login
+    port: 8083
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+# Nightly consistent backup (sqlite3 .backup of app.db + metadata.db, tar of the library) to the NAS
+backup:
+  enabled: true
+  schedule: "45 3 * * *"
+  retentionDays: 14
+  image: alpine:3.24@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
+  persistence:
+    storageClass: "nfs-jonbonas"
+    size: 50Gi
