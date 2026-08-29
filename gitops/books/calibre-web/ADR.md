@@ -6,17 +6,18 @@
 
 ## Context
 
-Goal: get EPUBs onto a Kobo Clara HD (2018, firmware `4.38.23697`) over Wi-Fi, never over
-USB (no USB access from the work laptop), while the Kobo shop keeps working, and let a few
-friends who also own Kobos receive books the same way. Books are managed with Calibre.
+Goal: get EPUBs onto a Kobo Clara HD (2018, firmware `4.38.23697`) over Wi-Fi instead of
+plugging it into a computer (a cable or dongle is not always at hand), while the Kobo shop keeps
+working, and let a few friends who also own Kobos receive books the same way. Books are managed
+with Calibre.
 
 Constraints from the cluster: k0s on Raspberry Pi 4 (arm64) plus one amd64 VM, ArgoCD GitOps,
 Traefik with Let's Encrypt via cert-manager, `local-path` and NFS storage, secrets in Bitwarden.
 Public entry is a wildcard `*.dixneuf19.fr` through an Oracle VM doing TCP passthrough to Traefik,
 so any new host name gets a valid certificate with no edge change.
 
-Only one delivery mechanism fits a stock Kobo without a cable: impersonating Kobo's private store
-API. The device reads a single `api_endpoint` from `.kobo/Kobo/Kobo eReader.conf`; a server that
+Only one delivery mechanism gives a stock Kobo cable-free delivery: impersonating Kobo's private
+store API. The device reads a single `api_endpoint` from `.kobo/Kobo/Kobo eReader.conf`; a server that
 answers like `storeapi.kobo.com` can push its own library and forward everything else to the real
 store. Alternatives were ruled out early:
 
@@ -137,8 +138,9 @@ Negative and accepted:
 - Kobo sync in every project is a moving target driven by undocumented firmware changes;
   expect roughly yearly attention, with the symptom "Sync failed" or "syncs but nothing arrives".
 - Ingest is web upload or Calibre desktop, no drop folder.
-- Device set-up depends on Kobo developer mode (telnet over Wi-Fi) because USB is not available;
-  documented but not yet exercised on the real device at decision time.
+- Device set-up still needs one edit of the device config: over USB when a cable is at hand, or
+  through Kobo developer mode (telnet over Wi-Fi) when not. The cable-free path is documented
+  but not yet exercised on the real device at decision time.
 
 ## When to revisit
 

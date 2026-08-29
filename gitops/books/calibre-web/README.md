@@ -50,10 +50,17 @@ Layout:
    - Path to Kepubify E-Book Converter: leave the preset value (Calibre-Web stores it as `/usr/bin`)
 4. Admin > Edit Users > `admin`: create the Kobo sync token (see below) or do it from your profile.
 
-## Kobo setup without a USB cable
+## Kobo setup
 
-Everything happens over Wi-Fi through Kobo's hidden developer mode, which starts a telnet server
-on the device (root, no password). Do this on the home network only and switch it off afterwards.
+The device needs one edit of `.kobo/Kobo/Kobo eReader.conf` to point `api_endpoint` at this
+server. After that everything is over Wi-Fi. Two ways to make the edit:
+
+- **With a USB cable** (simplest, when one is at hand): plug in, tap Connect, open
+  `KOBOeReader/.kobo/Kobo/Kobo eReader.conf` (hidden folder) in a plain-text editor that keeps LF
+  line endings, back it up, change the `api_endpoint=` line under `[OneStoreServices]` to the one
+  from step 1 below, eject safely, then continue at step 4.
+- **Without a cable** (steps 2 and 3): Kobo's hidden developer mode starts a telnet server on the
+  device (root, no password). Do this on the home network only and switch it off afterwards.
 
 ### 0. Prerequisites
 
@@ -71,7 +78,7 @@ exact line to put in the device configuration:
 api_endpoint=https://books.dixneuf19.fr/kobo/<token>
 ```
 
-### 2. Enable developer mode on the Kobo
+### 2. Enable developer mode on the Kobo (cable-free path)
 
 1. Home screen > search box > type `devmodeon` > search. The result page says "0 results" but a
    new **Settings > Device information > Developer options** menu appears.
@@ -79,7 +86,7 @@ api_endpoint=https://books.dixneuf19.fr/kobo/<token>
 3. Find the Kobo's IP address: your router's DHCP lease list, or `arp -a` after pinging the
    broadcast address from the Mac. The hostname is usually the device serial.
 
-### 3. Edit the config over telnet
+### 3. Edit the config over telnet (cable-free path)
 
 macOS ships `nc`; `brew install telnet` gives a nicer client.
 
@@ -119,8 +126,8 @@ reboot -f
 ### When it reverts
 
 `api_endpoint` survives normal syncs and, in most reports, firmware updates. It is reset by a
-sign-out, a "Repair your account" or a factory reset. Redo steps 2 to 4 in that case (the device
-must sync once with the real store again first).
+sign-out, a "Repair your account" or a factory reset. Redo the edit in that case (the device must
+sync once with the real store again first).
 
 ## Sharing books with friends
 
@@ -136,8 +143,8 @@ shelves with Kobo" on their user. They upload their own EPUBs in the web UI, cre
 "Sync this shelf with Kobo device", and add books to it.
 
 Friend onboarding: create their user (Allow Downloads, optionally Allow Uploads, tags as above),
-have them log in once and Create/View their Kobo token, then walk them through the "Kobo setup
-without a USB cable" section on their own Wi-Fi.
+have them log in once and Create/View their Kobo token, then walk them through the "Kobo setup"
+section (the USB edit is the easiest to explain remotely).
 
 ## Day-to-day
 
