@@ -33,10 +33,15 @@ Layout:
 - Traefik middleware `books-calibre-web-headers` adds `X-Scheme: https`. Calibre-Web only trusts
   `X-Scheme` / `X-Forwarded-Host` to build the absolute URLs it hands to Kobos; without it the
   device receives `http://` download links and sync silently fails.
-- **No basic-auth on the ingress.** Kobo devices cannot answer an auth challenge; the token in the
-  URL is the credential. Treat the token like a password.
-- Nightly backup (sqlite `.backup` of `app.db` and `metadata.db`, tar of the book files) to the
-  `calibre-web-backups` PVC on `nfs-jonbonas`, 14 days retention.
+- Two ingresses on the same host: the web UI (`/`) sits behind the cluster `traefik-basic-auth`
+  like every other public UI here (friends need those shared credentials on top of their own
+  Calibre-Web login); the Kobo API (`/kobo/`) has no auth challenge because a Kobo cannot answer
+  one, the token in the URL is the credential. Treat the token like a password.
+- Nightly `db` tarball (sqlite `.backup` of `app.db` and `metadata.db`, 14 days) and a weekly
+  `full` tarball adding the book files (35 days) on the `calibre-web-backups` PVC on
+  `nfs-jonbonas`. Archives are written to a temp name and moved into place.
+- First boot downloads the empty `metadata.db` from GitHub (checksummed); without outbound
+  access the pod stays in `Init:Error` until it can.
 
 ## First-time server setup
 
@@ -46,7 +51,7 @@ Layout:
    - Enable Uploads, allowed formats include `epub`
    - Enable Kobo sync
    - Proxy unknown requests to Kobo Store: **on** (keeps the shop working)
-   - Server External Port: `443`
+   - Server External Port: `443` (only used if the proxy headers were missing; harmless)
    - Path to Kepubify E-Book Converter: leave the preset value (Calibre-Web stores it as `/usr/bin`)
 4. Admin > Edit Users > `admin`: create the Kobo sync token (see below) or do it from your profile.
 
@@ -170,11 +175,15 @@ section (the USB edit is the easiest to explain remotely).
 
 ## Restore
 
+Archive layout: `db/app.db`, `db/metadata.db`, and in `full` archives `books/<library files>`.
+
 ```bash
 kubectl -n books scale deploy calibre-web --replicas=0
 # in a pod mounting the three PVCs, or from the NAS:
-tar xzf calibre-web-<stamp>.tar.gz -C /tmp/restore
-cp /tmp/restore/app.db /config/app.db
-rsync -a --delete /tmp/restore/ /books/   # includes metadata.db
+tar xzf calibre-web-full-<stamp>.tar.gz -C /tmp/restore
+cp /tmp/restore/db/app.db /config/app.db
+rsync -a --delete /tmp/restore/books/ /books/
+cp /tmp/restore/db/metadata.db /books/metadata.db   # or from a newer calibre-web-db-<stamp> archive
+chown -R 1000:1000 /config /books
 kubectl -n books scale deploy calibre-web --replicas=1
 ```

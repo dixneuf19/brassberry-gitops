@@ -39,7 +39,7 @@ spec:
   jobTemplate:
     spec:
       backoffLimit: 1
-      activeDeadlineSeconds: 1800
+      activeDeadlineSeconds: 7200
       template:
         metadata:
           labels:
@@ -55,13 +55,19 @@ spec:
           containers:
             - name: backup
               image: {{ .Values.backup.image }}
+              securityContext:
+                {{- toYaml .Values.helperSecurityContext | nindent 16 }}
               command:
                 - /bin/sh
                 - -c
                 - apk add --no-cache bash sqlite tar >/dev/null && exec bash /scripts/backup.sh
               env:
-                - name: RETENTION_DAYS
-                  value: {{ .Values.backup.retentionDays | quote }}
+                - name: DB_RETENTION_DAYS
+                  value: {{ .Values.backup.dbRetentionDays | quote }}
+                - name: FULL_RETENTION_DAYS
+                  value: {{ .Values.backup.fullRetentionDays | quote }}
+                - name: FULL_BACKUP_WEEKDAY
+                  value: {{ .Values.backup.fullBackupWeekday | quote }}
               resources:
                 requests:
                   cpu: 50m

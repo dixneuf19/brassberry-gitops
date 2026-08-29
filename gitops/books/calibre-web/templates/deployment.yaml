@@ -14,10 +14,13 @@ spec:
       {{- include "calibre-web.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        {{- if .Values.customInit.enabled }}
+        checksum/custom-init: {{ include (print $.Template.BasePath "/custom-init-configmap.yaml") . | sha256sum }}
+        {{- end }}
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- end }}
       labels:
         {{- include "calibre-web.selectorLabels" . | nindent 8 }}
     spec:
@@ -33,6 +36,8 @@ spec:
         - name: seed-library
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.helperSecurityContext | nindent 12 }}
           command:
             - /bin/sh
             - -c

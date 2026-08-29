@@ -112,9 +112,16 @@ Kobo sync planned (Kavita 0.9.2), beta (Stump), or absent. Not viable today.
 ## Decision
 
 Run upstream Calibre-Web `0.6.27` from the linuxserver image, with `files/10-kobo-fixes.sh`
-executed by the image's `/custom-cont-init.d` hook at container start to (a) delete the two
-offending debug lines from `kobo.py` and (b) hard-link `kepubify` to `kepubify-linux-64bit` and
-update the stored path. Both steps are no-ops once upstream fixes them.
+executed by the image's `/custom-cont-init.d` hook at container start to (a) hard-link
+`kepubify` to `kepubify-linux-64bit` (and point the first-boot preset at it) and (b) delete the
+two offending debug lines from `kobo.py`. Each step guards itself, logs what it did, and is a
+no-op once upstream fixes the bug.
+
+A custom image built in `images/` (the `burrito-runner` pattern) was considered: it would make
+the patch immutable and fail the build loudly once upstream fixes it, at the cost of a second
+build pipeline, a public GHCR package and a rebuild for every weekly linuxserver rebase. Not
+worth it for a patch expected to live a few months; revisit if it survives two upstream releases
+or a second patch is needed.
 
 It is the only option whose released image passes the whole endpoint test on this firmware
 after a patch that is fully understood and verifiable, it is the lightest, and it keeps the
@@ -132,12 +139,15 @@ Positive:
 
 Negative and accepted:
 
-- We carry a runtime patch. It is version-specific, so app version bumps should not be
-  auto-merged blindly (a Renovate rule for `lscr.io/linuxserver/calibre-web` is the intended
-  guard).
+- We carry a runtime patch. It is version-specific, so Renovate is told not to auto-merge app
+  version bumps for `lscr.io/linuxserver/calibre-web` (digest bumps of the same version still
+  are); each bump is checked against the `[kobo-fixes]` log lines and a device sync.
 - Kobo sync in every project is a moving target driven by undocumented firmware changes;
   expect roughly yearly attention, with the symptom "Sync failed" or "syncs but nothing arrives".
 - Ingest is web upload or Calibre desktop, no drop folder.
+- The web UI sits behind the cluster-wide basic-auth (the image ships `admin`/`admin123` and
+  the Kobo API needs an unauthenticated path), so friends carry two sets of credentials until
+  that is revisited.
 - Device set-up still needs one edit of the device config: over USB when a cable is at hand, or
   through Kobo developer mode (telnet over Wi-Fi) when not. The cable-free path is documented
   but not yet exercised on the real device at decision time.

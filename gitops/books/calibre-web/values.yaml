@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: lscr.io/linuxserver/calibre-web
-  tag: "0.6.27"
+  tag: "0.6.27@sha256:1870b57874a831d7c0c389547826e5be38089c437276299e1646b7c81a497347"
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -35,6 +35,19 @@ securityContext:
       - SETUID
       - KILL
 
+# Init and backup containers: root (they chown / read files owned by PUID) with only file caps
+helperSecurityContext:
+  runAsUser: 0
+  runAsNonRoot: false
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+    add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - FOWNER
+
 service:
   type: ClusterIP
   port: 8083
@@ -43,19 +56,11 @@ service:
 ingress:
   enabled: true
   className: "traefik"
-  annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt"
-    # No basic-auth here: Kobo devices authenticate with the token in the /kobo/<token>/ URL
-    traefik.ingress.kubernetes.io/router.middlewares: books-calibre-web-headers@kubernetescrd
-  hosts:
-    - host: books.dixneuf19.fr
-      paths:
-        - path: /
-          pathType: Prefix
-  tls:
-    - secretName: books-dixneuf19-fr-tls
-      hosts:
-        - books.dixneuf19.fr
+  clusterIssuer: "letsencrypt"
+  host: books.dixneuf19.fr
+  tlsSecretName: books-dixneuf19-fr-tls
+  # Applied to the web UI only; the Kobo API under /kobo/ authenticates by token in the URL
+  webAuthMiddleware: traefik-basic-auth@kubernetescrd
 
 resources:
   limits:
@@ -124,11 +129,13 @@ readinessProbe:
   timeoutSeconds: 3
   failureThreshold: 3
 
-# Nightly consistent backup (sqlite3 .backup of app.db + metadata.db, tar of the library) to the NAS
+# Nightly db tarball + weekly full library tarball to the NAS, see files/backup.sh
 backup:
   enabled: true
   schedule: "45 3 * * *"
-  retentionDays: 14
+  dbRetentionDays: 14
+  fullRetentionDays: 35
+  fullBackupWeekday: 7
   image: alpine:3.24@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
   persistence:
     storageClass: "nfs-jonbonas"
