@@ -1,8 +1,8 @@
-# ADR 0001: Calibre-Web (upstream, patched) for wireless Kobo delivery
+# ADR: Calibre-Web (upstream, patched) for wireless Kobo delivery
 
 - Status: accepted, 2026-08-28. Explicitly provisional, see "When to revisit".
 - Deciders: dixneuf19
-- Implementation: `gitops/books/calibre-web/` (PR #1721)
+- Implementation: this chart (PR #1721)
 
 ## Context
 

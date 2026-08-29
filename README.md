@@ -43,8 +43,6 @@ Monorepo for my homelab infrastructure: from bare-metal provisioning to GitOps-m
 │
 ├── proxmox/             # Proxmox docs: README.md, ZFS.md, bios.md
 │
-├── docs/decisions/      # Architecture decision records (ADR)
-│
 ├── raspberry-pi/        # Pi provisioning: image scripts + cloud-init templates
 │   ├── fix-ssh-on-pi.*  # Image customization
 │   └── templates/       # Cloud-init templates
