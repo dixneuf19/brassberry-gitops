@@ -5,6 +5,9 @@
 Wi-Fi without ever being plugged into a computer. The Kobo shop keeps working: requests the
 server does not handle are proxied to the real Kobo store.
 
+Why this project and not CWA, NextGen, Grimmory or Komga: see
+[ADR 0001](../../../docs/decisions/0001-calibre-web-for-kobo-sync.md).
+
 ## How it works
 
 The Kobo firmware talks to `storeapi.kobo.com` through a single configurable URL
