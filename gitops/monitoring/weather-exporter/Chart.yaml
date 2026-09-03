@@ -7,5 +7,5 @@ sources:
   - https://open-meteo.com/en/docs
 dependencies:
 - name: prometheus-json-exporter
-  version: "0.19.2"
+  version: "0.20.0"
   repository: https://prometheus-community.github.io/helm-charts
