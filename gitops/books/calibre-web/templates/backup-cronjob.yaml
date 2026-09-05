@@ -1,0 +1,99 @@
+{{- if .Values.backup.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "calibre-web.fullname" . }}-backups
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false
+  labels:
+    {{- include "calibre-web.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.backup.persistence.size }}
+  storageClassName: {{ .Values.backup.persistence.storageClass }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "calibre-web.fullname" . }}-backup-script
+  labels:
+    {{- include "calibre-web.labels" . | nindent 4 }}
+data:
+  backup.sh: |
+    {{- .Files.Get "files/backup.sh" | nindent 4 }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "calibre-web.fullname" . }}-backup
+  labels:
+    {{- include "calibre-web.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.backup.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      activeDeadlineSeconds: 7200
+      template:
+        metadata:
+          labels:
+            # Not calibre-web.selectorLabels: the Service selects on those and
+            # would route traffic to this pod
+            app.kubernetes.io/name: {{ include "calibre-web.name" . }}-backup
+            app.kubernetes.io/instance: {{ .Release.Name }}
+        spec:
+          restartPolicy: Never
+          # Must co-locate with the app: the PVCs are local-path RWO
+          nodeSelector:
+            {{- toYaml .Values.nodeSelector | nindent 12 }}
+          containers:
+            - name: backup
+              image: {{ .Values.backup.image }}
+              securityContext:
+                {{- toYaml .Values.helperSecurityContext | nindent 16 }}
+              command:
+                - /bin/sh
+                - -c
+                - apk add --no-cache bash sqlite tar >/dev/null && exec bash /scripts/backup.sh
+              env:
+                - name: DB_RETENTION_DAYS
+                  value: {{ .Values.backup.dbRetentionDays | quote }}
+                - name: FULL_RETENTION_DAYS
+                  value: {{ .Values.backup.fullRetentionDays | quote }}
+                - name: FULL_BACKUP_WEEKDAY
+                  value: {{ .Values.backup.fullBackupWeekday | quote }}
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  memory: 256Mi
+              volumeMounts:
+                - name: config
+                  mountPath: /config
+                - name: books
+                  mountPath: /books
+                - name: backups
+                  mountPath: /backup
+                - name: script
+                  mountPath: /scripts
+          volumes:
+            - name: config
+              persistentVolumeClaim:
+                claimName: {{ include "calibre-web.fullname" . }}-config
+            - name: books
+              persistentVolumeClaim:
+                claimName: {{ include "calibre-web.fullname" . }}-books
+            - name: backups
+              persistentVolumeClaim:
+                claimName: {{ include "calibre-web.fullname" . }}-backups
+            - name: script
+              configMap:
+                name: {{ include "calibre-web.fullname" . }}-backup-script
+{{- end }}

@@ -1,0 +1,21 @@
+{{- range $name, $pvc := .Values.persistence }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "calibre-web.fullname" $ }}-{{ $name }}
+  annotations:
+    # local-path reclaim is Delete: pruning this PVC destroys the data
+    argocd.argoproj.io/sync-options: Prune=false
+  labels:
+    {{- include "calibre-web.labels" $ | nindent 4 }}
+spec:
+  accessModes:
+    - {{ $pvc.accessMode }}
+  resources:
+    requests:
+      storage: {{ $pvc.size }}
+  {{- if $pvc.storageClass }}
+  storageClassName: {{ $pvc.storageClass }}
+  {{- end }}
+---
+{{- end }}
