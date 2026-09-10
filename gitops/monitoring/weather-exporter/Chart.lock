@@ -1,6 +1,6 @@
 dependencies:
 - name: prometheus-json-exporter
   repository: https://prometheus-community.github.io/helm-charts
-  version: 0.20.0
-digest: sha256:bef66ff5a6b3d563cdd478442d43e0a9dd88295bac206a057a3414212ac269d0
-generated: "2026-09-03T05:56:34.760208425Z"
+  version: 0.20.1
+digest: sha256:4be0b196d753c4fa033860d89add97fc9905e708497fc1016d4386d5e701dab6
+generated: "2026-09-08T15:59:32.684477454Z"
