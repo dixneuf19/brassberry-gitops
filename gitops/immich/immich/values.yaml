@@ -1,6 +1,10 @@
 immich:
   controllers:
     main:
+      # The server runs schema migrations at boot, and the library PVC is RWX, so
+      # a surging rollout would let the old version keep serving against an
+      # already-migrated database.
+      strategy: Recreate
       containers:
         main:
           env:
