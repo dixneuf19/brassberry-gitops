@@ -1,0 +1,16 @@
+apiVersion: v2
+name: calibre-web
+description: Calibre-Web with Kobo sync, serving the shared ebook library to Kobo e-readers
+type: application
+version: 0.1.0
+keywords:
+  - calibre-web
+  - ebooks
+  - kobo
+home: https://github.com/janeczku/calibre-web
+sources:
+  - https://github.com/janeczku/calibre-web
+  - https://github.com/linuxserver/docker-calibre-web
+maintainers:
+  - name: brassberry
+    email: padoa@example.com

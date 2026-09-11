@@ -1,0 +1,11 @@
+{{- if .Values.customInit.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "calibre-web.fullname" . }}-custom-init
+  labels:
+    {{- include "calibre-web.labels" . | nindent 4 }}
+data:
+  10-kobo-fixes.sh: |
+    {{- .Files.Get "files/10-kobo-fixes.sh" | nindent 4 }}
+{{- end }}
