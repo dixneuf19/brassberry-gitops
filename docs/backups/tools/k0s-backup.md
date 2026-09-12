@@ -1,7 +1,9 @@
-# k0s backup (candidate)
+# k0s backup (reference only)
 
-Status: **not deployed**. Single controller `brassberry-24`, etcd 441M, no snapshot.
-`.gitignore` contains `**/k0s_backup*`, so it was run by hand at least once.
+Status: **not planned**. Decision 2026-09-12: the cluster is rebuilt from git and PV data
+outlives it, so etcd is not backed up ([../technos/kubernetes-state.md](../technos/kubernetes-state.md)).
+This page stays as a reference for the one case where it is cheap and useful: a snapshot
+right before a risky `make upgrade` or `make k0sctl`, for a fast rollback.
 
 ## What it captures
 
@@ -10,17 +12,12 @@ Status: **not deployed**. Single controller `brassberry-24`, etcd 441M, no snaps
 fresh controller back with the same cluster identity, so workers rejoin and every
 in-cluster generated Secret survives (see technos/kubernetes-state.md for the list).
 
-## Proposed
+## If ever wanted
 
-- On `brassberry-24`, a systemd timer, nightly:
-  `k0s backup --save-path /mnt/nas/backups/k0s/` with `/mnt/nas` an NFS mount of
-  `192.168.1.30:/tank/data`, keep 7 with `find -mtime +7 -delete`.
-- Or from the laptop before every `make k0sctl` / `make upgrade`:
-  `k0sctl backup --config cluster/k0sctl.yaml` (writes `k0s_backup_<stamp>.tar.gz` locally,
-  already gitignored). Add it as a Makefile prerequisite of `k0sctl` and `upgrade`.
-- Once on the NAS, the restic job carries it offsite.
-
-Ansible: `ansible/playbooks/cluster-k0s-backup.yaml`.
+From the laptop before `make k0sctl` / `make upgrade`:
+`k0sctl backup --config cluster/k0sctl.yaml` writes `k0s_backup_<stamp>.tar.gz` locally
+(already gitignored). It could be a Makefile prerequisite of those two targets. No
+scheduled job, no offsite copy.
 
 ## Restore
 

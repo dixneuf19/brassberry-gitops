@@ -8,18 +8,22 @@
 | Backup | git (GitHub) | `k0s backup` (etcd snapshot + certs + config) |
 | Restore | bootstrap ArgoCD with two commands (README), wait | `k0s restore` on a fresh controller |
 
-The cluster is meant to be rebuilt from git, and that mostly works. The exceptions are
-listed below, and they are why an etcd backup still matters.
+Decision (2026-09-12): the cluster is rebuilt from git, etcd is not backed up (♻️).
+Everything durable must be either in this repo or on a PersistentVolume that outlives
+the cluster (`Retain` NFS classes, `local-path` directories on the node disks). The items
+below are the manual steps a rebuild needs; they are accepted, not a reason for an etcd
+backup.
 
 ## Cluster facts
 
 - k0s v1.34.3, **single controller** `brassberry-24` (Pi, `/var/lib/k0s/etcd`, 441M),
-  4 workers. No etcd backup exists. `.gitignore` has `**/k0s_backup*`, so `k0sctl backup`
-  was run by hand at least once.
+  4 workers. No etcd backup, by decision. `.gitignore` has `**/k0s_backup*` from a manual
+  `k0sctl backup` in the past; taking one before `make upgrade` remains a cheap option,
+  see [../tools/k0s-backup.md](../tools/k0s-backup.md).
 - ArgoCD app-of-apps, `selfHeal` + `prune` on everything. Bootstrap is two manual
   commands in the repo README.
 
-## Not reproducible from git
+## Manual steps on a rebuild (not in git)
 
 | Item | Where it lives | Impact if lost | Fix |
 |---|---|---|---|
@@ -33,15 +37,17 @@ listed below, and they are why an etcd backup still matters.
 | Loki, Promtail, Goldilocks | deployed out of GitOps | gone | re-apply from their dirs or drop them |
 | `kube-proxy` ConfigMap edit | manual `kubectl edit` (documented) | metrics scrape breaks | redo per `gitops/kube-system/kube-proxy/README.md` |
 
-## Current status: ❌ TODO
+## Current status: ♻️ rebuildable, ⚪ manual steps accepted
 
-Plan: nightly `k0s backup` on `brassberry-24` to `/tank/data/backups/k0s/` over NFS,
-keep 7, see [../tools/k0s-backup.md](../tools/k0s-backup.md). Plus a one-time export of
-the generated Secrets above into Bitwarden or a sealed file on the NAS.
+The rule that keeps this true: **no durable state outside git or a PV.** New apps must
+not rely on a hand-applied object; if one appears (like `netflix/media-nfs`), move it
+into `argocd/apps`. Ideas that would shrink the manual list, none of them required:
+store the ESO bootstrap token procedure in `external-secrets/README.md`, and give the
+CNPG clusters an explicit `bootstrap.recovery` path so app passwords come from Bitwarden.
 
 ## Restore order after total cluster loss
 
-1. `make k0sctl` (or `k0s restore` if a backup exists).
+1. `make k0sctl`.
 2. Storage: `local-path`, `nfs-client`, `nfs-jonbonas` provisioners, then the static PVs.
 3. `bws-machine-account-token` Secret, ESO, ClusterSecretStore.
 4. ArgoCD bootstrap, let app-of-apps converge.

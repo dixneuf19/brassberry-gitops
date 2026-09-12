@@ -39,8 +39,8 @@ snapshot, disk image). "Logical" means an export the engine can re-import (SQL d
 | Dank Face Slack OAuth installation tokens | dank-face-bot | `nfs-client` | files | none | none | no | n/a | ❌ TODO | never | [apps/media-and-small-volumes.md](apps/media-and-small-volumes.md) |
 | cd-lna shared files | default | `nfs-client` | files | none | none | no | n/a | ❌ TODO | never | [apps/media-and-small-volumes.md](apps/media-and-small-volumes.md) |
 | librespeed config, dank-face pics scratch | tools, dank-face-bot | `nfs-client` | files | none | none | no | n/a | ♻️ rebuildable | n/a | [apps/media-and-small-volumes.md](apps/media-and-small-volumes.md) |
-| k0s etcd (single controller brassberry-24) | cluster | Pi SSD `/var/lib/k0s/etcd` | etcd | none | none (git is the declarative source) | no | n/a | ❌ TODO | never | [technos/kubernetes-state.md](technos/kubernetes-state.md) |
-| In-cluster generated secrets (CNPG app users, argocd, cert-manager ACME key, ESO bootstrap token) | cluster | etcd | k8s Secrets | none | none | no | n/a | 🟡 partial | never | [technos/kubernetes-state.md](technos/kubernetes-state.md) |
+| k0s etcd (single controller brassberry-24) | cluster | Pi SSD `/var/lib/k0s/etcd` | etcd | none | git is the source: `make k0sctl` + ArgoCD bootstrap, PV data survives on the NFS servers and `local-path` disks | git | n/a | ♻️ rebuildable | n/a | [technos/kubernetes-state.md](technos/kubernetes-state.md) |
+| In-cluster generated secrets (CNPG app users, argocd, cert-manager ACME key, ESO bootstrap token) | cluster | etcd | k8s Secrets | none | regenerated or recreated by hand from Bitwarden | n/a | n/a | ⚪ accepted risk (a few manual steps on rebuild, listed in the doc) | n/a | [technos/kubernetes-state.md](technos/kubernetes-state.md) |
 | Bitwarden Secrets Manager (root of all secrets) | platform | Bitwarden EU SaaS | secrets | vendor | none (no export) | vendor | n/a | 🟡 partial | never | [technos/secrets-and-terraform-state.md](technos/secrets-and-terraform-state.md) |
 | Terraform state (5 roots) | platform | Scaleway S3 `dixneuf19-tfstates` | S3 objects | bucket versioning | none | yes | unlimited versions | ✅ covered | n/a | [technos/secrets-and-terraform-state.md](technos/secrets-and-terraform-state.md) |
 | Burrito datastore (plans, logs) | burrito-system | Scaleway S3 `dixneuf19-burrito-datastore` | S3 objects | none | none | yes | 90d lifecycle | ♻️ rebuildable | n/a | [technos/secrets-and-terraform-state.md](technos/secrets-and-terraform-state.md) |
@@ -62,7 +62,7 @@ deluge, rutorrent, readeck, grist, mastodon, superset, tekton, vikunja. See
 | `jonbonas` `fastpool` (single NVMe) | same host, no redundancy | `k8s-worker-1` VM disk, so every `local-path` PVC on that node (Immich DB, Karakeep data) |
 | `brassberry-25` USB disk (ext4, flaky) | single disk | every `nfs-client` PVC, cluster default storage class |
 | `brassberry-27` USB disk (NTFS) | single disk | Videos, Prometheus TSDB |
-| `brassberry-24` SSD | single disk | etcd |
+| `brassberry-24` SSD | single disk | etcd (rebuilt from git) |
 
 Nothing today satisfies 3-2-1 for the photo library or for Karakeep. Only the two
 Postgres databases have an offsite copy.
@@ -78,7 +78,7 @@ Postgres databases have an offsite copy.
 | ZFS snapshots (sanoid) + replication (syncoid or `zfs send` to S3) | physical, NAS-wide | candidate, not deployed | tank, fastpool | [tools/zfs-snapshots-sanoid.md](tools/zfs-snapshots-sanoid.md) |
 | Proxmox vzdump / Proxmox Backup Server | VM image backup | candidate, PBS LXC code is commented out | k8s-worker-1 | [tools/proxmox-vzdump-pbs.md](tools/proxmox-vzdump-pbs.md) |
 | restic or rclone to S3 | file-level offsite, deduplicated, encrypted | candidate | Immich library, Karakeep tarballs | [tools/restic-rclone.md](tools/restic-rclone.md) |
-| `k0s backup` | etcd + certs snapshot | candidate | control plane | [tools/k0s-backup.md](tools/k0s-backup.md) |
+| `k0s backup` | etcd + certs snapshot | reference only, not planned (cluster is rebuilt from git) | control plane | [tools/k0s-backup.md](tools/k0s-backup.md) |
 | pg_dump CronJob to `logical/` | Postgres logical, version-independent | candidate, bucket lifecycle already exists | immich, spliit | [technos/postgres.md](technos/postgres.md) |
 
 ## How to use this folder
