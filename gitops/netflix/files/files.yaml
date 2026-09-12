@@ -13,12 +13,24 @@ spec:
     spec:
       containers:
       - name: files
-        image: dixneuf19/miniserve:v0.10.3-aarch64
+        image: docker.io/svenstaro/miniserve:0.35.0
         args:
           - "--enable-tar"
+          - "--enable-tar-gz"
+          - "--compress-response"
+          - "--dirs-first"
+          - "--hide-version-footer"
           - "--qrcode"
           - "--verbose"
           - "/tmp"
+        readinessProbe:
+          httpGet:
+            path: /__miniserve_internal/healthcheck
+            port: 8080
+        livenessProbe:
+          httpGet:
+            path: /__miniserve_internal/healthcheck
+            port: 8080
         volumeMounts:
         - name: media
           mountPath: /tmp/media
