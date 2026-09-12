@@ -35,7 +35,8 @@ Both clusters report `ContinuousArchiving=True` and `LastBackupSucceeded=True` (
   prefix (Glacier at 90d, expiry at 365d) but nothing writes there.
 - Spliit data directory is on NFS. Move to `local-path` with a node pin, see
   [../apps/spliit.md](../apps/spliit.md).
-- No restore has been tested. No `bootstrap.recovery` manifest exists in the repo.
+- No restore has been tested (accepted, not blocking). No `bootstrap.recovery` manifest
+  exists in the repo; the tool page has the template.
 - No alert on backup age or WAL archive failures.
 - `instances: 1` everywhere: a restore is a full RTO, there is no replica to promote.
 

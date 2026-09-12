@@ -10,8 +10,11 @@
    building, so the NAS in the same rack as the cluster does not count.
 3. **Prefer logical for portability, physical for point-in-time.** Keep both when the
    data is irreplaceable and the engine supports it (Postgres). See the next section.
-4. **A backup that was never restored is a hope.** Every ✅ row needs a written restore
-   procedure and a dated drill.
+4. **Every ✅ row needs a written restore procedure.** The enterprise rule "a backup is not
+   a backup until restored" is relaxed here on purpose: this is a homelab, the tools in use
+   (CNPG barman-cloud, `sqlite3 .backup`) restore reliably, and the risk is low. Drills
+   are still worth running for class A data once, and after a tool change, but they do
+   not gate the status.
 5. **Boring beats clever.** A CronJob running the engine's own backup command into a PVC
    is preferred over an operator with CRDs, unless the operator is already there (CNPG).
 6. **Monitor the backup, not the job.** Alert on "last successful backup older than X",
@@ -52,10 +55,10 @@ Targets, not current state. The recap table says what is met.
 
 | Class | Examples | RPO | RTO | Copies | Restore drill |
 |---|---|---|---|---|---|
-| A: irreplaceable personal data | Immich library + DB, Spliit DB, Karakeep DB + assets, Navidrome history | 24h | 1 day | 3-2-1, offsite mandatory | yearly |
+| A: irreplaceable personal data | Immich library + DB, Spliit DB, Karakeep DB + assets, Navidrome history | 24h | 1 day | 3-2-1, offsite mandatory | once, then after tool changes |
 | B: valuable config, painful to redo | Lyrion configs, Grafana UI dashboards, Slack OAuth tokens, cd-lna, in-cluster generated secrets | 7d | 1 week | 2 copies, NAS is enough | when the tool changes |
 | C: derived or re-downloadable | thumbs, ML models, Meilisearch, Prometheus, Valkey, Videos, music rips | none | rebuild | live copy only | none |
-| P: platform state | etcd, Bitwarden SM, Terraform state | 24h | 1 day | offsite | yearly |
+| P: platform state | etcd, Bitwarden SM, Terraform state | 24h | 1 day | offsite | once |
 
 ## Storage placement rules
 
@@ -115,7 +118,8 @@ Ordered by blast radius divided by effort.
 6. **`k0s backup` on a schedule** to the NAS. [tools/k0s-backup.md](tools/k0s-backup.md)
 7. **Bitwarden export** procedure, and export the in-cluster generated secrets once.
 8. **Backup-age alerts** as listed above.
-9. Restore drill for Immich (CNPG recovery into a throwaway cluster) and Karakeep.
+9. Restore drill for Immich (CNPG recovery into a throwaway cluster) and Karakeep, nice
+   to have. Spliit's move off `nfs-client` (item 5) doubles as the CNPG drill.
 
 ## Decision guide for a new stateful app
 
@@ -130,7 +134,7 @@ Ordered by blast radius divided by effort.
    the (future) restic job.
 5. Offsite for class A: the copy must reach Scaleway.
 6. Write `apps/<app>.md` with: what, where, how, retention, restore steps, gaps. Add the
-   README row. Run one restore before merging the "✅".
+   README row. A written restore procedure is enough for ✅; a drill is a bonus.
 
 ## Restore drill log
 

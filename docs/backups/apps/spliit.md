@@ -12,7 +12,7 @@ Namespace `spliit`, chart `gitops/spliit/spliit`. Shared expenses with friends, 
 
 App pods are stateless (2 replicas). DB role `spliit-app` is CNPG-generated.
 
-## Status: 🟡
+## Status: ✅ backup, placement still wrong
 
 Offsite physical backup with PITR works (`ContinuousArchiving=True`, first recoverability
 point 2026-08-14). Two weaknesses: the live data sits on the least reliable disk in the

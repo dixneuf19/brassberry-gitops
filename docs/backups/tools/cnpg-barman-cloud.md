@@ -108,7 +108,8 @@ spec:
    new `immich-restore-app` Secret; align with `ALTER ROLE "immich-app" PASSWORD '...'`
    or reference the old Secret via `bootstrap.recovery.secret`.
 
-Drill status: **never run**. This is priority 9 in strategy.md.
+Drill status: never run. Not blocking for ✅ (see strategy.md principle 4); the Spliit
+storage-class move will be the first real run.
 
 ## Known limits
 

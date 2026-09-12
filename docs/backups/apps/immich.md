@@ -17,9 +17,10 @@ library. The most valuable data in the homelab.
 Secrets: S3 keys via ESO from Bitwarden. The DB role `immich-app` password is
 CNPG-generated in cluster, see technos/kubernetes-state.md.
 
-## Status: 🟡 DB, ❌ library
+## Status: ✅ DB, ❌ library
 
-The database is well covered (both physical and logical, physical is offsite). The
+The database is covered (both physical and logical, physical is offsite, restore
+procedure written, drill not run). The
 photos are on a single RAIDZ1 array in the same rack as the cluster, with no snapshot and
 no offsite copy. A double disk failure, a wrong `rm` over NFS (`no_root_squash`), or a
 house event loses every original.
