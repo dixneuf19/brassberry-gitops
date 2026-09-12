@@ -30,8 +30,8 @@ snapshot, disk image). "Logical" means an export the engine can re-import (SQL d
 | Karakeep bookmarks DB + assets | karakeep | `local-path` on `k8s-worker-1` | SQLite + files | none | CronJob nightly: `sqlite3 .backup` + tar, to NAS | no | 14d | 🟡 partial | never | [apps/karakeep.md](apps/karakeep.md) |
 | Karakeep Meilisearch index | karakeep | `nfs-client` (brassberry-25 USB disk) | Meilisearch | none | none | no | n/a | ♻️ rebuildable | n/a | [apps/karakeep.md](apps/karakeep.md) |
 | Spliit database (expenses) | spliit | `nfs-client` (brassberry-25 USB disk, the default SC) | CNPG Postgres 18 | barman-cloud: weekly base + WAL to Scaleway S3 | none | yes | 30d | ✅ covered | never | [apps/spliit.md](apps/spliit.md) |
-| Navidrome DB (users, play counts, playlists) | soundhoard | `nfs-client` | SQLite on NFS | none | none | no | n/a | ❌ TODO | never | [apps/navidrome.md](apps/navidrome.md) |
-| SoundHoard music files | soundhoard | `nfs-client` | files | none | none | no | n/a | ⚪ accepted risk | n/a | [apps/navidrome.md](apps/navidrome.md) |
+| SoundHoard music files (mp3) | soundhoard | `nfs-client` (brassberry-25 USB disk) | files | none | none | no | n/a | ❌ TODO | never | [apps/navidrome.md](apps/navidrome.md) |
+| Navidrome DB (users, play counts, playlists) | soundhoard | `nfs-client` | SQLite on NFS | none | none | no | n/a | ⚪ accepted risk | n/a | [apps/navidrome.md](apps/navidrome.md) |
 | Lyrion config + library DB (lms, lms-yoshi) | lms, lms-yoshi | `nfs-client` | SQLite + config files on NFS | none | none | no | n/a | ❌ TODO | never | [apps/lyrion.md](apps/lyrion.md) |
 | Grafana DB (UI-made dashboards, users, API keys) | monitoring | `nfs-client` | SQLite on NFS | none | none | no | n/a | ⚪ accepted risk | n/a | [apps/monitoring.md](apps/monitoring.md) |
 | Prometheus TSDB | monitoring | `local-path` on brassberry-27 (NTFS USB disk) | TSDB | none | none | no | 30d | ♻️ rebuildable | n/a | [apps/monitoring.md](apps/monitoring.md) |

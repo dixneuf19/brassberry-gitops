@@ -7,30 +7,32 @@ into the shared music volume.
 
 | Data | Where | Class | Backup |
 |---|---|---|---|
-| Navidrome SQLite (users, play counts, ratings, playlists, scan state) | `navidrome-config`, `nfs-client` RWX | A (listening history) | **none** |
-| Music files | `soundhoard-music`, `nfs-client` RWX, shared with the bot | C | none, re-rippable |
+| Music files (mp3) | `soundhoard-music`, `nfs-client` RWX on brassberry-25's flaky USB disk, shared by Navidrome (read-only) and the bot (`/music/SoundHoard`) | A, the thing to keep | **none** |
+| Navidrome SQLite (users, play counts, ratings, playlists, scan state) | `navidrome-config`, `nfs-client` RWX | C | none, by decision |
 
-Secret `ND_PASSWORDENCRYPTIONKEY` in Bitwarden via ESO: required to read existing user
-passwords after a restore.
+Secret `ND_PASSWORDENCRYPTIONKEY` is in Bitwarden via ESO.
 
-## Status: ❌ DB, ⚪ music
+## Status: ❌ music, ⚪ DB
 
-The DB corrupted on 2026-07-27 (SQLite on NFS, see the memory and technos/sqlite.md) and
-14 per-track annotations were lost for good. It is still on NFS and still unbacked.
+Decision (2026-09-12): the play history and library metadata are not worth protecting;
+a rescan rebuilds the library and users are recreated by hand. The music files are the
+irreplaceable part, and they sit on the least reliable disk in the homelab with no copy.
+
+The DB corrupted on 2026-07-27 (SQLite on NFS). Accepted: if it happens again, delete
+`navidrome-config`, let the PVC recreate, rescan. Moving it to `local-path` is still
+good hygiene but not a backup task.
 
 ## TODO
 
-1. Move `navidrome-config` to `local-path` RWO on a pinned node (Karakeep pattern,
-   PR #1673), `Prune=false`. Delete + recreate the PVC, old NFS dir is retained.
-2. Backup, pick one:
-   - Navidrome built-in: `ND_BACKUP_SCHEDULE="0 3 * * *"`, `ND_BACKUP_PATH=/backup`,
-     `ND_BACKUP_COUNT=14`, with `/backup` an `nfs-jonbonas` PVC. Same online `.backup`
-     call, zero extra manifests. Preferred.
-   - Or the Karakeep CronJob copied.
-3. Include the backup dir in the NAS restic job.
+1. Move `soundhoard-music` to `nfs-jonbonas`: rsync the directory to
+   `/tank/data/soundhoard/soundhoard-music/`, pause ArgoCD auto-sync, scale Navidrome and
+   the bot to 0, switch `storageClassName`, delete and recreate the PVC (old dir retained
+   on brassberry-25). Runbook in the personal TODO `nfs-jonbonas-migration.md`.
+2. Once on `tank`: covered by sanoid snapshots and the restic job
+   ([../tools/restic-rclone.md](../tools/restic-rclone.md)), no app-specific work.
+3. Optional: keep a plain copy on the laptop or a phone, mp3s are small.
 
 ## Restore
 
-Scale to 0, copy the backup `navidrome.db` over `/data/navidrome.db`, remove `-wal` and
-`-shm`, scale up, let the scanner run. Music is re-downloaded by the bot or from the
-laptop.
+Restic (or `.zfs/snapshot`) restore into `/tank/data/soundhoard/soundhoard-music/`,
+then trigger a Navidrome rescan.

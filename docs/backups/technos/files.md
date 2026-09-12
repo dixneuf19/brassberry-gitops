@@ -27,7 +27,7 @@ minimum, then the NAS job carries it offsite.
 | cd-lna files | `nfs-client` | small | B | shared files, no other copy |
 | Slack OAuth installation files (dank-face-slack-bot) | `nfs-client` | tiny | B | re-installing the Slack app regenerates them, annoying |
 | Lyrion `/config` (also holds SQLite, see sqlite.md) | `nfs-client` | unknown, 100Gi requested | B | |
-| SoundHoard music | `nfs-client` | unknown | C | YouTube rips, re-downloadable |
+| SoundHoard music (mp3) | `nfs-client` | unknown | A | the owner wants these kept; the Navidrome DB around them is disposable |
 | Videos | `brassberry-27:/mnt/magadi_3T/Videos` | 1.9T | C | re-downloadable, accepted |
 
 ## Current state
@@ -43,6 +43,7 @@ systemd timer on `jonbonas` after the sanoid snapshot:
 - `tank/media/immich/{library,upload,profile,backups}` (originals + Immich SQL dumps)
 - `tank/data/karakeep/karakeep-backups` (already consistent tarballs)
 - `tank/data/backups` (ad-hoc dumps)
+- `tank/data/soundhoard/soundhoard-music` once the PVC has moved to `nfs-jonbonas`
 
 Retention `--keep-daily 14 --keep-weekly 8 --keep-monthly 12`, `restic check --read-data-subset`
 monthly. Bucket lifecycle to Glacier is not compatible with restic's random reads, keep

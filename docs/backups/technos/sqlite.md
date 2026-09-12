@@ -31,7 +31,7 @@ SQLite data goes on `local-path`, ReadWriteOnce, node pinned, PVC annotated
 | App | Placement | Backup | Status |
 |---|---|---|---|
 | Karakeep | `local-path` on `k8s-worker-1` | nightly `.backup` + tar of assets to `nfs-jonbonas`, 14d | 🟡 no offsite |
-| Navidrome | `nfs-client` (at risk) | none | ❌ |
+| Navidrome | `nfs-client` (at risk) | none | ⚪ play history not worth keeping, music files are (see files.md) |
 | Lyrion (lms, lms-yoshi) | `nfs-client` (at risk) | none | ❌ |
 | Grafana | `nfs-client` (at risk) | none | ⚪ dashboards in git are enough |
 
@@ -40,7 +40,7 @@ SQLite data goes on `local-path`, ReadWriteOnce, node pinned, PVC annotated
 Copy `gitops/karakeep/karakeep/templates/backup-cronjob.yaml` and `files/backup.sh`.
 The pattern is documented in [../tools/sqlite-backup-cronjob.md](../tools/sqlite-backup-cronjob.md).
 Navidrome also ships its own scheduler (`ND_BACKUP_SCHEDULE`, `ND_BACKUP_PATH`,
-`ND_BACKUP_COUNT`) which does the same `.backup` call, see [../apps/navidrome.md](../apps/navidrome.md).
+`ND_BACKUP_COUNT`) which does the same `.backup` call, if its DB ever becomes worth keeping.
 
 ## Restore
 

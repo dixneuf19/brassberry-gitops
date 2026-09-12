@@ -43,7 +43,7 @@ Immich follows this rule today (barman + built-in dump). Spliit has physical onl
 | One disk of `tank` | nothing (RAIDZ1) |
 | Two disks of `tank` | Immich library, Karakeep tarballs, Immich dumps, every `nfs-jonbonas` PVC |
 | `fastpool` NVMe | `k8s-worker-1` and every `local-path` PVC on it: Immich DB (recoverable from S3), Karakeep data (recoverable from NAS tarball, up to 24h loss) |
-| `brassberry-25` USB disk | every `nfs-client` PVC: Spliit DB (recoverable from S3), Navidrome DB, Lyrion configs, Grafana, Slack OAuth tokens, cd-lna (all lost) |
+| `brassberry-25` USB disk | every `nfs-client` PVC: Spliit DB (recoverable from S3), SoundHoard music, Lyrion configs, Grafana, Slack OAuth tokens, cd-lna (all lost) |
 | `brassberry-27` USB disk | Videos, Prometheus (both accepted) |
 | `brassberry-24` SSD | etcd: cluster rebuild from git, in-cluster generated secrets lost |
 | The house | everything except the two Postgres databases and Terraform state |
@@ -55,9 +55,9 @@ Targets, not current state. The recap table says what is met.
 
 | Class | Examples | RPO | RTO | Copies | Restore drill |
 |---|---|---|---|---|---|
-| A: irreplaceable personal data | Immich library + DB, Spliit DB, Karakeep DB + assets, Navidrome history | 24h | 1 day | 3-2-1, offsite mandatory | once, then after tool changes |
+| A: irreplaceable personal data | Immich library + DB, Spliit DB, Karakeep DB + assets, SoundHoard music files | 24h | 1 day | 3-2-1, offsite mandatory | once, then after tool changes |
 | B: valuable config, painful to redo | Lyrion configs, Grafana UI dashboards, Slack OAuth tokens, cd-lna, in-cluster generated secrets | 7d | 1 week | 2 copies, NAS is enough | when the tool changes |
-| C: derived or re-downloadable | thumbs, ML models, Meilisearch, Prometheus, Valkey, Videos, music rips | none | rebuild | live copy only | none |
+| C: derived or re-downloadable | thumbs, ML models, Meilisearch, Prometheus, Valkey, Videos, Navidrome play history | none | rebuild | live copy only | none |
 | P: platform state | etcd, Bitwarden SM, Terraform state | 24h | 1 day | offsite | once |
 
 ## Storage placement rules
@@ -110,8 +110,9 @@ Ordered by blast radius divided by effort.
    backup. [technos/files.md](technos/files.md)
 2. **ZFS snapshots on `tank`** with sanoid. Cheap, instant, protects every NAS dataset
    against deletion and bad writes. [tools/zfs-snapshots-sanoid.md](tools/zfs-snapshots-sanoid.md)
-3. **Navidrome and Lyrion**: move to `local-path`, add the Karakeep-style CronJob (or
-   Navidrome's own `ND_BACKUP_*`). [apps/navidrome.md](apps/navidrome.md), [apps/lyrion.md](apps/lyrion.md)
+3. **SoundHoard music files** off the flaky `nfs-client` disk onto `nfs-jonbonas`, so
+   they land on `tank` and ride the snapshot + restic jobs. **Lyrion**: move to
+   `local-path`, add the Karakeep-style CronJob. [apps/navidrome.md](apps/navidrome.md), [apps/lyrion.md](apps/lyrion.md)
 4. **Karakeep tarballs offsite**: sync `/tank/data/karakeep/karakeep-backups` to S3 in the
    same restic job as item 1.
 5. **Spliit off `nfs-client`** onto `local-path`, plus a logical dump. [apps/spliit.md](apps/spliit.md)
