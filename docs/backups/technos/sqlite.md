@@ -33,7 +33,7 @@ SQLite data goes on `local-path`, ReadWriteOnce, node pinned, PVC annotated
 | Karakeep | `local-path` on `k8s-worker-1` | nightly `.backup` + tar of assets to `nfs-jonbonas`, 14d | 🟡 no offsite |
 | Navidrome | `nfs-client` (at risk) | none | ⚪ play history not worth keeping, music files are (see files.md) |
 | Lyrion (lms, lms-yoshi) | `nfs-client` (at risk) | none | ❌ |
-| Grafana | `nfs-client` (at risk) | none | ⚪ dashboards in git are enough |
+| Grafana | `nfs-client`, PVC to be removed | none | ♻️ fully provisioned from git, run it stateless |
 
 ## Reuse
 

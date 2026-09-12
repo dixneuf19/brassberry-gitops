@@ -33,7 +33,7 @@ snapshot, disk image). "Logical" means an export the engine can re-import (SQL d
 | SoundHoard music files (mp3) | soundhoard | `nfs-client` (brassberry-25 USB disk) | files | none | none | no | n/a | ❌ TODO | never | [apps/navidrome.md](apps/navidrome.md) |
 | Navidrome DB (users, play counts, playlists) | soundhoard | `nfs-client` | SQLite on NFS | none | none | no | n/a | ⚪ accepted risk | n/a | [apps/navidrome.md](apps/navidrome.md) |
 | Lyrion config + library DB (lms, lms-yoshi) | lms, lms-yoshi | `nfs-client` | SQLite + config files on NFS | none | none | no | n/a | ❌ TODO | never | [apps/lyrion.md](apps/lyrion.md) |
-| Grafana DB (UI-made dashboards, users, API keys) | monitoring | `nfs-client` | SQLite on NFS | none | none | no | n/a | ⚪ accepted risk | n/a | [apps/monitoring.md](apps/monitoring.md) |
+| Grafana DB | monitoring | `nfs-client` 10Gi (to be removed) | SQLite on NFS | none | git (dashboards, datasources, admin password via ESO) | git | n/a | ♻️ rebuildable | n/a | [apps/monitoring.md](apps/monitoring.md) |
 | Prometheus TSDB | monitoring | `local-path` on brassberry-27 (NTFS USB disk) | TSDB | none | none | no | 30d | ♻️ rebuildable | n/a | [apps/monitoring.md](apps/monitoring.md) |
 | Video library (miniserve `files`, Jellyfin on the Pi) | netflix | `brassberry-27:/mnt/magadi_3T/Videos` (NTFS, single USB disk) | files | none | none | no | n/a | ⚪ accepted risk | n/a | [apps/media-and-small-volumes.md](apps/media-and-small-volumes.md) |
 | Dank Face Slack OAuth installation tokens | dank-face-bot | `nfs-client` | files | none | none | no | n/a | ❌ TODO | never | [apps/media-and-small-volumes.md](apps/media-and-small-volumes.md) |
