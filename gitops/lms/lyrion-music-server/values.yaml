@@ -1,8 +1,9 @@
 lyrion-music-server:
   common:
-    podOptions:  
-      nodeSelector:
-        kubernetes.io/arch: "arm64"
+    podOptions:
+      # TrueCharts' common library defaults this to amd64, which would pin the
+      # pod to the single VM worker. Must be null, not {}, to actually override.
+      nodeSelector: null
   TZ: "Europe/Paris"
   workload:
     main:
