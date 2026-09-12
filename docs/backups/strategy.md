@@ -15,8 +15,11 @@
    (CNPG barman-cloud, `sqlite3 .backup`) restore reliably, and the risk is low. Drills
    are still worth running for class A data once, and after a tool change, but they do
    not gate the status.
-5. **Boring beats clever.** A CronJob running the engine's own backup command into a PVC
-   is preferred over an operator with CRDs, unless the operator is already there (CNPG).
+5. **Official first, then boring.** If the app or its operator ships a backup mechanism
+   (CNPG ScheduledBackup, Immich's built-in dump, Navidrome `ND_BACKUP_*`), use it: it
+   knows the consistency rules and the restore path. Only when nothing official exists,
+   fall back to a CronJob running the engine's own backup command (Karakeep). Avoid
+   third-party backup operators that add CRDs on top of apps that already have a way.
 6. **Monitor the backup, not the job.** Alert on "last successful backup older than X",
    not on "job failed", because a job that never runs never fails.
 
@@ -131,9 +134,10 @@ Ordered by blast radius divided by effort.
    mean for that engine and which tool to reuse.
 3. Placement: database on `local-path` (RWO, pinned node, `Prune=false`), files on
    `nfs-jonbonas`, never SQLite or Postgres on NFS.
-4. Backup: reuse an existing tool. Postgres: CNPG + barman ObjectStore + ScheduledBackup.
-   SQLite or files: copy the Karakeep CronJob. Bulk files on the NAS: add the dataset to
-   the (future) restic job.
+4. Backup: first check what the app or operator ships (admin settings, `*_BACKUP_*` env
+   vars, operator CRDs) and use that. Postgres: CNPG + barman ObjectStore +
+   ScheduledBackup. Nothing official: copy the Karakeep CronJob for SQLite or files. Bulk
+   files on the NAS: add the dataset to the (future) restic job.
 5. Offsite for class A: the copy must reach Scaleway.
 6. Write `apps/<app>.md` with: what, where, how, retention, restore steps, gaps. Add the
    README row. A written restore procedure is enough for ✅; a drill is a bonus.
