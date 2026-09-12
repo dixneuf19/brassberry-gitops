@@ -1,7 +1,9 @@
-# Derived data (no backup wanted)
+# Derived and expiring data (no backup wanted)
 
-Data the app rebuilds from its primary data or from the outside world. Backing it up
-wastes space and, worse, hides the fact that the primary data is what matters.
+Two kinds. Derived data the app rebuilds from its primary data or from the outside
+world (♻️). Expiring data that cannot be rebuilt but is deleted by retention anyway, so a
+backup would outlive the original (⚪, Prometheus and Loki). Backing either up wastes
+space and, worse, hides the fact that the primary data is what matters.
 
 | Data | App | Where | Rebuild how | Rebuild cost |
 |---|---|---|---|---|
@@ -11,8 +13,8 @@ wastes space and, worse, hides the fact that the primary data is what matters.
 | Job queues | Immich Valkey | `nfs-jonbonas` 1Gi | restart | none |
 | Search index | Karakeep Meilisearch | `nfs-client` 1Gi | Admin > Background jobs > Reindex | minutes |
 | Next.js cache | Karakeep | emptyDir | restart | none |
-| Metrics 30d | Prometheus | `local-path` on brassberry-27 | none, history is lost | accepted |
-| Logs | Loki (deployed out of GitOps) | `local-path` on brassberry-25 | none | accepted |
+| Metrics 30d | Prometheus | `local-path` on brassberry-27 | cannot be rebuilt, the 30d window refills by itself | ⚪ accepted: retention would delete it anyway |
+| Logs | Loki (deployed out of GitOps) | `local-path` on brassberry-25 | cannot be rebuilt, same reasoning | ⚪ accepted |
 | Grafana DB | monitoring | `nfs-client` PVC, to be dropped | dashboards, datasources and admin password are provisioned from git and ESO; anything made in the UI is out of policy | none |
 | VPA recommendations, ArgoCD Redis cache, cert-manager certificates | platform | in cluster | recomputed / re-issued (Let's Encrypt rate limits apply) | minutes |
 | Burrito plans and logs | burrito | S3, 90d lifecycle | next run | none |

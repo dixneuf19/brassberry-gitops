@@ -5,8 +5,8 @@ Namespace `monitoring`, chart `gitops/monitoring/kps`.
 | Data | Where | Class | Decision |
 |---|---|---|---|
 | Grafana SQLite | `kps-grafana`, `nfs-client` 10Gi | C | ♻️ everything is GitOps: dashboards (`homelab-temperatures.json` and the chart defaults), datasources and the admin password (ESO) come from the repo. Anything created in the UI is out of policy and may be lost |
-| Prometheus TSDB, 30d | `local-path` on brassberry-27, `/mnt/magadi_3T/local-path-provisioner` (NTFS USB disk) | C | ♻️ metrics history is not worth a backup |
-| Loki logs | `local-path` on brassberry-25 (deployed outside GitOps) | C | ♻️ |
+| Prometheus TSDB, 30d | `local-path` on brassberry-27, `/mnt/magadi_3T/local-path-provisioner` (NTFS USB disk) | C | ⚪ accepted: history cannot be rebuilt, but retention deletes it after 30 days anyway, so a backup would outlive the data it protects |
+| Loki logs | `local-path` on brassberry-25 (deployed outside GitOps) | C | ⚪ same reasoning |
 | Alertmanager | disabled | | |
 
 ## Enforce it: run Grafana stateless
