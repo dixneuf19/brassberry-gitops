@@ -22,7 +22,8 @@ alert, never restored.
 
 ## TODO
 
-1. Include `/tank/data/karakeep/karakeep-backups` in the NAS restic job.
+1. Recreate `karakeep-backups` on the `nfs-backups` class so the landing zone ships it
+   offsite ([../tools/backup-landing-zone.md](../tools/backup-landing-zone.md)).
 2. Alert when the CronJob's last success is older than 2 days.
 3. Restore drill into a scratch PVC, open the DB with `sqlite3`, count bookmarks.
 4. Consider a weekly copy kept 8 weeks in addition to 14 dailies.

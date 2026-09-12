@@ -22,8 +22,8 @@ favourites and playlists.
 1. Move `/config` to `local-path` RWO with a node pin. The TrueCharts chart sets a
    `storageClass` per persistence entry; override `persistence.config.storageClass`.
    Real size is far below 100Gi, right-size when moving.
-2. Weekly tar of `/config` minus `cache/` to an `nfs-jonbonas` PVC with the Karakeep
-   CronJob pattern (Lyrion has no built-in backup). Stop-free tar of prefs is acceptable
+2. Weekly tar of `/config` minus `cache/` to an `<app>-backups` PVC on `nfs-backups` with
+   the Karakeep CronJob pattern (Lyrion has no built-in backup). Stop-free tar of prefs is acceptable
    for class B; the SQLite cache is rebuildable by a rescan.
 3. Delete the stale `logitech-media-server-config` PVC.
 

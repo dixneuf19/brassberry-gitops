@@ -25,8 +25,8 @@ barman's binary format.
    like Immich). CNPG cannot change storage class in place: bootstrap a new cluster with
    `recovery` from the ObjectStore, or `pg_basebackup` from the live one, then swap names.
    Good opportunity for the restore drill.
-2. Weekly `pg_dump -Fc` CronJob to `s3://dixneuf19-cnpg-backups/logical/spliit/`
-   ([../technos/postgres.md](../technos/postgres.md)).
+2. Weekly `pg_dump -Fc` CronJob into a `spliit-backups` PVC on `nfs-backups`, shipped by
+   the landing zone ([../technos/postgres.md](../technos/postgres.md)).
 3. Delete `data-spliit-postgresql-0` and fix the stale Grafana datasource that still
    points at the bitnami service.
 

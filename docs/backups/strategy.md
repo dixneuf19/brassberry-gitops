@@ -20,7 +20,12 @@
    knows the consistency rules and the restore path. Only when nothing official exists,
    fall back to a CronJob running the engine's own backup command (Karakeep). Avoid
    third-party backup operators that add CRDs on top of apps that already have a way.
-6. **Monitor the backup, not the job.** Alert on "last successful backup older than X",
+6. **One landing zone for small backups.** Every dump or tarball lands in an
+   `<app>-backups` PVC on the `nfs-backups` class (`tank/backups`), and a single job
+   snapshots and ships that dataset offsite. Apps never get their own bucket or sync job.
+   Bulk data (photos, videos, music) is handled per dataset, not duplicated there.
+   [tools/backup-landing-zone.md](tools/backup-landing-zone.md)
+7. **Monitor the backup, not the job.** Alert on "last successful backup older than X",
    not on "job failed", because a job that never runs never fails.
 
 ## Physical vs logical
@@ -110,18 +115,20 @@ Nothing alerts on backup age today. Wanted:
 
 Ordered by blast radius divided by effort.
 
-1. **Offsite copy of the Immich library** (32G originals, growing). restic or rclone to a
-   Scaleway bucket, nightly. This is the single largest irreplaceable dataset with zero
-   backup. [technos/files.md](technos/files.md)
-2. **ZFS snapshots on `tank`** with sanoid. Cheap, instant, protects every NAS dataset
-   against deletion and bad writes. [tools/zfs-snapshots-sanoid.md](tools/zfs-snapshots-sanoid.md)
-3. **SoundHoard music files** off the flaky `nfs-client` disk onto `nfs-jonbonas`, so
-   they land on `tank` and ride the snapshot + restic jobs. **Lyrion**: move to
-   `local-path`, add the Karakeep-style CronJob. [apps/navidrome.md](apps/navidrome.md), [apps/lyrion.md](apps/lyrion.md)
-4. **Karakeep tarballs offsite**: sync `/tank/data/karakeep/karakeep-backups` to S3 in the
-   same restic job as item 1.
-5. **Spliit off `nfs-client`** onto `local-path`, plus a logical dump. [apps/spliit.md](apps/spliit.md)
-6. **Bitwarden export** procedure.
+1. **Backup landing zone**: `tank/backups` quota + export, `nfs-backups` storage class,
+   sanoid, rclone to a versioned bucket. One piece of work that takes Karakeep offsite,
+   moves the Immich dumps out of the library, and gives Spliit and Immich a logical
+   dump. [tools/backup-landing-zone.md](tools/backup-landing-zone.md)
+2. **Offsite copy of the Immich originals** (32G, growing) with restic, in the same
+   Scaleway project. The single largest irreplaceable dataset with zero backup.
+   [technos/files.md](technos/files.md)
+3. **ZFS snapshots on `tank/media` and `tank/data`** with sanoid, same playbook as item 1.
+   [tools/zfs-snapshots-sanoid.md](tools/zfs-snapshots-sanoid.md)
+4. **SoundHoard music files** off the flaky `nfs-client` disk onto `nfs-jonbonas`, so
+   they land on `tank` and ride the snapshots. **Lyrion**: move to `local-path`, weekly
+   tar into the landing zone. [apps/navidrome.md](apps/navidrome.md), [apps/lyrion.md](apps/lyrion.md)
+5. **Spliit off `nfs-client`** onto `local-path`. [apps/spliit.md](apps/spliit.md)
+6. **Bitwarden export** procedure, output into the landing zone.
 7. **Backup-age alerts** as listed above.
 8. Restore drill for Immich (CNPG recovery into a throwaway cluster) and Karakeep, nice
    to have. Spliit's move off `nfs-client` (item 5) doubles as the CNPG drill.
@@ -136,9 +143,10 @@ Ordered by blast radius divided by effort.
    `nfs-jonbonas`, never SQLite or Postgres on NFS.
 4. Backup: first check what the app or operator ships (admin settings, `*_BACKUP_*` env
    vars, operator CRDs) and use that. Postgres: CNPG + barman ObjectStore +
-   ScheduledBackup. Nothing official: copy the Karakeep CronJob for SQLite or files. Bulk
-   files on the NAS: add the dataset to the (future) restic job.
-5. Offsite for class A: the copy must reach Scaleway.
+   ScheduledBackup. Nothing official: copy the Karakeep CronJob for SQLite or files.
+5. Destination: small dumps and tarballs go to an `<app>-backups` PVC on `nfs-backups`,
+   the landing zone ships them offsite. Bulk files on the NAS: add the dataset to the
+   restic job. Class A must reach Scaleway one way or the other.
 6. Write `apps/<app>.md` with: what, where, how, retention, restore steps, gaps. Add the
    README row. A written restore procedure is enough for ✅; a drill is a bonus.
 

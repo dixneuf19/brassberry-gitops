@@ -37,7 +37,8 @@ SQLite data goes on `local-path`, ReadWriteOnce, node pinned, PVC annotated
 
 ## Reuse
 
-Copy `gitops/karakeep/karakeep/templates/backup-cronjob.yaml` and `files/backup.sh`.
+Copy `gitops/karakeep/karakeep/templates/backup-cronjob.yaml` and `files/backup.sh`, point
+the backup PVC at the `nfs-backups` class so it is shipped offsite by the landing zone.
 The pattern is documented in [../tools/sqlite-backup-cronjob.md](../tools/sqlite-backup-cronjob.md).
 Navidrome also ships its own scheduler (`ND_BACKUP_SCHEDULE`, `ND_BACKUP_PATH`,
 `ND_BACKUP_COUNT`) which does the same `.backup` call, if its DB ever becomes worth keeping.

@@ -13,6 +13,10 @@ Permission sets are project-scoped, never bucket-scoped, hence one project per p
 The `burrito-runner` key has org-wide `ObjectStorageFullAccess` and `IAMManager` and can
 delete every bucket above.
 
+Planned: `dixneuf19-backups` (landing zone mirror, versioned, non-current versions
+expire at 90d) and `dixneuf19-restic` (Immich originals), each in its own project. See
+[backup-landing-zone.md](backup-landing-zone.md) and [restic-rclone.md](restic-rclone.md).
+
 ## Rules for a new backup bucket
 
 - Own Scaleway project, own IAM application, key limited to that project.

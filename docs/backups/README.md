@@ -71,6 +71,7 @@ Postgres databases have an offsite copy.
 
 | Tool | Kind | State | Used by | Doc |
 |---|---|---|---|---|
+| Backup landing zone: `tank/backups` + `nfs-backups` storage class + sanoid + rclone to a versioned bucket | one PVC per app for small backups, one offsite job for all of them | design, target pattern | karakeep, immich dumps, pg_dump, lyrion | [tools/backup-landing-zone.md](tools/backup-landing-zone.md) |
 | CNPG + plugin-barman-cloud | Postgres physical (base + WAL, PITR) to S3 | in use | immich, spliit | [tools/cnpg-barman-cloud.md](tools/cnpg-barman-cloud.md) |
 | Immich built-in database backup | Postgres logical (`pg_dumpall` gzip) | in use, Immich default | immich | [tools/immich-database-dump.md](tools/immich-database-dump.md) |
 | CronJob `sqlite3 .backup` + tar | SQLite logical + files | in use | karakeep | [tools/sqlite-backup-cronjob.md](tools/sqlite-backup-cronjob.md) |
@@ -79,13 +80,14 @@ Postgres databases have an offsite copy.
 | Proxmox vzdump / Proxmox Backup Server | VM image backup | candidate, PBS LXC code is commented out | k8s-worker-1 | [tools/proxmox-vzdump-pbs.md](tools/proxmox-vzdump-pbs.md) |
 | restic or rclone to S3 | file-level offsite, deduplicated, encrypted | candidate | Immich library, Karakeep tarballs | [tools/restic-rclone.md](tools/restic-rclone.md) |
 | `k0s backup` | etcd + certs snapshot | reference only, not planned (cluster is rebuilt from git) | control plane | [tools/k0s-backup.md](tools/k0s-backup.md) |
-| pg_dump CronJob to `logical/` | Postgres logical, version-independent | candidate, bucket lifecycle already exists | immich, spliit | [technos/postgres.md](technos/postgres.md) |
+| pg_dump CronJob into the landing zone | Postgres logical, version-independent | candidate | immich, spliit | [technos/postgres.md](technos/postgres.md) |
 
 ## How to use this folder
 
 - New stateful app: read [strategy.md](strategy.md) (decision guide at the bottom), pick a
   techno page under `technos/`, reuse a tool from `tools/`, then add a row here and a page
-  under `apps/` if the app owns irreplaceable data.
+  under `apps/` if the app owns irreplaceable data. Small backups go to the
+  [landing zone](tools/backup-landing-zone.md): one `<app>-backups` PVC and you are done.
 - Changing a backup: update the tool page and the recap row in the same PR.
 - Restore drill done: fill the "Last restore test" column and the drill log in
   [strategy.md](strategy.md#restore-drill-log). Drills are worth doing for class A data,

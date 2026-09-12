@@ -37,13 +37,12 @@ second copy, and it stays in the house.
 
 ## Planned
 
-One restic repository on Scaleway (`fr-par`, own project like the CNPG bucket), fed by a
-systemd timer on `jonbonas` after the sanoid snapshot:
+Two jobs on `jonbonas`, both after the sanoid snapshot:
 
-- `tank/media/immich/{library,upload,profile,backups}` (originals + Immich SQL dumps)
-- `tank/data/karakeep/karakeep-backups` (already consistent tarballs)
-- `tank/data/backups` (ad-hoc dumps)
-- `tank/data/soundhoard/soundhoard-music` once the PVC has moved to `nfs-jonbonas`
+- The landing zone: `rclone sync` of `tank/backups` (all dumps and tarballs) to a
+  versioned bucket. [../tools/backup-landing-zone.md](../tools/backup-landing-zone.md)
+- restic for the bulk originals: `tank/media/immich/{library,upload,profile}` and
+  `tank/data/soundhoard/soundhoard-music` once that PVC has moved to `nfs-jonbonas`.
 
 Retention `--keep-daily 14 --keep-weekly 8 --keep-monthly 12`, `restic check --read-data-subset`
 monthly. Bucket lifecycle to Glacier is not compatible with restic's random reads, keep

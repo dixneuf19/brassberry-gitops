@@ -31,8 +31,8 @@ Both clusters report `ContinuousArchiving=True` and `LastBackupSucceeded=True` (
 
 ## Gaps
 
-- No logical dump for Spliit. The bucket already has a lifecycle rule on the `logical/`
-  prefix (Glacier at 90d, expiry at 365d) but nothing writes there.
+- No logical dump for Spliit. Immich has one (built-in), but it sits in the library
+  folder on the NAS, not offsite.
 - Spliit data directory is on NFS. Move to `local-path` with a node pin, see
   [../apps/spliit.md](../apps/spliit.md).
 - No restore has been tested (accepted, not blocking). No `bootstrap.recovery` manifest
@@ -40,16 +40,21 @@ Both clusters report `ContinuousArchiving=True` and `LastBackupSucceeded=True` (
 - No alert on backup age or WAL archive failures.
 - `instances: 1` everywhere: a restore is a full RTO, there is no replica to promote.
 
-## Planned: pg_dump CronJob to `logical/`
+## Planned: pg_dump CronJob into the landing zone
 
-One CronJob per cluster, weekly, using the CNPG-generated app secret:
+One CronJob per cluster, weekly, using the CNPG-generated app secret
+([../tools/backup-landing-zone.md](../tools/backup-landing-zone.md)):
 
 - image: the same Postgres image as the cluster (so `pg_dump` matches the server major)
-- command: `pg_dump -Fc -d "$DB" | aws s3 cp - s3://dixneuf19-cnpg-backups/logical/<cluster>/<date>.dump`
-  with the `*-backup-s3` ExternalSecret already present in each namespace
+- command: `pg_dump -Fc -d "$DB" -f /backup/<cluster>-<date>.dump.tmp && mv` to the final
+  name, `/backup` being the `<cluster>-backups` PVC on `nfs-backups`
 - `-Fc` custom format restores selectively with `pg_restore`, and stays readable by any
   newer `pg_restore`
-- retention is the bucket lifecycle, no pruning logic in the job
+- keep 8, `find -mtime +56 -delete`; the landing zone ships it offsite and keeps 90 days
+  of versions
+- Immich already produces a plain-SQL dump nightly, so its pg_dump job is optional; the
+  Spliit one is not
+- the `logical/` lifecycle rule in `terraform/scaleway/cnpg_backups.tf` becomes unused
 
 ## Restore, short version
 

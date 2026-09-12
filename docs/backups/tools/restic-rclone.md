@@ -13,7 +13,10 @@ Status: **not deployed**. Nothing file-level leaves the house today.
 | Glacier | no (random reads on `check`/`prune`) | yes for write-once data |
 | Fit | Immich originals, Karakeep tarballs, dumps | pushing already-versioned artifacts (dumps) to a cold prefix |
 
-Pick restic. It is the standard answer for "files, offsite, keep history, encrypted".
+Split by data shape. The landing zone (`tank/backups`: dumps and tarballs, already
+compressed and self-contained) uses `rclone sync` to a versioned bucket, no repo
+password to lose ([backup-landing-zone.md](backup-landing-zone.md)). The bulk originals
+(Immich photos, music) use restic, where per-file history and dedup earn their keep.
 
 ## Proposed job (on `jonbonas`, systemd timer, after the sanoid daily snapshot)
 
@@ -22,9 +25,9 @@ Pick restic. It is the standard answer for "files, offsite, keep history, encryp
 - Repo password: generated in `terraform/bitwarden`, also printed once and kept offline
   (losing it loses the backups).
 - Sources, read from the newest daily snapshot so files are consistent:
-  `/tank/media/.zfs/snapshot/<latest>/immich/{library,upload,profile,backups}`,
-  `/tank/data/.zfs/snapshot/<latest>/karakeep/karakeep-backups`,
-  `/tank/data/.zfs/snapshot/<latest>/backups`.
+  `/tank/media/.zfs/snapshot/<latest>/immich/{library,upload,profile}`, and
+  `/tank/data/.zfs/snapshot/<latest>/soundhoard/soundhoard-music` once moved.
+  Dumps and tarballs are not here, they go through the landing zone.
 - Retention: `restic forget --keep-daily 14 --keep-weekly 8 --keep-monthly 12 --prune`.
 - Weekly `restic check --read-data-subset=5%`.
 - Alert: age of the last snapshot, exported as a textfile metric to node-exporter (already

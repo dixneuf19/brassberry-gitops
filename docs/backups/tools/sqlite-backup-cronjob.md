@@ -56,6 +56,7 @@ Then reindex Meilisearch from the admin UI. Drill status: never run.
 
 ## Gaps
 
-- Copies stay in the house. Offsite via the NAS restic job.
+- Copies stay in the house. Fix: recreate `karakeep-backups` on the `nfs-backups` class,
+  the landing zone ships it offsite ([backup-landing-zone.md](backup-landing-zone.md)).
 - 14 days is short if corruption goes unnoticed; a weekly copy kept 8 weeks would help.
 - No alert.

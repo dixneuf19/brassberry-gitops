@@ -27,12 +27,15 @@ house event loses every original.
 
 ## TODO
 
-1. restic of `library/`, `upload/`, `profile/`, `backups/` to Scaleway, nightly, from a
-   ZFS snapshot ([../tools/restic-rclone.md](../tools/restic-rclone.md)). Priority 1 overall.
-2. sanoid snapshots on `tank/media` ([../tools/zfs-snapshots-sanoid.md](../tools/zfs-snapshots-sanoid.md)).
-3. Restore drill: CNPG recovery into `immich-restore`, point a throwaway Immich at it,
+1. Mount an `immich-backups` PVC (`nfs-backups`) at `/usr/src/app/upload/backups` so the
+   built-in dumps leave the library folder and get shipped offsite by the landing zone
+   ([../tools/backup-landing-zone.md](../tools/backup-landing-zone.md)).
+2. restic of `library/`, `upload/`, `profile/` to Scaleway, nightly, from a ZFS snapshot
+   ([../tools/restic-rclone.md](../tools/restic-rclone.md)). Priority 2 overall.
+3. sanoid snapshots on `tank/media` ([../tools/zfs-snapshots-sanoid.md](../tools/zfs-snapshots-sanoid.md)).
+4. Restore drill: CNPG recovery into `immich-restore`, point a throwaway Immich at it,
    confirm asset count. Then a single-photo restic restore.
-4. Alert on `cnpg_collector_last_available_backup_timestamp` and on dump age.
+5. Alert on `cnpg_collector_last_available_backup_timestamp` and on dump age.
 
 ## Restore
 

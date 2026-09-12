@@ -38,7 +38,10 @@ load works.)
 
 4. Start the server with the same Immich version the dump was taken with, then upgrade.
 
-## Gap
+## Gap and fix
 
-Not offsite, not monitored. Deleting `/tank/media/immich` removes the library and its
-dumps together, which is the argument for the restic job reading from a snapshot.
+Not offsite, not monitored, and stored inside the library folder, so deleting
+`/tank/media/immich` removes the photos and their dumps together. Fix: mount an
+`immich-backups` PVC (`nfs-backups` class) at `/usr/src/app/upload/backups`; Immich
+supports the `backups/` subfolder being its own mount. The landing zone then ships the
+dumps offsite. [backup-landing-zone.md](backup-landing-zone.md)
