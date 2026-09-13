@@ -18,28 +18,42 @@ the bundled `kepubify`. Anything else (store browsing, purchases, account) is fo
 
 Layout:
 
-- `lscr.io/linuxserver/calibre-web` `0.6.27`, needed because it is the first release that
-  rewrites the `library_sync` URL in the Kobo init response (without it, recent firmware syncs
-  against the real store and receives nothing, [#3588](https://github.com/janeczku/calibre-web/pull/3588)).
-  0.6.27 also shipped two bugs that break Kobo sync on this image: leftover debug lines that
-  500 every sync ([#3691](https://github.com/janeczku/calibre-web/issues/3691)) and a kepubify
-  lookup that only accepts a binary named `kepubify-linux-64bit`
-  ([#3679](https://github.com/janeczku/calibre-web/issues/3679), so saving the Feature
-  Configuration fails with "Kepubify binary not found"). `files/10-kobo-fixes.sh`, mounted in
-  `/custom-cont-init.d`, patches both at container start; each step is a no-op once upstream
-  fixes it, then `customInit.enabled` can be dropped.
+- `lscr.io/linuxserver/calibre-web`, pinned to the **master snapshot**
+  `nightly-a9782640-ls375`, not to a release. Kobo sync needs three upstream changes and only
+  two of them are in a release:
+  - the `library_sync` URL rewrite in the Kobo init response, shipped in 0.6.27
+    ([#3588](https://github.com/janeczku/calibre-web/pull/3588)); without it recent firmware
+    syncs against the real store and receives nothing;
+  - the removal of leftover debug lines that 500 every sync
+    ([#3691](https://github.com/janeczku/calibre-web/issues/3691), fixed in master by
+    `a9782640`) and a kepubify lookup that only accepted `kepubify-linux-64bit`
+    ([#3679](https://github.com/janeczku/calibre-web/issues/3679), fixed in master by
+    `3a1df7b1`). Both are labelled `Fixed in Nightly` upstream and neither is in 0.6.27.
+
+  Releases come roughly every six months (0.6.25 Aug 2025, 0.6.26 Feb 2026, 0.6.27 Aug 2026),
+  so the choice was between patching the release at runtime and running the commit that
+  contains the fixes. The tag names the exact upstream commit and linuxserver build, so it is
+  immutable: it does not follow `nightly`, and Renovate is told not to move it
+  (`renovate.json`). The snapshot is 53 commits past 0.6.27 and includes a large caliblur
+  theme migration, so the web UI differs from 0.6.27 screenshots. Move to `0.6.28` when it
+  ships, see [ADR.md](ADR.md).
 - `/config` (app.db) and `/books` (Calibre library) on `local-path`, pinned to `k8s-worker-1`.
   An init container seeds an empty Calibre `metadata.db` on first boot.
 - Traefik middleware `books-calibre-web-headers` adds `X-Scheme: https`. Calibre-Web only trusts
   `X-Scheme` / `X-Forwarded-Host` to build the absolute URLs it hands to Kobos; without it the
   device receives `http://` download links and sync silently fails.
-- Two ingresses on the same host: the web UI (`/`) sits behind the cluster `traefik-basic-auth`
-  like every other public UI here (friends need those shared credentials on top of their own
-  Calibre-Web login); the Kobo API (`/kobo/`) has no auth challenge because a Kobo cannot answer
-  one, the token in the URL is the credential. Treat the token like a password.
-- Nightly `db` tarball (sqlite `.backup` of `app.db` and `metadata.db`, 14 days) and a weekly
-  `full` tarball adding the book files (35 days) on the `calibre-web-backups` PVC on
-  `nfs-jonbonas`. Archives are written to a temp name and moved into place.
+- Two ingresses on the same host: the web UI (`/`) sits behind the cluster `traefik-basic-auth`;
+  the Kobo API (`/kobo/`) has no auth challenge because a Kobo cannot answer one, the token in
+  the URL is the credential. Treat the token like a password. Note this is *not* what the other
+  multi-user apps here do (karakeep, immich, navidrome and jellyfin expose their own login);
+  basic-auth is the repo's pattern for admin tools with no real login. It is here as a guard
+  against the image's `admin`/`admin123` default, at the cost of friends carrying two sets of
+  credentials, and can go once the password is changed.
+- Nightly `db` tarball (sqlite `.backup` of `app.db` and `metadata.db`, 14 days), a nightly
+  `rsync` mirror of the book files in `books-current/`, and a weekly `full` tarball (35 days)
+  on the `calibre-web-backups` PVC on `nfs-jonbonas`. Archives are written to a temp name and
+  moved into place. The mirror is what keeps book files at a 1-day RPO; it follows deletions,
+  so undeleting a book needs the weekly tarball.
 - First boot downloads the empty `metadata.db` from GitHub (checksummed); without outbound
   access the pod stays in `Init:Error` until it can.
 
@@ -52,7 +66,10 @@ Layout:
    - Enable Kobo sync
    - Proxy unknown requests to Kobo Store: **on** (keeps the shop working)
    - Server External Port: `443` (only used if the proxy headers were missing; harmless)
-   - Path to Kepubify E-Book Converter: leave the preset value (Calibre-Web stores it as `/usr/bin`)
+   - Path to Kepubify E-Book Converter: leave the preset value (Calibre-Web stores it as
+     `/usr/bin`). The image ships the binary as plain `kepubify`, which this snapshot accepts
+     since [#3679](https://github.com/janeczku/calibre-web/issues/3679); on 0.6.27 the same
+     field fails with "Kepubify binary not found"
 4. Admin > Edit Users > `admin`: create the Kobo sync token (see below) or do it from your profile.
 
 ## Kobo setup
@@ -128,6 +145,14 @@ Friend onboarding: create their user (Allow Downloads, optionally Allow Uploads,
 have them log in once and Create/View their Kobo token, then walk them through the "Kobo setup"
 section. The USB edit is a one-off they can do themselves with the device in hand.
 
+What to tell them before they point a device here:
+
+- **Their Kobo talks to this server instead of Kobo.** With the store proxy on, everything the
+  server does not implement is forwarded to the real store with the device's headers intact, so
+  their Kobo session token, purchases and reading analytics transit this cluster.
+- **A 2024 or newer Kobo will not work at all** (see Known limits). Check the model first.
+- When something breaks, fixing it means editing a hidden file on their e-reader, remotely.
+
 ## Day-to-day
 
 - Add a book: web UI > Upload (EPUB). Metadata is editable in place. Kobo devices pick it up on
@@ -153,8 +178,13 @@ section. The USB edit is a one-off they can do themselves with the device in han
 ## Restore
 
 Archive layout: `db/app.db`, `db/metadata.db`, and in `full` archives `books/<library files>`.
+`books-current/` on the backup volume is last night's copy of the book files.
+
+Suspend ArgoCD first, otherwise `selfHeal` scales the deployment back up while you are copying
+files underneath it.
 
 ```bash
+argocd app set calibre-web --sync-policy none
 kubectl -n books scale deploy calibre-web --replicas=0
 # in a pod mounting the three PVCs, or from the NAS:
 tar xzf calibre-web-full-<stamp>.tar.gz -C /tmp/restore
@@ -163,4 +193,10 @@ rsync -a --delete /tmp/restore/books/ /books/
 cp /tmp/restore/db/metadata.db /books/metadata.db   # or from a newer calibre-web-db-<stamp> archive
 chown -R 1000:1000 /config /books
 kubectl -n books scale deploy calibre-web --replicas=1
+argocd app set calibre-web --sync-policy automated --self-heal --auto-prune
 ```
+
+For book files alone, `rsync -a /backup/books-current/ /books/` restores last night instead of
+last week. If the `books` PVC is lost entirely, the init container seeds a fresh empty
+`metadata.db` and the pod comes up **healthy with an empty library**: the symptom of a lost
+volume is missing books, not a failing pod.

@@ -14,13 +14,10 @@ spec:
       {{- include "calibre-web.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
       annotations:
-        {{- if .Values.customInit.enabled }}
-        checksum/custom-init: {{ include (print $.Template.BasePath "/custom-init-configmap.yaml") . | sha256sum }}
-        {{- end }}
-        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-        {{- end }}
+      {{- end }}
       labels:
         {{- include "calibre-web.selectorLabels" . | nindent 8 }}
     spec:
@@ -94,22 +91,11 @@ spec:
             - name: {{ $name }}
               mountPath: {{ $pvc.mountPath }}
             {{- end }}
-            {{- if .Values.customInit.enabled }}
-            - name: custom-init
-              mountPath: /custom-cont-init.d
-              readOnly: true
-            {{- end }}
       volumes:
         {{- range $name, $pvc := .Values.persistence }}
         - name: {{ $name }}
           persistentVolumeClaim:
             claimName: {{ include "calibre-web.fullname" $ }}-{{ $name }}
-        {{- end }}
-        {{- if .Values.customInit.enabled }}
-        - name: custom-init
-          configMap:
-            name: {{ include "calibre-web.fullname" . }}-custom-init
-            defaultMode: 0755
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

@@ -3,10 +3,15 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # Nightly: sqlite3 .backup of the two databases (safe with the app running) into a small
-# db tarball. On FULL_BACKUP_WEEKDAY: additionally a tarball of the whole book library.
+# db tarball, plus a mirror of the book files. On FULL_BACKUP_WEEKDAY: additionally a
+# tarball of the whole book library.
 # Archives are written to a temp name and moved into place, so a killed job never leaves
 # a truncated file under the canonical name. Pruning runs first so the volume is never
 # filled by a new archive before old ones are reclaimed.
+#
+# The mirror gives book files the same 1-day RPO as the databases without paying a full
+# tarball per night; it tracks deletions, so recovering a book deleted more than a day ago
+# needs the weekly full tarball.
 
 CONFIG_DIR="${CONFIG_DIR:-/config}"
 BOOKS_DIR="${BOOKS_DIR:-/books}"
@@ -14,6 +19,7 @@ BACKUP_DIR="${BACKUP_DIR:-/backup}"
 DB_RETENTION_DAYS="${DB_RETENTION_DAYS:?required}"
 FULL_RETENTION_DAYS="${FULL_RETENTION_DAYS:?required}"
 FULL_BACKUP_WEEKDAY="${FULL_BACKUP_WEEKDAY:?required}" # 1 = Monday ... 7 = Sunday
+MIRROR_BOOKS="${MIRROR_BOOKS:-true}"
 
 stamp="$(date +%Y-%m-%d-%H%M)"
 work="${BACKUP_DIR}/work"
@@ -39,6 +45,15 @@ archive() { # name, tar args...
 }
 
 archive "calibre-web-db-${stamp}.tar.gz" -C "${work}" db
+
+if [ "${MIRROR_BOOKS}" = "true" ]; then
+  # metadata.db and its journals live in BOOKS_DIR but are captured by the db tarball above;
+  # copying them here would mirror a file the app is writing to.
+  rsync -a --delete \
+    --exclude 'metadata.db' --exclude 'metadata.db-*' \
+    "${BOOKS_DIR}/" "${BACKUP_DIR}/books-current/"
+  echo "mirrored books to books-current/"
+fi
 
 if [ "$(date +%u)" = "${FULL_BACKUP_WEEKDAY}" ]; then
   # Archive layout: db/app.db, db/metadata.db, books/<library files>

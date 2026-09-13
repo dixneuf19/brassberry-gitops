@@ -60,7 +60,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - apk add --no-cache bash sqlite tar >/dev/null && exec bash /scripts/backup.sh
+                - apk add --no-cache bash sqlite tar rsync >/dev/null && exec bash /scripts/backup.sh
               env:
                 - name: DB_RETENTION_DAYS
                   value: {{ .Values.backup.dbRetentionDays | quote }}
@@ -68,6 +68,8 @@ spec:
                   value: {{ .Values.backup.fullRetentionDays | quote }}
                 - name: FULL_BACKUP_WEEKDAY
                   value: {{ .Values.backup.fullBackupWeekday | quote }}
+                - name: MIRROR_BOOKS
+                  value: {{ .Values.backup.mirrorBooks | quote }}
               resources:
                 requests:
                   cpu: 50m

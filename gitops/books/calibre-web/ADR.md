@@ -1,4 +1,4 @@
-# ADR: Calibre-Web (upstream, patched) for wireless Kobo delivery
+# ADR: Calibre-Web (upstream master snapshot) for wireless Kobo delivery
 
 - Status: accepted, 2026-08-28. Explicitly provisional, see "When to revisit".
 - Deciders: dixneuf19
@@ -57,8 +57,12 @@ reverse-proxy headers and inspect the responses.
   raise on every `/v1/user/*` call ([#3691](https://github.com/janeczku/calibre-web/issues/3691))
   and a kepubify lookup that only accepts a binary named `kepubify-linux-64bit`
   ([#3679](https://github.com/janeczku/calibre-web/issues/3679)).
-- With both patched at container start: every endpoint check passes, `library_sync` and
-  `image_host` point at `https://books.dixneuf19.fr`.
+- Both are **fixed in master** (`a9782640` and `3a1df7b1`, labelled `Fixed in Nightly`) and in
+  no release. Releases are roughly six months apart (0.6.25 Aug 2025, 0.6.26 Feb 2026,
+  0.6.27 Aug 2026), so "wait for the fix" means waiting for 0.6.28, not for a patch to be
+  written.
+- With both fixes present: every endpoint check passes, `library_sync` and `image_host` point
+  at `https://books.dixneuf19.fr`.
 - 258 MB image, amd64 + arm64, ~50 MB RAM, kepubify bundled, two releases a year, maintainer
   merges small community PRs within days.
 
@@ -111,22 +115,29 @@ Kobo sync planned (Kavita 0.9.2), beta (Stump), or absent. Not viable today.
 
 ## Decision
 
-Run upstream Calibre-Web `0.6.27` from the linuxserver image, with `files/10-kobo-fixes.sh`
-executed by the image's `/custom-cont-init.d` hook at container start to (a) hard-link
-`kepubify` to `kepubify-linux-64bit` (and point the first-boot preset at it) and (b) delete the
-two offending debug lines from `kobo.py`. Each step guards itself, logs what it did, and is a
-no-op once upstream fixes the bug.
+Run upstream Calibre-Web from the linuxserver image, pinned to the master snapshot
+`nightly-a9782640-ls375` (upstream commit `a9782640`, the commit that fixes #3691), which
+contains both Kobo sync fixes. The tag names the commit and the build, so it is immutable and
+does not follow the moving `nightly` tag; Renovate is told not to move this image at all,
+digests included.
 
-A custom image built in `images/` (the `burrito-runner` pattern) was considered: it would make
-the patch immutable and fail the build loudly once upstream fixes it, at the cost of a second
-build pipeline, a public GHCR package and a rebuild for every weekly linuxserver rebase. Not
-worth it for a patch expected to live a few months; revisit if it survives two upstream releases
-or a second patch is needed.
+Three ways to get those two fixes were considered:
 
-It is the only option whose released image passes the whole endpoint test on this firmware
-after a patch that is fully understood and verifiable, it is the lightest, and it keeps the
-Calibre data format so a later move to CWA (documented volume remap) or an export to Grimmory
-stays cheap.
+1. **Patch the release at runtime** (a script in `/custom-cont-init.d` that hard-links
+   `kepubify` and seds `kobo.py`). Implemented and verified first, then dropped: it works, but
+   every failure mode is silent (the hook ignores exit codes), and the sed has to be kept in
+   step with what upstream actually deleted.
+2. **Build a custom image in `images/`** (the `burrito-runner` pattern), which makes the patch
+   immutable and fails the build loudly once upstream fixes it, at the cost of a build
+   pipeline, a GHCR package and a rebuild per weekly linuxserver rebase.
+3. **Run the commit that has the fixes.** Chosen: no patch to maintain, no pipeline, and the
+   thing that ships is the code upstream will release.
+
+The cost of (3) is that the snapshot is 53 commits past 0.6.27 and carries changes nobody
+released yet, chiefly a large caliblur theme migration (`flask-themes2`) and a rework of how
+binary paths are configured. That is a UI-surface risk, not a data risk: the Calibre data format
+is unchanged, so a later move to CWA (documented volume remap) or an export to Grimmory stays
+cheap, and rolling back means pinning 0.6.27 again.
 
 ## Consequences
 
@@ -139,21 +150,33 @@ Positive:
 
 Negative and accepted:
 
-- We carry a runtime patch. It is version-specific, so Renovate is told not to auto-merge app
-  version bumps for `lscr.io/linuxserver/calibre-web` (digest bumps of the same version still
-  are); each bump is checked against the `[kobo-fixes]` log lines and a device sync.
+- We run unreleased code. No CVE feed, no release notes, and any bug in those 53 commits is
+  ours to find; the mitigation is that the image never moves on its own (immutable tag, no
+  Renovate automerge of any update type) and that 0.6.27 is one value away.
 - Kobo sync in every project is a moving target driven by undocumented firmware changes;
   expect roughly yearly attention, with the symptom "Sync failed" or "syncs but nothing arrives".
+  When the next firmware change lands, the fix will reach master long before it reaches a
+  release, which is the same bet we are making here.
 - Ingest is web upload or Calibre desktop, no drop folder.
 - The web UI sits behind the cluster-wide basic-auth (the image ships `admin`/`admin123` and
   the Kobo API needs an unauthenticated path), so friends carry two sets of credentials until
-  that is revisited.
+  that is revisited. This is the repo's pattern for admin tools, not for apps with their own
+  login (karakeep, immich, navidrome and jellyfin carry none).
+- Friends on a 2024-or-newer Kobo (Clara BW / Colour, Libra Colour, firmware 4.45+) cannot be
+  served at all: those devices expect an OIDC discovery endpoint no Calibre-Web release or
+  master commit implements ([CWA#1418](https://github.com/crocodilestick/Calibre-Web-Automated/issues/1418)).
+  The sharing use case covers pre-2024 devices only; Komga is the project that handles them.
+- Their devices talk to this cluster: with the store proxy on, Kobo session headers, purchases
+  and reading analytics pass through it.
 - Device set-up still needs one edit of the device config over USB, once per device, done with
   the Kobo in hand. Every book after that arrives over Wi-Fi.
 
 ## When to revisit
 
-- Upstream ships a release fixing #3691 and #3679: drop `customInit`.
+- Upstream ships `0.6.28` (it will contain #3691 and #3679): move the image pin from the master
+  snapshot back to the release tag, re-run the endpoint harness, and this whole trade-off ends.
+- A friend turns up with a 2024-or-newer Kobo: Calibre-Web cannot serve it at any version, so
+  that is a Komga question, not a version bump.
 - CWA ships a release with #1470 closed, the IDOR fixed and the `library_sync` rewrite present:
   re-run the endpoint harness and migrate if the ingest features are wanted.
 - Grimmory closes #2457 and a MariaDB is acceptable on the cluster: strongest long-term option
