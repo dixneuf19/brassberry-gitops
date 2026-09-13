@@ -11,6 +11,11 @@ spec:
     autoApply: false
   overrideRunnerSpec:
     serviceAccountName: runner-homelab
+    # burrito hardcodes `terraform init -upgrade`, so plan and apply each rebuild
+    # the lock and record an h1 hash for their own platform. Split them across
+    # arches and apply rejects the plan. Merged into every layer.
+    nodeSelector:
+      kubernetes.io/arch: arm64
     envFrom:
       - secretRef:
           name: burrito-runner-common
