@@ -6,17 +6,17 @@
 
 ## Context
 
-Goal: get EPUBs onto a Kobo Clara HD (2018, firmware `4.38.23697`) over Wi-Fi instead of
-plugging it into a computer (a cable or dongle is not always at hand), while the Kobo shop keeps
-working, and let a few friends who also own Kobos receive books the same way. Books are managed
-with Calibre.
+Goal: get EPUBs onto a Kobo Clara HD (2018, firmware `4.38.23697`) over Wi-Fi rather than
+plugging it into a computer for every book, while the Kobo shop keeps working, and let a few
+friends who also own Kobos receive books the same way. A one-time USB edit of the device config
+is acceptable; a cable for every delivery is what this avoids. Books are managed with Calibre.
 
 Constraints from the cluster: k0s on Raspberry Pi 4 (arm64) plus one amd64 VM, ArgoCD GitOps,
 Traefik with Let's Encrypt via cert-manager, `local-path` and NFS storage, secrets in Bitwarden.
 Public entry is a wildcard `*.dixneuf19.fr` through an Oracle VM doing TCP passthrough to Traefik,
 so any new host name gets a valid certificate with no edge change.
 
-Only one delivery mechanism gives a stock Kobo cable-free delivery: impersonating Kobo's private
+Only one mechanism delivers new books to a stock Kobo without a cable: impersonating Kobo's private
 store API. The device reads a single `api_endpoint` from `.kobo/Kobo/Kobo eReader.conf`; a server that
 answers like `storeapi.kobo.com` can push its own library and forward everything else to the real
 store. Alternatives were ruled out early:
@@ -148,9 +148,8 @@ Negative and accepted:
 - The web UI sits behind the cluster-wide basic-auth (the image ships `admin`/`admin123` and
   the Kobo API needs an unauthenticated path), so friends carry two sets of credentials until
   that is revisited.
-- Device set-up still needs one edit of the device config: over USB when a cable is at hand, or
-  through Kobo developer mode (telnet over Wi-Fi) when not. The cable-free path is documented
-  but not yet exercised on the real device at decision time.
+- Device set-up still needs one edit of the device config over USB, once per device, done with
+  the Kobo in hand. Every book after that arrives over Wi-Fi.
 
 ## When to revisit
 

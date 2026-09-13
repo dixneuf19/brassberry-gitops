@@ -2,8 +2,8 @@
 
 [Calibre-Web](https://github.com/janeczku/calibre-web) serving the shared ebook library at
 `https://books.dixneuf19.fr`, with **Kobo sync** enabled so that Kobo e-readers pull books over
-Wi-Fi without ever being plugged into a computer. The Kobo shop keeps working: requests the
-server does not handle are proxied to the real Kobo store.
+Wi-Fi. One USB edit per device sets it up; every book after that arrives without a cable. The
+Kobo shop keeps working: requests the server does not handle are proxied to the real Kobo store.
 
 Why this project and not CWA, NextGen, Grimmory or Komga: see
 [ADR.md](ADR.md).
@@ -57,15 +57,8 @@ Layout:
 
 ## Kobo setup
 
-The device needs one edit of `.kobo/Kobo/Kobo eReader.conf` to point `api_endpoint` at this
-server. After that everything is over Wi-Fi. Two ways to make the edit:
-
-- **With a USB cable** (simplest, when one is at hand): plug in, tap Connect, open
-  `KOBOeReader/.kobo/Kobo/Kobo eReader.conf` (hidden folder) in a plain-text editor that keeps LF
-  line endings, back it up, change the `api_endpoint=` line under `[OneStoreServices]` to the one
-  from step 1 below, eject safely, then continue at step 4.
-- **Without a cable** (steps 2 and 3): Kobo's hidden developer mode starts a telnet server on the
-  device (root, no password). Do this on the home network only and switch it off afterwards.
+The device needs one edit of `.kobo/Kobo/Kobo eReader.conf` over USB to point `api_endpoint` at
+this server. After that everything is over Wi-Fi.
 
 ### 0. Prerequisites
 
@@ -83,50 +76,34 @@ exact line to put in the device configuration:
 api_endpoint=https://books.dixneuf19.fr/kobo/<token>
 ```
 
-### 2. Enable developer mode on the Kobo (cable-free path)
+### 2. Edit the config over USB
 
-1. Home screen > search box > type `devmodeon` > search. The result page says "0 results" but a
-   new **Settings > Device information > Developer options** menu appears.
-2. In Developer options, enable **Force Wi-Fi on** so the connection stays up while you work.
-3. Find the Kobo's IP address: your router's DHCP lease list, or `arp -a` after pinging the
-   broadcast address from the Mac. The hostname is usually the device serial.
+1. Plug the Kobo into the computer, tap **Connect** on the device. It mounts as `KOBOeReader`.
+2. Open `KOBOeReader/.kobo/Kobo/Kobo eReader.conf` (hidden folder) in a plain-text editor that
+   keeps LF line endings. Copy it aside first as a backup.
+3. Under `[OneStoreServices]`, replace the `api_endpoint=` line with the one from step 1. If the
+   line is missing, add it (create the section if needed).
 
-### 3. Edit the config over telnet (cable-free path)
+   ```bash
+   # macOS, once the device is mounted
+   cd "/Volumes/KOBOeReader/.kobo/Kobo"
+   cp "Kobo eReader.conf" "Kobo eReader.conf.bak"
+   grep -n api_endpoint "Kobo eReader.conf"
+   sed -i '' 's#^api_endpoint=.*#api_endpoint=https://books.dixneuf19.fr/kobo/<token>#' "Kobo eReader.conf"
+   grep -n api_endpoint "Kobo eReader.conf"
+   ```
+4. Eject safely, then let the device finish its "processing content" pass.
 
-macOS ships `nc`; `brew install telnet` gives a nicer client.
+Nickel (the Kobo UI) holds its settings in memory and writes them back when they change, so make
+the edit while the device is mounted, not over a live session. If the value is reverted later,
+redo the edit the same way.
 
-```bash
-telnet <kobo-ip>          # or: nc <kobo-ip> 23
-# login: root, empty password
-cd "/mnt/onboard/.kobo/Kobo"
-cp "Kobo eReader.conf" "Kobo eReader.conf.bak"
-grep -n api_endpoint "Kobo eReader.conf"
-sed -i 's#^api_endpoint=.*#api_endpoint=https://books.dixneuf19.fr/kobo/<token>#' "Kobo eReader.conf"
-grep -n api_endpoint "Kobo eReader.conf"
-sync
-reboot
-```
-
-If the line is missing, add it under the `[OneStoreServices]` section (create the section if
-needed). The file uses LF line endings; do not copy it through an editor that converts them.
-
-Nickel (the Kobo UI) keeps its settings in memory and writes them back when they change. If the
-edit is reverted after the reboot, redo it with Nickel frozen so it cannot overwrite the file:
-
-```bash
-killall -STOP nickel
-sed -i 's#^api_endpoint=.*#api_endpoint=https://books.dixneuf19.fr/kobo/<token>#' "/mnt/onboard/.kobo/Kobo/Kobo eReader.conf"
-sync
-reboot -f
-```
-
-### 4. Verify and clean up
+### 3. Verify
 
 1. On the Kobo, open the beta web browser (More > Beta Features > Web browser) and load
    `https://books.dixneuf19.fr/kobo/<token>/v1/initialization`. A JSON blob means TLS, proxy
    headers and the token all work. An error page means the Kobo never reached the server.
 2. Home > Sync. Books visible to your user (or on your synced shelves) appear in "My Books".
-3. Search `devmodeoff` to turn developer mode (and telnet) back off.
 
 ### When it reverts
 
@@ -149,7 +126,7 @@ shelves with Kobo" on their user. They upload their own EPUBs in the web UI, cre
 
 Friend onboarding: create their user (Allow Downloads, optionally Allow Uploads, tags as above),
 have them log in once and Create/View their Kobo token, then walk them through the "Kobo setup"
-section (the USB edit is the easiest to explain remotely).
+section. The USB edit is a one-off they can do themselves with the device in hand.
 
 ## Day-to-day
 
