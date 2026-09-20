@@ -33,10 +33,10 @@ Layout:
   Releases come roughly every six months (0.6.25 Aug 2025, 0.6.26 Feb 2026, 0.6.27 Aug 2026),
   so the choice was between patching the release at runtime and running the commit that
   contains the fixes. The tag names the exact upstream commit and linuxserver build, so it is
-  immutable: it does not follow `nightly`, and Renovate is told not to move it
-  (`renovate.json`). The snapshot is 53 commits past 0.6.27 and includes a large caliblur
-  theme migration, so the web UI differs from 0.6.27 screenshots. Move to `0.6.28` when it
-  ships, see [ADR.md](ADR.md).
+  immutable: it does not follow `nightly`, and Renovate never merges a bump of it on its own
+  (`automerge: false` in `renovate.json`; it still opens the PR). The snapshot is 53 commits
+  past 0.6.27 and includes a large caliblur theme migration, so the web UI differs from 0.6.27
+  screenshots. Move to `0.6.28` when it ships, see [ADR.md](ADR.md).
 - `/config` (app.db) and `/books` (Calibre library) on `local-path`, pinned to `k8s-worker-1`.
   An init container seeds an empty Calibre `metadata.db` on first boot.
 - Traefik middleware `books-calibre-web-headers` adds `X-Scheme: https`. Calibre-Web only trusts

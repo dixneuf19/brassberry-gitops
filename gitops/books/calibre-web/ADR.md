@@ -73,13 +73,18 @@ reverse-proxy headers and inspect the responses.
 - Kobo code drifted from upstream and missed both firmware-driven fixes. Tested on v4.0.6:
   `library_sync` -> `https://storeapi.kobo.com/v1/library/sync`, `POST /v1/auth/refresh` -> CWA's
   own 404 (not proxied). No issue in their tracker mentions either.
+- Re-checked 2026-09-13 against `main` and the newest `dev` build, not just the release: still
+  no `library_sync` rewrite (the hardcoded store URL is the only occurrence in `cps/kobo.py`)
+  and still only `/v1/auth/device`. The gap is not a stale release, it is the current code.
 - Own regression since 4.0.4, undiagnosed: shelves sync but books never appear or fail to
   download, Clara 2E on 4.38 among reporters, only workaround is rolling back to 4.0.2
   ([#1470](https://github.com/crocodilestick/Calibre-Web-Automated/issues/1470)).
 - Kobo-token IDOR open since April, unpatched on `main`
   ([#1303](https://github.com/crocodilestick/Calibre-Web-Automated/issues/1303)).
-- No release since 2026-02-04, then 79 commits on `main` in two days (Aug 5-6), 77 open PRs
-  (oldest April 2025). 626 MB image.
+- No release since 2026-02-04 (all seven v4.0.x tags landed in one week), then 79 commits on
+  `main` in two days (Aug 5-6) and nothing since; 77 open PRs (oldest April 2025). 626 MB image.
+  Running an unreleased upstream snapshot forfeits any "released software is safer" argument
+  against CWA, so this decision does not use one: it rests on the three gaps above.
 
 Forking CWA to fix it was considered: the first two gaps are ~35 lines to port, the IDOR two
 lines, but #1470 cannot be patched without a diagnosis nobody has, and a fork means owning a
@@ -118,8 +123,9 @@ Kobo sync planned (Kavita 0.9.2), beta (Stump), or absent. Not viable today.
 Run upstream Calibre-Web from the linuxserver image, pinned to the master snapshot
 `nightly-a9782640-ls375` (upstream commit `a9782640`, the commit that fixes #3691), which
 contains both Kobo sync fixes. The tag names the commit and the build, so it is immutable and
-does not follow the moving `nightly` tag; Renovate is told not to move this image at all,
-digests included.
+does not follow the moving `nightly` tag; Renovate still opens PRs for this image but never
+merges them itself (`automerge: false` on every update type, digests included), so moving off
+this snapshot is always a deliberate act.
 
 Three ways to get those two fixes were considered:
 
@@ -163,9 +169,18 @@ Negative and accepted:
   that is revisited. This is the repo's pattern for admin tools, not for apps with their own
   login (karakeep, immich, navidrome and jellyfin carry none).
 - Friends on a 2024-or-newer Kobo (Clara BW / Colour, Libra Colour, firmware 4.45+) cannot be
-  served at all: those devices expect an OIDC discovery endpoint no Calibre-Web release or
-  master commit implements ([CWA#1418](https://github.com/crocodilestick/Calibre-Web-Automated/issues/1418)).
-  The sharing use case covers pre-2024 devices only; Komga is the project that handles them.
+  served at all: those devices expect an OIDC discovery endpoint that upstream implements
+  nowhere, in no release and not on master. CWA does implement
+  `/oauth/.well-known/openid-configuration` (`aa97e0ec`), and it is still not enough:
+  [CWA#1418](https://github.com/crocodilestick/Calibre-Web-Automated/issues/1418) is open and
+  [CWA#1476](https://github.com/crocodilestick/Calibre-Web-Automated/issues/1476) reports
+  4.45 pairing still failing on a build that contains it. The sharing use case covers
+  pre-2024 devices only; Komga is the project that handles them.
+- A factory-reset or never-paired device calls `POST /v1/user/add-device` during pairing, which
+  neither project implements (upstream
+  [#2477](https://github.com/janeczku/calibre-web/issues/2477), open since 2022), and aborts
+  with "Sync failed" before it ever reaches `library/sync`. Devices that have already paired
+  with the real Kobo store never call it, which is why the README makes that a prerequisite.
 - Their devices talk to this cluster: with the store proxy on, Kobo session headers, purchases
   and reading analytics pass through it.
 - Device set-up still needs one edit of the device config over USB, once per device, done with
