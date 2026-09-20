@@ -36,6 +36,11 @@
       "separateMinorPatch": true,
       "separateMultipleMinor": true,
       "automerge": false
+    },
+    {
+      "description": "calibre-web is pinned to a master snapshot for two unreleased Kobo sync fixes; moving it to 0.6.28 or to another snapshot is a manual decision, see gitops/books/calibre-web/ADR.md",
+      "matchPackageNames": ["lscr.io/linuxserver/calibre-web"],
+      "automerge": false
     }
   ]
 }
