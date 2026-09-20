@@ -1,8 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "local>dixneuf19/renovate-presets"
-  ],
+  "extends": ["local>dixneuf19/renovate-presets"],
   "customManagers": [
     {
       "customType": "regex",
@@ -15,22 +13,33 @@
       ],
       "datasourceTemplate": "docker",
       "depNameTemplate": "ghcr.io/padok-team/burrito"
+    },
+    {
+      "customType": "regex",
+      "description": "Honour `# renovate: datasource=... depName=...` annotations above a version in any YAML file",
+      "managerFilePatterns": ["/\\.ya?ml$/"],
+      "matchStrings": [
+        "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)(?:\\s+versioning=(?<versioning>\\S+))?[^\\n]*\\n\\s*[\\w.-]+:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
+      ]
     }
   ],
   "packageRules": [
     {
       "description": "Bump the burrito chart, the runner base image and the layer image tag in one PR",
       "groupName": "burrito",
-      "matchPackageNames": [
-        "burrito",
-        "ghcr.io/padok-team/burrito"
-      ]
+      "matchPackageNames": ["burrito", "ghcr.io/padok-team/burrito"]
+    },
+    {
+      "description": "k0s forbids skipping a minor, so every rung of the ladder needs its own PR, applied by hand with `make k0sctl`",
+      "matchPackageNames": ["k0sproject/k0s"],
+      "versioning": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\+k0s\\.(?<build>\\d+)$",
+      "separateMinorPatch": true,
+      "separateMultipleMinor": true,
+      "automerge": false
     },
     {
       "description": "calibre-web is pinned to a master snapshot for two unreleased Kobo sync fixes; moving it to 0.6.28 or to another snapshot is a manual decision, see gitops/books/calibre-web/ADR.md",
-      "matchPackageNames": [
-        "lscr.io/linuxserver/calibre-web"
-      ],
+      "matchPackageNames": ["lscr.io/linuxserver/calibre-web"],
       "automerge": false
     }
   ]
