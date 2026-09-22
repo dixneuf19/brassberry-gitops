@@ -40,7 +40,7 @@ Install Proxmox VE 9.1 from USB key on the NVMe 1TB with ZFS (RAID0).
 
 - Hostname: `jonbonas.local`
 - IP: `192.168.1.30/24`
-- Gateway: `192.168.1.1`
+- Gateway: `192.168.1.254`
 
 Then set up SSH key access:
 

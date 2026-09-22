@@ -49,12 +49,12 @@ resource "proxmox_virtual_environment_vm" "k8s_worker" {
     ip_config {
       ipv4 {
         address = "192.168.1.${40 + count.index}/24"
-        gateway = "192.168.1.1"
+        gateway = "192.168.1.254"
       }
     }
 
     dns {
-      servers = ["192.168.1.1", "1.1.1.1"]
+      servers = ["192.168.1.254", "1.1.1.1"]
     }
 
     user_account {
