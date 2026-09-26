@@ -1,6 +1,6 @@
 dependencies:
 - name: meilisearch
   repository: https://meilisearch.github.io/meilisearch-kubernetes
-  version: 0.39.0
-digest: sha256:e2b9eff73b76e5b405f496556b6baffc4c96125f6460291ff77a52439aae2813
-generated: "2026-09-20T05:39:20.01639832Z"
+  version: 0.40.0
+digest: sha256:06a22e84026b51d020edf673cbe8b8901b858d8d3a34043cfc39d10fb2f110c3
+generated: "2026-09-26T15:12:48.818833221Z"
