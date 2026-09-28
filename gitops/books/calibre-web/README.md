@@ -42,13 +42,14 @@ Layout:
 - Traefik middleware `books-calibre-web-headers` adds `X-Scheme: https`. Calibre-Web only trusts
   `X-Scheme` / `X-Forwarded-Host` to build the absolute URLs it hands to Kobos; without it the
   device receives `http://` download links and sync silently fails.
-- Two ingresses on the same host: the web UI (`/`) sits behind the cluster `traefik-basic-auth`;
-  the Kobo API (`/kobo/`) has no auth challenge because a Kobo cannot answer one, the token in
-  the URL is the credential. Treat the token like a password. Note this is *not* what the other
-  multi-user apps here do (karakeep, immich, navidrome and jellyfin expose their own login);
-  basic-auth is the repo's pattern for admin tools with no real login. It is here as a guard
-  against the image's `admin`/`admin123` default, at the cost of friends carrying two sets of
-  credentials, and can go once the password is changed.
+- Two ingresses on the same host: the web UI (`/`) and the Kobo API (`/kobo/`). Neither carries
+  basic-auth. The UI has Calibre-Web's own login, like the other multi-user apps here (karakeep,
+  immich, navidrome, jellyfin); the Kobo API cannot have an auth challenge because a Kobo cannot
+  answer one, so the token in the URL is the credential. Treat the token like a password.
+  `traefik-basic-auth` guarded the UI for the first week, while the image's `admin`/`admin123`
+  default was still live; it was removed once the password was changed, so friends need one set
+  of credentials instead of two. Put it back by setting `ingress.webAuthMiddleware`.
+  Anonymous browsing and public registration are off, so the only thing exposed is a login page.
 - Nightly `db` tarball (sqlite `.backup` of `app.db` and `metadata.db`, 14 days), a nightly
   `rsync` mirror of the book files in `books-current/`, and a weekly `full` tarball (35 days)
   on the `calibre-web-backups` PVC on `nfs-jonbonas`. Archives are written to a temp name and
@@ -59,8 +60,14 @@ Layout:
 
 ## First-time server setup
 
-1. Log in with `admin` / `admin123` at <https://books.dixneuf19.fr>, change the password.
-2. Initial setup screen: library location `/books` (already seeded).
+Until a library is configured, **every page redirects to `/admin/dbconfig`**. Logging in and
+finding that no link goes anywhere is the expected first-run state, not a broken UI: do step 2
+before anything else.
+
+1. Log in with `admin` / `admin123` at <https://books.dixneuf19.fr>, change the password
+   (Admin > Edit Users > `admin`). Do it in the same sitting: nothing else guards the UI.
+2. Initial setup screen (`/admin/dbconfig`): library location `/books`, already seeded. Saving
+   it is what unlocks the rest of the interface.
 3. Admin > Basic Configuration > Feature Configuration:
    - Enable Uploads, allowed formats include `epub`
    - Enable Kobo sync

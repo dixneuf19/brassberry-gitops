@@ -1,7 +1,8 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "calibre-web.fullname" . -}}
 {{- $headers := printf "%s-%s-headers@kubernetescrd" .Release.Namespace $fullName -}}
-# Web UI: behind the cluster basic-auth like every other public UI
+# Web UI: Calibre-Web's own login, like the other multi-user apps here. Set
+# ingress.webAuthMiddleware to put the cluster basic-auth in front as well.
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -10,7 +11,11 @@ metadata:
     {{- include "calibre-web.labels" . | nindent 4 }}
   annotations:
     cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuer | quote }}
+    {{- if .Values.ingress.webAuthMiddleware }}
     traefik.ingress.kubernetes.io/router.middlewares: {{ printf "%s,%s" .Values.ingress.webAuthMiddleware $headers | quote }}
+    {{- else }}
+    traefik.ingress.kubernetes.io/router.middlewares: {{ $headers | quote }}
+    {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
   tls:
