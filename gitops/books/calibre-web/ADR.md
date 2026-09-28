@@ -164,10 +164,12 @@ Negative and accepted:
   When the next firmware change lands, the fix will reach master long before it reaches a
   release, which is the same bet we are making here.
 - Ingest is web upload or Calibre desktop, no drop folder.
-- The web UI sits behind the cluster-wide basic-auth (the image ships `admin`/`admin123` and
-  the Kobo API needs an unauthenticated path), so friends carry two sets of credentials until
-  that is revisited. This is the repo's pattern for admin tools, not for apps with their own
-  login (karakeep, immich, navidrome and jellyfin carry none).
+- The web UI is exposed with Calibre-Web's own login and no basic-auth, matching the other
+  multi-user apps here (karakeep, immich, navidrome and jellyfin carry none); basic-auth is the
+  repo's pattern for admin tools without a real login. It did guard the UI from deployment
+  (2026-09-20) until the `admin`/`admin123` default was replaced (2026-09-28), which is the
+  window that mattered. Re-add it with `ingress.webAuthMiddleware` if the login page itself
+  should stop being public.
 - Friends on a 2024-or-newer Kobo (Clara BW / Colour, Libra Colour, firmware 4.45+) cannot be
   served at all: those devices expect an OIDC discovery endpoint that upstream implements
   nowhere, in no release and not on master. CWA does implement
