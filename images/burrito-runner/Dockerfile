@@ -1,4 +1,4 @@
-FROM ghcr.io/padok-team/burrito:v0.14.0@sha256:d05ed41cbea6cb3b20d36ffb6df743ebe5103802fa7a10f94643d36d738a52e5
+FROM ghcr.io/padok-team/burrito:v0.14.1@sha256:69c0856e7d3c0f2caee8556826531c8252b247dfc860dc0b3e3fc918a72631dc
 
 USER root
 # Tools for the terraform/cloud local-exec scripts (tailnet-adopt.sh, public-check.sh).
