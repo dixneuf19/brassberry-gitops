@@ -5,6 +5,10 @@ navidrome:
     ND_SCANNER_SCHEDULE: "@every 15m"
     ND_PROMETHEUS_ENABLED: "false"
 
+  # SQLite must not live on NFS, and local-path pins it to this node
+  nodeSelector:
+    kubernetes.io/hostname: k8s-worker-1
+
   envFrom:
     - secretRef:
         name: navidrome-secrets
@@ -31,12 +35,15 @@ navidrome:
             - navidrome.dixneuf19.fr
 
   persistence:
-    config:
+    data:
       enabled: true
       mountPath: /data
-      storageClass: nfs-client
-      accessMode: ReadWriteMany
-      size: 1Mi
+      storageClass: local-path
+      accessMode: ReadWriteOnce
+      size: 2Gi
+      annotations:
+        # local-path reclaim is Delete: pruning this PVC destroys the data
+        argocd.argoproj.io/sync-options: Prune=false
     music:
       enabled: true
       mountPath: /music
