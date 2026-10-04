@@ -17,3 +17,22 @@ resource "tailscale_tailnet_key" "reverse_proxy" {
   recreate_if_invalid = "always"
   tags                = ["tag:brassberry"]
 }
+
+# Homelab hosts joined by hand as a user: tagging them makes the node key
+# stop expiring, like the brassberry Pis.
+data "tailscale_device" "homelab" {
+  for_each = toset(["jonbonas", "k8s-worker-1"])
+  hostname = each.key
+}
+
+resource "tailscale_device_tags" "homelab" {
+  for_each  = data.tailscale_device.homelab
+  device_id = each.value.node_id
+  tags      = ["tag:brassberry"]
+}
+
+resource "tailscale_device_key" "homelab" {
+  for_each            = data.tailscale_device.homelab
+  device_id           = each.value.node_id
+  key_expiry_disabled = true
+}
