@@ -30,7 +30,18 @@ spec:
             name: qrcode
             port:
               name: web
+  - host: qr.dixneuf19.fr
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: qrcode
+            port:
+              name: web
   tls:
   - hosts:
     - qrcode.dixneuf19.fr
+    - qr.dixneuf19.fr
     secretName: qrcode-dixneuf19-fr-tls
