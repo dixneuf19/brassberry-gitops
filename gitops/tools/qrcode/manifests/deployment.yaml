@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qrcode
+spec:
+  selector:
+    matchLabels:
+      app: qrcode
+  template:
+    metadata:
+      labels:
+        app: qrcode
+    spec:
+      containers:
+      - name: mini-qr
+        image: ghcr.io/lyqht/mini-qr:v0.32.0
+        ports:
+        - containerPort: 8080
+          name: web
+        readinessProbe:
+          httpGet:
+            path: /
+            port: web
+        resources:
+          requests:
+            cpu: 10m
+            memory: 64Mi
+          limits:
+            memory: 128Mi

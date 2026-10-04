@@ -239,6 +239,12 @@ applications:
     type: directory
     selfHeal: true
 
+  - name: qrcode
+    namespace: tools
+    path: gitops/tools/qrcode/manifests
+    type: directory
+    selfHeal: true
+
   # =============================================================================
   # Books (Calibre-Web + Kobo sync)
   # =============================================================================
