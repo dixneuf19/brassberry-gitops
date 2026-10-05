@@ -18,7 +18,7 @@ generic:
   ingress:
     enabled: false
   configmap:
-    CHAT_ID: ""
+    CHAT_ID: "-892338668"
   secrets:
     - name: vitry-auberge-bot
       key: BOT_TELEGRAM_TOKEN
