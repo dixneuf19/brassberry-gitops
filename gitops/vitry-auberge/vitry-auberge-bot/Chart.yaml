@@ -1,0 +1,9 @@
+apiVersion: v2
+name: vitry-auberge-bot
+version: 1.0.0
+description: "Chore reminder Telegram bot for the Vitry flatshare"
+dependencies:
+  - name: base-helm-chart
+    alias: generic
+    version: 0.3.2
+    repository: https://dixneuf19.github.io/helm-charts-repo/

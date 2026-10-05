@@ -1,0 +1,24 @@
+generic:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/dixneuf19/vitry-auberge-bot
+    tag: main
+  container:
+    port: 80
+    noProbes: true
+  resources:
+    limits:
+      memory: 128Mi
+    requests:
+      memory: 64Mi
+      cpu: 50m
+  service:
+    type: ClusterIP
+    port: 80
+  ingress:
+    enabled: false
+  configmap:
+    CHAT_ID: ""
+  secrets:
+    - name: vitry-auberge-bot
+      key: BOT_TELEGRAM_TOKEN
