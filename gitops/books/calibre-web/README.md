@@ -77,6 +77,11 @@ before anything else.
      `/usr/bin`). The image ships the binary as plain `kepubify`, which this snapshot accepts
      since [#3679](https://github.com/janeczku/calibre-web/issues/3679); on 0.6.27 the same
      field fails with "Kepubify binary not found"
+   - Security Settings > Session protection: **Basic**. The default, Strong, fingerprints the
+     session as first `X-Forwarded-For` address + user agent and wipes the session and the
+     remember-me cookie whenever it changes. Behind this proxy the address changes with every
+     network switch (LAN vs Oracle passthrough, mobile, IPv6 privacy addresses), so Strong logs
+     you out constantly. Changing it restarts Calibre-Web.
 4. Admin > Edit Users > `admin`: create the Kobo sync token (see below) or do it from your profile.
 
 ## Kobo setup
@@ -135,6 +140,12 @@ redo the edit the same way.
 sign-out, a "Repair your account" or a factory reset. Redo the edit in that case (the device must
 sync once with the real store again first).
 
+It can also be lost without a sign-out: after a large content change over USB (500+ files
+deleted at once, 2026-10-05) the Clara HD came back asking for its language, still signed in,
+with `Kobo eReader.conf` regenerated from defaults (99 lines instead of 276, no `api_endpoint`,
+all preferences gone). Copying the previous `Kobo eReader.conf` back while mounted restored
+everything. Back up `.kobo/` before any bulk change on the device.
+
 ## Sharing books with friends
 
 One Calibre-Web user **per Kobo**; sharing one token across two devices only syncs the first.
@@ -169,6 +180,78 @@ What to tell them before they point a device here:
 - Uploading a book already in KEPUB format skips conversion. Plain EPUBs are converted at first
   download and the KEPUB stored as an extra format.
 - Only EPUB/KEPUB sync to Kobo. PDFs never do.
+
+## Library operations
+
+How the library was bulk-loaded and the Kobo migrated on 2026-10-05, kept as a recipe. The
+server library is the source of truth; desktop Calibre is a mirror of it.
+
+**Pull the server library to desktop Calibre.** Calibre closed. Copy `metadata.db` with sqlite's
+backup API rather than a raw copy, since Calibre-Web holds it open:
+
+```bash
+kubectl -n books exec deploy/calibre-web -c calibre-web -- tar -cf - -C /books . | tar -xf - -C ~/"Calibre Library"
+kubectl -n books exec deploy/calibre-web -c calibre-web -- python3 -c \
+  "import sqlite3; a=sqlite3.connect('/books/metadata.db'); b=sqlite3.connect('/tmp/m.db'); a.backup(b)"
+kubectl -n books exec deploy/calibre-web -c calibre-web -- cat /tmp/m.db > ~/"Calibre Library/metadata.db"
+```
+
+**Bulk metadata edits.** Run against the desktop mirror with Calibre's own API (it renames folders
+and rewrites each book's `metadata.opf`), never by editing `metadata.db` with sqlite:
+`flatpak run --command=calibre-debug com.calibre_ebook.calibre script.py` with
+`cache = calibre.library.db(path).new_api`, then `cache.set_field(...)`, `cache.remove_books(...)`
+(goes to `.caltrash`), `cache.dump_metadata()`. The GUI must be closed and the flatpak cannot read
+`/tmp`, so keep scripts under `$HOME`.
+
+**Push desktop to the server.** This replaces the server library, so check first that nothing was
+uploaded through the web UI since the last pull (`select count(*), max(id) from books`). Extract
+next to the live library, then swap, so a failed transfer never leaves `/books` half-written, and
+title changes don't leave orphaned folders behind:
+
+```bash
+cd ~/"Calibre Library"
+tar --exclude=./.caltrash --owner=1000 --group=1000 -cf - . | kubectl -n books exec -i deploy/calibre-web -c calibre-web -- \
+  sh -c 'rm -rf /books/.incoming && mkdir /books/.incoming && tar -xf - -C /books/.incoming --no-same-permissions'
+# in the pod: move /books/* aside, move .incoming/* up, chown -R 1000:1000 /books
+kubectl -n books rollout restart deploy/calibre-web
+```
+
+**Move a Kobo from sideloaded files to sync.** Without this, every book shows up twice.
+
+1. Back up the whole device (`cp -a /media/$USER/KOBOeReader ~/kobo-backup-<date>/`), above all
+   `.kobo/KoboReader.sqlite` and `.kobo/Kobo/Kobo eReader.conf`.
+2. Carry reading status over before the first sync. In `/config/app.db`, `book_read_link.read_status`
+   (0 unread, 1 finished, 2 in progress) plus `kobo_reading_state`, `kobo_bookmark.progress_percent`
+   and `kobo_statistics`, one row each per book, with `last_modified` set to now so they are sent.
+   Source: `content` rows with `ContentType=6` in the Kobo DB (`ReadStatus`, `___PercentRead`,
+   `DateLastRead`, `TimeSpentReading`). Positions do not carry over: the synced KEPUB uses another
+   location format than the sideloaded EPUB.
+3. Keep "Sync only books in selected shelves" on until the device is clean, then delete the
+   sideloaded EPUBs over USB. Keep the PDFs, which sync never delivers. See "When it reverts"
+   about bulk deletes.
+4. Store books that now also exist on the server: **Archive** them on the device. "Remove
+   download" leaves them listed as cloud entries.
+5. Turn shelf-only sync off. Going from on to off needs no cleanup in Calibre-Web, so setting
+   `user.kobo_only_shelves_sync=0` is equivalent to the UI. On sync the server sent all 552
+   entitlements in about a minute, in batches of 100. Covers and files then download in the
+   background for a good while.
+
+**DRM-free Kobo store books.** Downloaded store books live in `.kobo/kepub/<ContentID>`. Those
+with no row in `content_keys` (Kobo DB) are unencrypted KEPUBs and can be added to Calibre as
+EPUB. The others are DRM-protected; kobo.com only offers them as Adobe `.acsm`.
+
+**kepubify fails on a book.** Run `kepubify -o /tmp/x/ book.epub` in the pod to see the error.
+One book had a UTF-16 `META-INF/container.xml` ("invalid UTF-8"). Rewriting that file as UTF-8
+inside the zip fixed it; keep `mimetype` as the first, stored entry. Until fixed, Calibre-Web
+serves the plain EPUB, which still reads on the device.
+
+**Reading data and StoryGraph.** For synced books the Kobo reports status, percent and reading time
+back to Calibre-Web (tables above), so `app.db` is the reading log. Calibre-Web keeps only the
+current state, so "date finished" is the last `last_modified` of a finished status. StoryGraph has
+no public API (as of 2026-10). Its only bulk import is a Goodreads-format CSV at
+`/import-goodreads`, and re-imports seem to skip books already present instead of updating them.
+Kobo's own StoryGraph link only covers Kobo store, Kobo Plus and library loans, never books served
+from here. A one-shot Goodreads CSV was built from the Kobo DB backup (152 books).
 
 ## Known limits
 
