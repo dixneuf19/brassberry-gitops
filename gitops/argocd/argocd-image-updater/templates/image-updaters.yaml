@@ -7,7 +7,7 @@
 # - Application-level overrides where needed
 ---
 # Digest-based updates for apps using generic helm chart
-# Matches: fip-*, dank-face-*, fuzzy-octo-disco, spotify-api, whats-on-fip
+# Matches: fip-*, dank-face-*, fuzzy-octo-disco, spotify-api, whats-on-fip, vitry-auberge-bot
 apiVersion: argocd-image-updater.argoproj.io/v1alpha1
 kind: ImageUpdater
 metadata:
@@ -28,6 +28,15 @@ spec:
       images:
         - alias: "whats-on-fip"
           imageName: "ghcr.io/dixneuf19/whats-on-fip:main"
+          manifestTargets:
+            helm:
+              name: "generic.image.name"
+              tag: "generic.image.tag"
+    # vitry-auberge namespace apps
+    - namePattern: "vitry-auberge-bot"
+      images:
+        - alias: "vitry-auberge-bot"
+          imageName: "ghcr.io/dixneuf19/vitry-auberge-bot:main"
           manifestTargets:
             helm:
               name: "generic.image.name"

@@ -41,6 +41,13 @@ applications:
     path: gitops/fip/whats-on-fip
 
   # =============================================================================
+  # Vitry flatshare apps
+  # =============================================================================
+  - name: vitry-auberge-bot
+    namespace: vitry-auberge
+    path: gitops/vitry-auberge/vitry-auberge-bot
+
+  # =============================================================================
   # Dank Face Bot apps
   # =============================================================================
   - name: dank-face-bot
