@@ -1,0 +1,8 @@
+helm:
+  parameters:
+  - name: generic.image.name
+    value: ghcr.io/dixneuf19/vitry-auberge-bot
+    forcestring: true
+  - name: generic.image.tag
+    value: main@sha256:922587c5ac21207bf51acff00ec3a765b03f1cb08f0c03480a87e9675bce173e
+    forcestring: true
