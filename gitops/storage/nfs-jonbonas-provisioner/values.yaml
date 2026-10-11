@@ -9,7 +9,7 @@ nfs-jonbonas-provisioner:
   storageClass:
     create: true
     name: nfs-jonbonas
-    defaultClass: false
+    defaultClass: true
     allowVolumeExpansion: true
     reclaimPolicy: Retain
     archiveOnDelete: true
