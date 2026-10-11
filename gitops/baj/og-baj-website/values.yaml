@@ -8,8 +8,8 @@ mysql:
 
   primary:
     persistence:
-      storageClass: "nfs-client"
-      size: 1Mi # ignored for nfs-client
+      storageClass: "nfs-jonbonas"
+      size: 1Mi # ignored for nfs-jonbonas
     resources:
       requests:
         memory: 512Mi
