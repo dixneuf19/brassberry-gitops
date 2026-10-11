@@ -2,8 +2,11 @@ traefik:
   providers:
     kubernetesIngress:
       enabled: true
+      # the Service is a NodePort behind the Oracle VM, so it has no LB status to publish
       publishedService:
-        enabled: true
+        enabled: false
+      ingressEndpoint:
+        hostname: brassberry.dixneuf19.fr
     kubernetesCRD:
       enabled: true
       allowCrossNamespace: true
