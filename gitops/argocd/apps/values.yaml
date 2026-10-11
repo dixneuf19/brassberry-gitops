@@ -177,6 +177,14 @@ applications:
     type: directory
     syncOptions:
       - ServerSideApply=true
+    # cert-manager normalizes the barman-cloud chart's durations (2160h -> 2160h0m0s)
+    ignoreDifferences:
+      - group: cert-manager.io
+        kind: Certificate
+        jqPathExpressions:
+          - .spec.duration
+          - .spec.renewBefore
+          - .spec.isCA
 
   - name: cnpg-image-catalogs
     namespace: cnpg-system

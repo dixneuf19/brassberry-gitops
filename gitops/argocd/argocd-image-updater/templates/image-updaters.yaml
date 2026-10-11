@@ -13,7 +13,6 @@ kind: ImageUpdater
 metadata:
   name: digest-apps-image-updater
 spec:
-  namespace: argocd
   # Global write-back config shared by all apps
   writeBackConfig:
     method: "git:secret:argocd/brassberry-gitops-creds"
@@ -82,7 +81,6 @@ kind: ImageUpdater
 metadata:
   name: semver-apps-image-updater
 spec:
-  namespace: argocd
   writeBackConfig:
     method: "git:secret:argocd/brassberry-gitops-creds"
     gitConfig:
