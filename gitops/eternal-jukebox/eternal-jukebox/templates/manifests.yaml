@@ -157,10 +157,10 @@ kind: PersistentVolumeClaim
 metadata:
   name: eternal-jukebox-data
 spec:
-  storageClassName: nfs-client
+  storageClassName: nfs-jonbonas
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Mi # ignored for nfs-client
+      storage: 1Mi # ignored for nfs-jonbonas
 ---

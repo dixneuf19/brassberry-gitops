@@ -10,4 +10,4 @@ spec:
   resources:
     requests:
       storage: 1Mi
-  storageClassName: nfs-client
+  storageClassName: nfs-jonbonas

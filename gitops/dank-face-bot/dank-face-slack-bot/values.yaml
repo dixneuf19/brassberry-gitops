@@ -48,7 +48,7 @@ generic:
     enabled: true
     pvc:
       name: dank-face-slack-oauth-credentials
-      storageClassName: nfs-client
+      storageClassName: nfs-jonbonas
       accessModes:
         - ReadWriteMany
       storageRequest: 1Mi

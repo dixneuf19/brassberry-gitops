@@ -117,7 +117,7 @@ kube-prometheus-stack:
 
     persistence:
       enabled: true
-      storageClassName: nfs-client
+      storageClassName: nfs-jonbonas
 
     ingress:
       enabled: true
