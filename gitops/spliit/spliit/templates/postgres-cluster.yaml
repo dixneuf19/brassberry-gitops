@@ -3,7 +3,7 @@ kind: Cluster
 metadata:
   name: spliit
 spec:
-  instances: 1
+  instances: 2
   enablePDB: false # only one instance, will block upgrades
   imageCatalogRef:
     apiGroup: postgresql.cnpg.io
@@ -16,7 +16,11 @@ spec:
       parameters:
         barmanObjectName: spliit-backup
   storage:
+    storageClass: local-path
     size: 10Gi
+  affinity:
+    nodeSelector:
+      kubernetes.io/hostname: k8s-worker-1
   resources:
     requests:
       memory: "256Mi"
