@@ -9,3 +9,6 @@ lyrion-music-server:
     main:
       podSpec:
         hostname: lyrion-music-server
+  persistence:
+    config:
+      storageClass: nfs-jonbonas
