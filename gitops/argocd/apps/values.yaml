@@ -248,12 +248,6 @@ applications:
     path: gitops/spliit/spliit
     selfHeal: true
 
-  - name: librespeed
-    namespace: tools
-    path: gitops/tools/librespeed/manifests
-    type: directory
-    selfHeal: true
-
   - name: qrcode
     namespace: tools
     path: gitops/tools/qrcode/manifests
