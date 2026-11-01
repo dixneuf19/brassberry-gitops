@@ -1,0 +1,57 @@
+generic:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/dixneuf19/karaoke
+    # Image updater pins main@sha256 in .argocd-source-karaoke.yaml after first sync
+    tag: main
+  container:
+    port: 8000
+    probe:
+      liveness:
+        path: /healthz
+      readiness:
+        path: /healthz
+  resources:
+    limits:
+      # yt-dlp + ffmpeg merging a 720p video
+      memory: 512Mi
+    requests:
+      memory: 128Mi
+      cpu: 100m
+  service:
+    type: ClusterIP
+    port: 80
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+    hosts:
+      - host: karaoke.dixneuf19.fr
+        paths:
+          - path: /
+    tls:
+      - hosts:
+          - karaoke.dixneuf19.fr
+        secretName: karaoke-dixneuf19-fr-tls
+  configmap:
+    KARAOKE_PUBLIC_URL: "https://karaoke.dixneuf19.fr"
+    KARAOKE_CHANNELS: "karafunfr,karafun"
+    KARAOKE_CACHE_MAX_GB: "20"
+    KARAOKE_DATA_DIR: "/data"
+  # No KARAOKE_HOST_PASSWORD: anyone reaching the site can create a room.
+  persistence:
+    enabled: true
+    pvc:
+      name: karaoke-songs
+      storageClassName: nfs-client
+      accessModes:
+        - ReadWriteMany
+      storageRequest: 1Mi # not relevant for NFS
+  volumeMounts:
+    - name: songs
+      mountPath: /data
+  volumes:
+    - name: songs
+      persistentVolumeClaim:
+        claimName: karaoke-songs
