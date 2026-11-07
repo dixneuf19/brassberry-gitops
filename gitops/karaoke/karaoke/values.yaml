@@ -57,8 +57,8 @@ generic:
   persistence:
     enabled: true
     pvc:
-      name: karaoke-songs
-      storageClassName: nfs-client
+      name: karaoke-data
+      storageClassName: nfs-jonbonas # the NAS
       accessModes:
         - ReadWriteMany
       storageRequest: 1Mi # not relevant for NFS
@@ -68,4 +68,4 @@ generic:
   volumes:
     - name: songs
       persistentVolumeClaim:
-        claimName: karaoke-songs
+        claimName: karaoke-data
