@@ -23,6 +23,9 @@ securityContext:
   capabilities:
     drop:
       - ALL
+    # s6-overlay preinit chowns /run, owned by uid 1000 since karakeep 0.34
+    add:
+      - CHOWN
   readOnlyRootFilesystem: false
   runAsNonRoot: false
   runAsUser: 0
