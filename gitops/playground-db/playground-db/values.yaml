@@ -1,0 +1,11 @@
+# Shared PostgreSQL for small playground apps (github.com/dixneuf19/playground).
+#
+# Each entry gets, in this namespace: a generated password (External Secrets
+# Password generator, created once), a login role and a database owned by it.
+# The app reads the credentials from its own namespace through a read-only
+# `kubernetes` SecretStore, allowed by the Role/RoleBinding rendered here.
+#
+# Connection from the app: host playground-rw.playground-db.svc, port 5432.
+databases:
+  - name: karaoke
+    appNamespace: karaoke

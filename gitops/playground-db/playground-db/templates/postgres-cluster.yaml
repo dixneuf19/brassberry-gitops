@@ -1,0 +1,41 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: playground
+spec:
+  # Single instance, like spliit: simple, and backed up to S3 (WAL + weekly).
+  instances: 1
+  enablePDB: false # only one instance, would block node drains
+  imageCatalogRef:
+    apiGroup: postgresql.cnpg.io
+    kind: ClusterImageCatalog
+    name: postgresql-minimal-trixie
+    major: 18
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: playground-backup
+        # "playground" holds WAL from a short-lived 2-instance cluster with
+        # another system ID: barman refuses to mix them.
+        serverName: playground-single
+  storage:
+    storageClass: local-path
+    size: 10Gi
+  affinity:
+    # local-path on k8s-worker-1's disk (/opt). Pi SD cards are too slow, and
+    # brassberry-27's magadi_3T is NTFS (initdb cannot chmod there).
+    nodeSelector:
+      kubernetes.io/hostname: k8s-worker-1
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+  # App roles and databases are declared as DatabaseRole / Database objects
+  # (templates/databases.yaml); the bootstrap database is left unused.
+  bootstrap:
+    initdb:
+      database: app
+      owner: app

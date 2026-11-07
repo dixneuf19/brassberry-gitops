@@ -1,0 +1,13 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: playground-weekly
+spec:
+  schedule: "0 30 4 * * 0"
+  immediate: true
+  backupOwnerReference: self
+  cluster:
+    name: playground
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io

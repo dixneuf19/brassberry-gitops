@@ -1,0 +1,87 @@
+{{- range .Values.databases }}
+{{- $secret := printf "%s-db-credentials" .name }}
+---
+# Generated once, never rotated: CNPG sets it on the role, the app reads it.
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: {{ .name }}-db-password
+spec:
+  length: 32
+  digits: 6
+  symbols: 0
+  noUpper: false
+  allowRepeat: true
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: {{ $secret }}
+spec:
+  refreshPolicy: CreatedOnce
+  target:
+    name: {{ $secret }}
+    template:
+      type: kubernetes.io/basic-auth
+      metadata:
+        labels:
+          cnpg.io/reload: "true"
+      data:
+        username: {{ .name | quote }}
+        password: "{{ "{{" }} .password {{ "}}" }}"
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: {{ .name }}-db-password
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: {{ .name }}
+spec:
+  cluster:
+    name: playground
+  name: {{ .name }}
+  login: true
+  passwordSecret:
+    name: {{ $secret }}
+  databaseRoleReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: {{ .name }}
+spec:
+  cluster:
+    name: playground
+  name: {{ .name }}
+  owner: {{ .name }}
+  # Removing an entry from values must never drop an app's data
+  databaseReclaimPolicy: retain
+---
+# Lets the app namespace's ExternalSecret copy these credentials, and nothing else
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ .name }}-db-credentials-reader
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: [{{ $secret | quote }}]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .name }}-db-credentials-reader
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ .name }}-db-credentials-reader
+subjects:
+  - kind: ServiceAccount
+    name: playground-db-reader
+    namespace: {{ .appNamespace }}
+{{- end }}
