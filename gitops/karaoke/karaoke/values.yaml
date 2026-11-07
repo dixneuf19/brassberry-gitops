@@ -69,7 +69,3 @@ generic:
     - name: songs
       persistentVolumeClaim:
         claimName: karaoke-songs
-  # Images are built locally for amd64 only (no arm64 emulation on the laptop),
-  # so both replicas share k8s-worker-1 until CI publishes a multi-arch image.
-  nodeSelector:
-    kubernetes.io/arch: amd64

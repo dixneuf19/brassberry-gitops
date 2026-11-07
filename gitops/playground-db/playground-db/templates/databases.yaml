@@ -1,11 +1,11 @@
-{{- range .Values.databases }}
-{{- $secret := printf "%s-db-credentials" .name }}
+{{- range $name, $db := .Values.databases }}
+{{- $secret := printf "%s-db-credentials" $name }}
 ---
 # Generated once, never rotated: CNPG sets it on the role, the app reads it.
 apiVersion: generators.external-secrets.io/v1alpha1
 kind: Password
 metadata:
-  name: {{ .name }}-db-password
+  name: {{ $name }}-db-password
 spec:
   length: 32
   digits: 6
@@ -27,23 +27,23 @@ spec:
         labels:
           cnpg.io/reload: "true"
       data:
-        username: {{ .name | quote }}
+        username: {{ $name | quote }}
         password: "{{ "{{" }} .password {{ "}}" }}"
   dataFrom:
     - sourceRef:
         generatorRef:
           apiVersion: generators.external-secrets.io/v1alpha1
           kind: Password
-          name: {{ .name }}-db-password
+          name: {{ $name }}-db-password
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: DatabaseRole
 metadata:
-  name: {{ .name }}
+  name: {{ $name }}
 spec:
   cluster:
     name: playground
-  name: {{ .name }}
+  name: {{ $name }}
   login: true
   passwordSecret:
     name: {{ $secret }}
@@ -52,12 +52,12 @@ spec:
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: {{ .name }}
+  name: {{ $name }}
 spec:
   cluster:
     name: playground
-  name: {{ .name }}
-  owner: {{ .name }}
+  name: {{ $name }}
+  owner: {{ $name }}
   # Removing an entry from values must never drop an app's data
   databaseReclaimPolicy: retain
 ---
@@ -65,7 +65,7 @@ spec:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ .name }}-db-credentials-reader
+  name: {{ $name }}-db-credentials-reader
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
@@ -75,13 +75,13 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ .name }}-db-credentials-reader
+  name: {{ $name }}-db-credentials-reader
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ .name }}-db-credentials-reader
+  name: {{ $name }}-db-credentials-reader
 subjects:
   - kind: ServiceAccount
     name: playground-db-reader
-    namespace: {{ .appNamespace }}
+    namespace: {{ $db.appNamespace }}
 {{- end }}
