@@ -1,0 +1,71 @@
+generic:
+  # State lives in Postgres (playground-db), files on NFS: replicas are
+  # interchangeable and talk to each other with LISTEN/NOTIFY.
+  replicaCount: 2
+  image:
+    repository: ghcr.io/dixneuf19/karaoke
+    # Image updater pins main@sha256 in .argocd-source-karaoke.yaml after first sync
+    tag: main
+  container:
+    port: 8000
+    probe:
+      liveness:
+        path: /healthz
+      readiness:
+        path: /readyz # also checks the database
+  resources:
+    limits:
+      # Measured: two parallel downloads (yt-dlp + deno + ffmpeg) peak around
+      # 330Mi on top of the app's ~55Mi; 512Mi got OOM-killed on NFS writes.
+      memory: 1Gi
+    requests:
+      memory: 256Mi
+      cpu: 100m
+  service:
+    type: ClusterIP
+    port: 80
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+    hosts:
+      - host: karaoke.dixneuf19.fr
+        paths:
+          - path: /
+    tls:
+      - hosts:
+          - karaoke.dixneuf19.fr
+        secretName: karaoke-dixneuf19-fr-tls
+  configmap:
+    KARAOKE_PUBLIC_URL: "https://karaoke.dixneuf19.fr"
+    KARAOKE_CHANNELS: "karafunfr,karafun"
+    KARAOKE_CACHE_MAX_GB: "20"
+    KARAOKE_DATA_DIR: "/data"
+    KARAOKE_DB_HOST: "playground-rw.playground-db.svc"
+    KARAOKE_DB_PORT: "5432"
+    KARAOKE_DB_NAME: "karaoke"
+  secrets:
+    # Copied from playground-db by templates/database-credentials.yaml
+    - name: karaoke-db
+      key: username
+      alias: KARAOKE_DB_USER
+    - name: karaoke-db
+      key: password
+      alias: KARAOKE_DB_PASSWORD
+  # No KARAOKE_HOST_PASSWORD: anyone reaching the site can create a room.
+  persistence:
+    enabled: true
+    pvc:
+      name: karaoke-songs
+      storageClassName: nfs-client
+      accessModes:
+        - ReadWriteMany
+      storageRequest: 1Mi # not relevant for NFS
+  volumeMounts:
+    - name: songs
+      mountPath: /data
+  volumes:
+    - name: songs
+      persistentVolumeClaim:
+        claimName: karaoke-songs

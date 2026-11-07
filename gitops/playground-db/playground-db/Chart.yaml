@@ -1,0 +1,4 @@
+apiVersion: v2
+name: playground-db
+version: 1.0.0
+description: "Shared CNPG cluster for playground apps: one database + role per app"

@@ -1,0 +1,10 @@
+apiVersion: v2
+name: karaoke
+version: 1.0.0
+description: "Karaoke party: a big screen hosts the room, phones join by QR code"
+home: https://github.com/dixneuf19/playground
+dependencies:
+  - name: base-helm-chart
+    alias: generic
+    version: 0.3.2
+    repository: https://dixneuf19.github.io/helm-charts-repo/

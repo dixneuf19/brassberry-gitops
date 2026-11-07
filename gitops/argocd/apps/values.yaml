@@ -231,6 +231,19 @@ applications:
     path: gitops/soundhoard/soundhoard
 
   # =============================================================================
+  # Karaoke (playground)
+  # =============================================================================
+  - name: karaoke
+    namespace: karaoke
+    path: gitops/karaoke/karaoke
+
+  # Shared CNPG cluster for playground apps (one database per app)
+  - name: playground-db
+    namespace: playground-db
+    path: gitops/playground-db/playground-db
+    prune: false # never let a sync delete the database cluster
+
+  # =============================================================================
   # Other apps
   # =============================================================================
   - name: vpa
