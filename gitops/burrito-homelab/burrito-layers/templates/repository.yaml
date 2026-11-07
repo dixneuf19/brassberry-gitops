@@ -9,6 +9,8 @@ spec:
     enabled: true
   remediationStrategy:
     autoApply: false
+  runHistoryPolicy:
+    runs: 2
   overrideRunnerSpec:
     serviceAccountName: runner-homelab
     # burrito hardcodes `terraform init -upgrade`, so plan and apply each rebuild
