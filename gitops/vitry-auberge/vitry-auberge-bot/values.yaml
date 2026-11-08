@@ -2,7 +2,7 @@ generic:
   replicaCount: 1
   image:
     repository: ghcr.io/dixneuf19/vitry-auberge-bot
-    tag: main@sha256:d71b9f570f956ee6fb08f2ffc684443fbec40f6732b8529d32ad326a81c1b0d3
+    tag: main@sha256:13954a4eb399791a77833e7702454e488286abbf8ca42e5f4b7f1039c811c58d
   container:
     port: 80
     noProbes: true
