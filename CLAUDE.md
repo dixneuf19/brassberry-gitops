@@ -92,6 +92,11 @@ Two paths from Bitwarden Secrets Manager:
 2. Add a Makefile (copy from existing app — all follow the same pattern)
 3. Add an entry in `gitops/argocd/apps/values.yaml` with name, namespace, and path
 4. If secrets are needed: create secrets in Bitwarden Secrets Manager (via `bws` CLI or web UI) and add `ExternalSecret` in templates/
+5. If the app holds data: follow the decision guide in `docs/backups/strategy.md`, add a row to the recap table in `docs/backups/README.md`, and an `apps/<app>.md` page if the data is irreplaceable
+
+### Backups
+
+`docs/backups/` is the source of truth for backup coverage. `README.md` there has the recap table (status per dataset, tool, location); `technos/` explains physical vs logical per engine; `tools/` documents each tool as configured here (CNPG barman-cloud, Karakeep CronJob, Immich dump, Scaleway buckets) and the candidates (sanoid, restic, vzdump, k0s backup); `apps/` has one page per stateful app. Update the recap row in the same PR as any backup change.
 
 ### CI/CD
 
