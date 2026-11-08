@@ -1,0 +1,40 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: bandajoe-fr
+spec:
+  secretName: bandajoe-fr-tls
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - bandajoe.fr
+    - www.bandajoe.fr
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: bandajoe-to-meteo
+spec:
+  redirectRegex:
+    regex: .*
+    replacement: https://meteo.mangococo.fr/
+    permanent: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: bandajoe
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`bandajoe.fr`) || Host(`www.bandajoe.fr`)
+      kind: Rule
+      middlewares:
+        - name: bandajoe-to-meteo
+      services:
+        - name: noop@internal
+          kind: TraefikService
+  tls:
+    secretName: bandajoe-fr-tls
