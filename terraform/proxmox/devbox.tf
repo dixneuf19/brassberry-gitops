@@ -5,8 +5,8 @@
 
 locals {
   # Release published by .github/workflows/nixos.yaml; only used when the VM is created
-  nixos_base_release = "nixos-base-0000000"
-  nixos_base_sha256  = "0000000000000000000000000000000000000000000000000000000000000000"
+  nixos_base_release = "nixos-base-e0b1df1"
+  nixos_base_sha256  = "9aaf1f6bcde330582fe8757fd475622e27aeaee0fb6d69a38a6dcd7fff0005fe"
 }
 
 resource "proxmox_virtual_environment_download_file" "nixos_base_image" {
