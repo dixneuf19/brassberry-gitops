@@ -100,3 +100,6 @@ SHA256*
 
 ### IDE ###
 .idea
+
+### Claude Code agent worktrees (claude -w) ###
+.claude/worktrees/
