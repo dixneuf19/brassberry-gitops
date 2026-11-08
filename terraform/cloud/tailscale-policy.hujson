@@ -8,10 +8,14 @@
 
 	// Define the tags which can be applied to devices and by which users.
 	"tagOwners": {
-		"tag:brassberry": ["autogroup:admin"],
+		// Carried only by the Terraform OAuth client, never by a device: it lets the
+		// client mint keys for each tag below on its own
+		"tag:terraform": ["autogroup:admin"],
 
-		// NixOS devbox; keys are minted by the Terraform OAuth client, which carries this tag
-		"tag:devbox": ["autogroup:admin"],
+		"tag:brassberry": ["autogroup:admin", "tag:terraform"],
+
+		// NixOS devbox
+		"tag:devbox": ["autogroup:admin", "tag:terraform"],
 	},
 
 	// Define access control lists for users, groups, autogroups, tags,

@@ -12,7 +12,7 @@ The tailnet policy SHALL be managed by `terraform/cloud` as `tailscale_acl`, sta
 - **THEN** the cloud apply fails and the previous policy stays in force
 
 ### Requirement: devbox has its own tag
-devbox SHALL join the tailnet as `tag:devbox`, owned by `autogroup:admin`. Only the Terraform OAuth client, which carries `tag:devbox` in its tags, SHALL mint devbox keys; no tagged device SHALL be able to apply `tag:devbox` to itself.
+devbox SHALL join the tailnet as `tag:devbox`, owned by `autogroup:admin` and `tag:terraform`. Only the Terraform OAuth client, which carries `tag:terraform` and no device does, SHALL mint devbox keys; no tagged device SHALL be able to apply `tag:devbox` to itself.
 
 #### Scenario: Tag on join
 - **WHEN** devbox joins the tailnet

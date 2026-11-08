@@ -7,7 +7,7 @@
 
 ## 2. tag:devbox (PR 2, terraform/cloud, stacked on PR 1)
 
-- [x] 2.1 Add `tag:devbox` to `tagOwners`, owned by `autogroup:admin`, and add `tag:devbox` to the Terraform OAuth client's tags in the admin console
+- [x] 2.1 Add `tag:devbox` to `tagOwners`, owned by `autogroup:admin` and `tag:terraform`; the Terraform OAuth client carries only `tag:terraform` (admin console)
 - [x] 2.2 Add the `tag:devbox -> tag:brassberry:22,6443,8006` rule
 - [x] 2.3 Add policy `tests` for admin to devbox, devbox to cluster (allowed and denied ports), and cluster to devbox
 - [x] 2.4 Add `tailscale_tailnet_key.devbox` (single use, preauthorized, `tag:devbox`) and the sensitive output `devbox_tailscale_auth_key`
