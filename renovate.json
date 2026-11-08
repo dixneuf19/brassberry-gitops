@@ -1,9 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["local>dixneuf19/renovate-presets"],
+  "timezone": "Europe/Paris",
   "nix": {
     "enabled": true,
-    "lockFileMaintenance": { "enabled": true, "schedule": ["* 0-5 * * 1"] }
+    "lockFileMaintenance": { "enabled": true, "schedule": ["* 13-18 * * 5"] }
   },
   "customManagers": [
     {
