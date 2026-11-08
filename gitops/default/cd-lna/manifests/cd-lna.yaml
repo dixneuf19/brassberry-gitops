@@ -23,6 +23,12 @@ spec:
           - "--qrcode"
           - "--verbose"
           - "/tmp"
+        resources:
+          requests:
+            cpu: 10m
+            memory: 384Mi
+          limits:
+            memory: 1Gi
         readinessProbe:
           httpGet:
             path: /__miniserve_internal/healthcheck
