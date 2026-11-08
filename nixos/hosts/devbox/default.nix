@@ -1,4 +1,6 @@
 {
+  imports = [ ./harness.nix ];
+
   networking.hostName = "devbox";
 
   services.rex.loginServer = {
