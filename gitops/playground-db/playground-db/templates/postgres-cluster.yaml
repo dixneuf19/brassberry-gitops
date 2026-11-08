@@ -30,7 +30,7 @@ spec:
   resources:
     requests:
       memory: "256Mi"
-      cpu: "250m"
+      cpu: "100m"
     limits:
       memory: "512Mi"
   # App roles and databases are declared as DatabaseRole / Database objects
