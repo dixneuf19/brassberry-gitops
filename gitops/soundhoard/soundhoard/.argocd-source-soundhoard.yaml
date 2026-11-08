@@ -4,5 +4,5 @@ helm:
     value: ghcr.io/dixneuf19/soundhoard
     forcestring: true
   - name: generic.image.tag
-    value: main@sha256:244705426048603da7bcf7930d7079e95d3aaab6b79ab03848529be1c82a7ba8
+    value: main@sha256:db1f82c72ec156ad0ba91c0d944056bfcb75a90bf8f3a252c312bdd9d7993686
     forcestring: true
