@@ -134,10 +134,8 @@ applications:
 
   - name: metallb
     namespace: default
-    path: gitops/metallb-system/metallb/
+    path: gitops/metallb-system/metallb/manifests
     type: directory
-    directory:
-      recurse: true
     createNamespace: false
     syncOptions:
       - ServerSideApply=true
