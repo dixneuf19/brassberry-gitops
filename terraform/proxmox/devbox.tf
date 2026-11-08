@@ -43,8 +43,9 @@ resource "proxmox_virtual_environment_vm" "devbox" {
   node_name = var.proxmox_node
   vm_id     = 210
 
-  machine = "q35"
-  bios    = "ovmf"
+  machine       = "q35"
+  bios          = "ovmf"
+  scsi_hardware = "virtio-scsi-single"
 
   cpu {
     cores = 4
@@ -58,9 +59,11 @@ resource "proxmox_virtual_environment_vm" "devbox" {
   disk {
     datastore_id = proxmox_storage_zfspool.fastpool.id
     file_id      = proxmox_virtual_environment_download_file.nixos_base_image.id
-    interface    = "virtio0"
+    interface    = "scsi0"
     size         = 64
     discard      = "on"
+    iothread     = true
+    ssd          = true
   }
 
   efi_disk {
