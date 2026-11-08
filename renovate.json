@@ -1,6 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["local>dixneuf19/renovate-presets"],
+  "timezone": "Europe/Paris",
+  "nix": {
+    "enabled": true,
+    "lockFileMaintenance": { "enabled": true, "schedule": ["* 13-18 * * 5"] }
+  },
   "customManagers": [
     {
       "customType": "regex",
@@ -47,6 +52,12 @@
       "matchPackageNames": ["ghcr.io/dixneuf19/**"],
       "matchCurrentValue": "/^(main|master)$/",
       "enabled": false
+    },
+    {
+      "description": "devbox applies main within 15 minutes, so every nixos/ bump (lock refresh or nixpkgs branch) is reviewed by hand",
+      "matchManagers": ["nix"],
+      "groupName": "nixos",
+      "automerge": false
     }
   ]
 }

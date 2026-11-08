@@ -1,0 +1,80 @@
+name: NixOS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - nixos/**
+      - .github/workflows/nixos.yaml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - nixos/**
+      - .github/workflows/nixos.yaml
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: nixos
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+
+      - name: Check formatting
+        run: git ls-files -z '*.nix' | xargs -0 nix fmt -- --check
+
+      - name: Check the flake
+        run: nix flake check
+
+      # main is what devbox pulls, so it must always hold a config that builds
+      - name: Build devbox
+        run: nix build --print-build-logs .#nixosConfigurations.devbox.config.system.build.toplevel
+
+  base-image:
+    needs: check
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 2
+
+      - name: Check whether the base image inputs changed
+        id: changed
+        run: |
+          if [ "${{ github.event_name }}" = workflow_dispatch ] \
+            || git diff --name-only HEAD~1 HEAD -- nixos/modules nixos/flake.nix nixos/flake.lock | grep -q .; then
+            echo "build=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        if: steps.changed.outputs.build == 'true'
+
+      - name: Build the base image
+        if: steps.changed.outputs.build == 'true'
+        working-directory: nixos
+        run: |
+          nix build --print-build-logs .#base-image
+          zstd -19 -T0 -o nixos-base.qcow2.zst result/*.qcow2
+          sha256sum nixos-base.qcow2.zst > nixos-base.qcow2.zst.sha256
+          ls -lh nixos-base.qcow2.zst
+
+      - name: Publish the release
+        if: steps.changed.outputs.build == 'true'
+        working-directory: nixos
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="nixos-base-${GITHUB_SHA::7}"
+          gh release create "$tag" nixos-base.qcow2.zst nixos-base.qcow2.zst.sha256 \
+            --title "$tag" --notes "NixOS base image built from ${GITHUB_SHA}" --target "$GITHUB_SHA"
