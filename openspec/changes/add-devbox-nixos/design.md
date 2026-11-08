@@ -43,11 +43,11 @@ Alternatives: nixos-infect turns a running Ubuntu into NixOS on first boot. It i
 Cloud-init sets the hostname, the static IP and the Tailscale key file. Terraform stays the source of truth for VM addresses, as for `k8s-worker-1`. Users, SSH keys, services and packages live in Nix. My public SSH key goes in `base.nix`, because public keys are fine in git and that makes them declarative.
 
 ### New `tag:devbox` instead of `tag:brassberry`
-The existing policy uses `acls`, not `grants`, so devbox rules follow that style. A tagged node's traffic is governed by its tag, not by the user logged into it. With `tag:brassberry`, devbox would be fully meshed with the cluster in both directions. `tag:devbox` gets exactly the grants below. `tag:devbox` is owned by `autogroup:admin`, like `tag:brassberry`, and the Terraform OAuth client gets `tag:devbox` in its tags. Only the holder of the client secret (Burrito's runner pod, and my direnv) can mint devbox keys. Making `tag:brassberry` the owner instead would let any cluster node retag itself `tag:devbox`, which trusts devices rather than the secret.
+The existing policy uses `acls`, not `grants`, so devbox rules follow that style. A tagged node's traffic is governed by its tag, not by the user logged into it. With `tag:brassberry`, devbox would be fully meshed with the cluster in both directions. `tag:devbox` gets exactly the grants below. `tag:devbox` is owned by `autogroup:admin`, like `tag:brassberry`, and by `tag:terraform`, a tag only the Terraform OAuth client carries and no device does. A client can only mint keys with exactly its own tags or tags they own, so carrying `tag:terraform` lets it mint `tag:brassberry` and `tag:devbox` keys separately. Only the holder of the client secret (Burrito's runner pod, and my direnv) can mint devbox keys. Making `tag:brassberry` the owner instead would let any cluster node retag itself `tag:devbox`, which trusts devices rather than the secret.
 
 ```jsonc
 "tagOwners": {
-  "tag:devbox": ["autogroup:admin"],
+  "tag:devbox": ["autogroup:admin", "tag:terraform"],
 },
 "acls": [
   // group:admin -> *:* already covers devbox:7297 (Rex) and devbox:22
