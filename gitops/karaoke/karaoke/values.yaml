@@ -5,7 +5,7 @@ generic:
   image:
     repository: ghcr.io/dixneuf19/karaoke
     # Image updater pins main@sha256 in .argocd-source-karaoke.yaml after first sync
-    tag: main
+    tag: main@sha256:839ebf085f0af21b111041dd3ae551f494e5b83ac9f83a2acce3ee31d7d1070c
   container:
     port: 8000
     probe:
