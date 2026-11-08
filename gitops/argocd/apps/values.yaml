@@ -136,7 +136,11 @@ applications:
     namespace: default
     path: gitops/metallb-system/metallb/
     type: directory
+    directory:
+      recurse: true
     createNamespace: false
+    syncOptions:
+      - ServerSideApply=true
 
   - name: external-secrets
     namespace: external-secrets
