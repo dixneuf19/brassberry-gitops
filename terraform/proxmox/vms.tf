@@ -84,3 +84,77 @@ resource "proxmox_virtual_environment_vm" "k8s_worker" {
     ]
   }
 }
+
+# =============================================
+# Rex login server VM
+# =============================================
+
+resource "proxmox_virtual_environment_vm" "rex" {
+  name      = "rex"
+  node_name = var.proxmox_node
+  vm_id     = 210
+
+  machine = "q35"
+  bios    = "ovmf"
+
+  cpu {
+    cores = 4
+    type  = "host"
+  }
+
+  memory {
+    dedicated = 8192
+  }
+
+  disk {
+    datastore_id = proxmox_storage_zfspool.fastpool.id
+    file_id      = proxmox_virtual_environment_download_file.ubuntu_cloud_image.id
+    interface    = "virtio0"
+    size         = 64
+    discard      = "on"
+  }
+
+  efi_disk {
+    datastore_id = proxmox_storage_zfspool.fastpool.id
+  }
+
+  network_device {
+    bridge = "vmbr0"
+    model  = "virtio"
+  }
+
+  initialization {
+    datastore_id = proxmox_storage_zfspool.fastpool.id
+    ip_config {
+      ipv4 {
+        address = "192.168.1.50/24"
+        gateway = "192.168.1.254"
+      }
+    }
+
+    dns {
+      servers = ["192.168.1.254", "1.1.1.1"]
+    }
+
+    user_account {
+      username = var.vm_user
+      keys     = [var.ssh_public_key]
+    }
+
+    vendor_data_file_id = proxmox_virtual_environment_file.k8s_worker_cloud_config.id
+  }
+
+  agent {
+    enabled = true
+  }
+
+  on_boot = true
+  started = true
+
+  lifecycle {
+    ignore_changes = [
+      started,
+      disk[0].file_id, # Image ID changes on re-download, don't recreate VM
+    ]
+  }
+}

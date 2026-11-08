@@ -30,6 +30,12 @@ proxmox_workers:
     k8s-worker-1:
       is_raspberry: false
 
+rex_servers:
+  hosts:
+    rex:
+      ansible_host: 192.168.1.50
+      is_raspberry: false
+
 proxmox:
   hosts:
     jonbonas:

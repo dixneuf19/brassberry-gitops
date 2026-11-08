@@ -1,0 +1,80 @@
+#################################################
+# Rex login server, reached over Tailscale Serve
+# https://www.superlogical.com/rex/docs/linux/login-server
+# Run playbooks/tailscale.yaml on the host first
+#################################################
+---
+- hosts: rex_servers
+  become: true
+  vars:
+    rex_tailscale_login: dixneuf19@github
+  tasks:
+    - name: Download Rex install script
+      get_url:
+        url: https://pkgs.superlogical.com/rex/install.sh
+        dest: /tmp/rex-install.sh
+        mode: "0755"
+
+    - name: Install Rex from its apt repository
+      command: sh /tmp/rex-install.sh
+      args:
+        creates: /usr/bin/rex
+
+    - name: Write Rex accounts file
+      copy:
+        dest: /etc/rex/accounts.jsonc
+        mode: "0644"
+        content: |
+          {
+            "version": 1,
+            "accounts": {
+              "dixneuf19": { "principals": ["tailscale:{{ rex_tailscale_login }}"] },
+              "root": { "principals": ["tailscale:{{ rex_tailscale_login }}"] },
+            },
+            "defaults": { "tailscale:{{ rex_tailscale_login }}": "dixneuf19" },
+          }
+      notify: Reload rex-login-server
+
+    - name: Create rex-login-server drop-in directory
+      file:
+        path: /etc/systemd/system/rex-login-server.service.d
+        state: directory
+        mode: "0755"
+
+    - name: Add Tailscale Serve socket to rex-login-server
+      copy:
+        dest: /etc/systemd/system/rex-login-server.service.d/override.conf
+        mode: "0644"
+        content: |
+          [Unit]
+          After=tailscaled.service
+          Requires=tailscaled.service
+
+          [Service]
+          ExecStart=
+          ExecStart=/usr/bin/rex login-server --listen unix:///run/rex/login-server.sock \
+            --accounts /etc/rex/accounts.jsonc --runtime-root /run/rex --log-format text \
+            --pam-service rex-login-server --extra-listen tailnet-serve:///run/rex/serve.sock
+      register: rex_dropin
+
+    - name: Enable rex-login-server
+      systemd:
+        name: rex-login-server.service
+        enabled: true
+        state: "{{ 'restarted' if rex_dropin.changed else 'started' }}"
+        daemon_reload: "{{ rex_dropin.changed }}"
+
+    - name: Read Tailscale Serve config
+      command: tailscale serve status --json
+      register: serve_status
+      changed_when: false
+
+    - name: Point Tailscale Serve at Rex
+      command: tailscale serve --bg --https=443 unix:/run/rex/serve.sock
+      when: "'/run/rex/serve.sock' not in serve_status.stdout"
+
+  handlers:
+    - name: Reload rex-login-server
+      systemd:
+        name: rex-login-server.service
+        state: reloaded

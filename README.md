@@ -37,6 +37,7 @@ Monorepo for my homelab infrastructure: from bare-metal provisioning to GitOps-m
 │                        #   cluster-* (kernel-modules, upgrade, nfs-server)
 │                        #   proxmox-* (bootstrap, zfs, nfs, grub-aspm, node-exporter)
 │                        #   pi-* (jellyfin, mounts)
+│                        #   rex-server (Rex login server VM)
 │
 ├── cluster/             # k8s cluster config
 │   └── k0sctl.yaml      # k0s cluster config
