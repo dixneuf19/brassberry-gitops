@@ -9,6 +9,9 @@
 	// Define the tags which can be applied to devices and by which users.
 	"tagOwners": {
 		"tag:brassberry": ["autogroup:admin"],
+
+		// NixOS devbox; owned by tag:brassberry so the Terraform OAuth client can mint its key
+		"tag:devbox": ["tag:brassberry"],
 	},
 
 	// Define access control lists for users, groups, autogroups, tags,
@@ -28,6 +31,12 @@
 			"action": "accept",
 			"src":    ["tag:brassberry"],
 			"dst":    ["tag:brassberry:*"],
+		},
+		// devbox -> homelab admin paths: ssh, k0s API, Proxmox UI
+		{
+			"action": "accept",
+			"src":    ["tag:devbox"],
+			"dst":    ["tag:brassberry:22,6443,8006"],
 		},
 	],
 
@@ -51,11 +60,19 @@
 	],
 
 	// Test access rules every time they're saved.
-	// "tests": [
-	//   {
-	//       "src": "alice@example.com",
-	//       "accept": ["tag:example"],
-	//       "deny": ["100.101.102.103:443"],
-	//   },
-	// ],
+	"tests": [
+		{
+			"src":    "dixneuf19@github",
+			"accept": ["tag:devbox:7297", "tag:devbox:22"],
+		},
+		{
+			"src":    "tag:devbox",
+			"accept": ["tag:brassberry:22", "tag:brassberry:6443", "tag:brassberry:8006"],
+			"deny":   ["tag:brassberry:80", "tag:brassberry:443"],
+		},
+		{
+			"src":  "tag:brassberry",
+			"deny": ["tag:devbox:22", "tag:devbox:7297"],
+		},
+	],
 }

@@ -50,17 +50,17 @@ The existing policy uses `acls`, not `grants`, so devbox rules follow that style
   "tag:devbox": ["tag:brassberry"],
 },
 "acls": [
-  // group:admin -> *:* already covers devbox:443 and devbox:22
+  // group:admin -> *:* already covers devbox:7297 (Rex) and devbox:22
   { "action": "accept", "src": ["tag:devbox"], "dst": ["tag:brassberry:22,6443,8006"] },
 ],
 "tests": [
-  { "src": "dixneuf19@github", "accept": ["tag:devbox:443", "tag:devbox:22"] },
+  { "src": "dixneuf19@github", "accept": ["tag:devbox:7297", "tag:devbox:22"] },
   { "src": "tag:devbox", "accept": ["tag:brassberry:22", "tag:brassberry:6443"], "deny": ["tag:brassberry:80"] },
-  { "src": "tag:brassberry", "deny": ["tag:devbox:22", "tag:devbox:443"] },
+  { "src": "tag:brassberry", "deny": ["tag:devbox:22", "tag:devbox:7297"] },
 ],
 ```
 
-Rex identifies callers through Tailscale Serve, which only identifies user-owned devices. A tagged node cannot log in to Rex even if a grant let it reach port 443.
+Rex identifies callers through Tailscale Serve, which only identifies user-owned devices. A tagged node cannot log in to Rex even if a grant let it reach port 7297.
 
 ### Policy as code in `terraform/cloud`
 `tailscale_acl` lives next to the existing Tailscale provider. Phase 1 imports the console policy unchanged (`import { id = "acl" }`), and later changes are reviewed diffs. Burrito auto-applies the cloud layer, so the policy `tests` act as the safety net: Tailscale rejects a policy whose tests fail.

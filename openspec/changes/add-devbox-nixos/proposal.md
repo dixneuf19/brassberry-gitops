@@ -6,9 +6,9 @@ I want a Rex server in the homelab that my devices reach over the tailnet, with 
 
 - New NixOS VM `devbox` on jonbonas (Proxmox VM 210, `192.168.1.50`), created by `terraform/proxmox` from a NixOS base image built in GitHub Actions.
 - New `nixos/` flake holding a shared base module and the `devbox` host config. devbox pulls `main` and switches to it atomically (`system.autoUpgrade`).
-- devbox runs the Rex login server through the Rex NixOS module, reached at `https://devbox.tail960f.ts.net` through Tailscale Serve.
+- devbox runs the Rex login server through the Rex NixOS module, reached at `https://devbox.tail960f.ts.net:7297` through Tailscale Serve.
 - The Tailscale policy moves from the admin console into `terraform/cloud` (`tailscale_acl`), imported unchanged first, with policy tests.
-- New `tag:devbox`, with grants: me to devbox on 443 and 22; devbox to cluster nodes on 22, 6443 and 8006; nothing from the cluster to devbox.
+- New `tag:devbox`, with grants: me to devbox on 7297 (Rex) and 22; devbox to cluster nodes on 22, 6443 and 8006; nothing from the cluster to devbox.
 - `terraform/cloud` mints the devbox Tailscale auth key, and `terraform/proxmox` reads it through remote state.
 - New GitHub Actions workflow builds the flake on PRs and publishes the base image on `main`.
 - Renovate bumps `nixos/flake.lock`.
