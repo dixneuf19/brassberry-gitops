@@ -26,3 +26,19 @@ import {
   to = tailscale_acl.this
   id = "acl"
 }
+
+# Single use: spent when devbox first joins, read by terraform/proxmox via remote state
+resource "tailscale_tailnet_key" "devbox" {
+  description         = "devbox first boot - managed by terraform"
+  reusable            = false
+  preauthorized       = true
+  recreate_if_invalid = "always"
+  tags                = ["tag:devbox"]
+
+  depends_on = [tailscale_acl.this]
+}
+
+output "devbox_tailscale_auth_key" {
+  value     = tailscale_tailnet_key.devbox.key
+  sensitive = true
+}

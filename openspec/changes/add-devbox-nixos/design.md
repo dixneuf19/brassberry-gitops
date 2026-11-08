@@ -43,24 +43,24 @@ Alternatives: nixos-infect turns a running Ubuntu into NixOS on first boot. It i
 Cloud-init sets the hostname, the static IP and the Tailscale key file. Terraform stays the source of truth for VM addresses, as for `k8s-worker-1`. Users, SSH keys, services and packages live in Nix. My public SSH key goes in `base.nix`, because public keys are fine in git and that makes them declarative.
 
 ### New `tag:devbox` instead of `tag:brassberry`
-The existing policy uses `acls`, not `grants`, so devbox rules follow that style. A tagged node's traffic is governed by its tag, not by the user logged into it. With `tag:brassberry`, devbox would be fully meshed with the cluster in both directions. `tag:devbox` gets exactly the grants below. `tagOwners` makes `tag:brassberry` the owner of `tag:devbox`, the pattern the Tailscale Kubernetes operator uses, so the existing OAuth client can mint devbox keys without a new client.
+The existing policy uses `acls`, not `grants`, so devbox rules follow that style. A tagged node's traffic is governed by its tag, not by the user logged into it. With `tag:brassberry`, devbox would be fully meshed with the cluster in both directions. `tag:devbox` gets exactly the grants below. `tag:devbox` is owned by `autogroup:admin`, like `tag:brassberry`, and the Terraform OAuth client gets `tag:devbox` in its tags. Only the holder of the client secret (Burrito's runner pod, and my direnv) can mint devbox keys. Making `tag:brassberry` the owner instead would let any cluster node retag itself `tag:devbox`, which trusts devices rather than the secret.
 
 ```jsonc
 "tagOwners": {
-  "tag:devbox": ["tag:brassberry"],
+  "tag:devbox": ["autogroup:admin"],
 },
 "acls": [
-  // group:admin -> *:* already covers devbox:443 and devbox:22
+  // group:admin -> *:* already covers devbox:7297 (Rex) and devbox:22
   { "action": "accept", "src": ["tag:devbox"], "dst": ["tag:brassberry:22,6443,8006"] },
 ],
 "tests": [
-  { "src": "dixneuf19@github", "accept": ["tag:devbox:443", "tag:devbox:22"] },
+  { "src": "dixneuf19@github", "accept": ["tag:devbox:7297", "tag:devbox:22"] },
   { "src": "tag:devbox", "accept": ["tag:brassberry:22", "tag:brassberry:6443"], "deny": ["tag:brassberry:80"] },
-  { "src": "tag:brassberry", "deny": ["tag:devbox:22", "tag:devbox:443"] },
+  { "src": "tag:brassberry", "deny": ["tag:devbox:22", "tag:devbox:7297"] },
 ],
 ```
 
-Rex identifies callers through Tailscale Serve, which only identifies user-owned devices. A tagged node cannot log in to Rex even if a grant let it reach port 443.
+Rex identifies callers through Tailscale Serve, which only identifies user-owned devices. A tagged node cannot log in to Rex even if a grant let it reach port 7297.
 
 ### Policy as code in `terraform/cloud`
 `tailscale_acl` lives next to the existing Tailscale provider. Phase 1 imports the console policy unchanged (`import { id = "acl" }`), and later changes are reviewed diffs. Burrito auto-applies the cloud layer, so the policy `tests` act as the safety net: Tailscale rejects a policy whose tests fail.

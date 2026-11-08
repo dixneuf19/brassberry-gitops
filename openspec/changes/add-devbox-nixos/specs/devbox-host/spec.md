@@ -34,14 +34,14 @@ devbox SHALL keep at least 10 previous generations, selectable with `nixos-rebui
 - **THEN** I can return to the previous generation over LAN SSH or from the Proxmox console
 
 ### Requirement: Rex login server
-devbox SHALL run the Rex login server from the Rex `preview` channel, reachable at `https://devbox.tail960f.ts.net` through Tailscale Serve, mapping `tailscale:dixneuf19@github` to account `dixneuf19` by default and to `root` on request.
+devbox SHALL run the Rex login server from the Rex `preview` channel, reachable at `https://devbox.tail960f.ts.net:7297` through Tailscale Serve (the module default port, which leaves 443 free for future web services), mapping `tailscale:dixneuf19@github` to account `dixneuf19` by default and to `root` on request.
 
 #### Scenario: Default account
 - **WHEN** I run `rex -S devbox ls` from my Mac
 - **THEN** the connection is served by a Rex server running as `dixneuf19`
 
 #### Scenario: Root account
-- **WHEN** I connect to `https://root@devbox.tail960f.ts.net`
+- **WHEN** I connect to `https://root@devbox.tail960f.ts.net:7297`
 - **THEN** the connection is served by a Rex server running as `root`
 
 #### Scenario: Unknown caller

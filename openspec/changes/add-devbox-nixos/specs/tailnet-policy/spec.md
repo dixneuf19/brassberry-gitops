@@ -12,17 +12,17 @@ The tailnet policy SHALL be managed by `terraform/cloud` as `tailscale_acl`, sta
 - **THEN** the cloud apply fails and the previous policy stays in force
 
 ### Requirement: devbox has its own tag
-devbox SHALL join the tailnet as `tag:devbox`, owned by `tag:brassberry` so the existing Terraform OAuth client can mint its keys.
+devbox SHALL join the tailnet as `tag:devbox`, owned by `autogroup:admin`. Only the Terraform OAuth client, which carries `tag:devbox` in its tags, SHALL mint devbox keys; no tagged device SHALL be able to apply `tag:devbox` to itself.
 
 #### Scenario: Tag on join
 - **WHEN** devbox joins the tailnet
 - **THEN** `tailscale status` lists it as `devbox` tagged `tag:devbox`, with no key expiry
 
 ### Requirement: devbox grants
-The policy SHALL allow `group:admin` to reach `tag:devbox` on TCP 443 and 22, allow `tag:devbox` to reach `tag:brassberry` on TCP 22, 6443 and 8006, and allow nothing else to or from `tag:devbox` inside the tailnet. The policy `tests` SHALL assert these grants.
+The policy SHALL allow `group:admin` to reach `tag:devbox` on TCP 7297 (Rex) and 22, allow `tag:devbox` to reach `tag:brassberry` on TCP 22, 6443 and 8006, and allow nothing else to or from `tag:devbox` inside the tailnet. The policy `tests` SHALL assert these grants.
 
 #### Scenario: Admin reaches devbox
-- **WHEN** a device of `dixneuf19@github` connects to devbox on 443 or 22
+- **WHEN** a device of `dixneuf19@github` connects to devbox on 7297 or 22
 - **THEN** the connection is allowed
 
 #### Scenario: devbox reaches cluster admin ports
