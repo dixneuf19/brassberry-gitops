@@ -3,6 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+    # Only for fast-moving agent CLIs; the system itself stays on stable
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     rex = {
       url = "https://pkgs.superlogical.com/rex/nix/preview.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -13,14 +15,20 @@
     {
       self,
       nixpkgs,
+      nixpkgs-unstable,
       rex,
     }:
     let
       system = "x86_64-linux";
+      pkgsUnstable = import nixpkgs-unstable {
+        inherit system;
+        config.allowUnfreePredicate = pkg: nixpkgs.lib.getName pkg == "claude-code";
+      };
       mkHost =
         modules:
         nixpkgs.lib.nixosSystem {
           inherit system;
+          specialArgs = { inherit pkgsUnstable; };
           modules = [ ./modules/base.nix ] ++ modules;
         };
     in
