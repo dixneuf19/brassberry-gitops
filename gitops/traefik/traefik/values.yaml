@@ -11,28 +11,7 @@ traefik:
       enabled: true
       allowCrossNamespace: true
     kubernetesGateway:
-      enabled: true
-
-  gateway:
-    listeners:
-      bandajoe:
-        port: 8443
-        protocol: HTTPS
-        hostname: bandajoe.fr
-        namespacePolicy: &redirects
-          from: Selector
-          selector:
-            matchLabels:
-              kubernetes.io/metadata.name: redirects
-        certificateRefs: &bandajoe-cert
-          - name: bandajoe-fr-tls
-            namespace: redirects
-      bandajoe-www:
-        port: 8443
-        protocol: HTTPS
-        hostname: www.bandajoe.fr
-        namespacePolicy: *redirects
-        certificateRefs: *bandajoe-cert
+      enabled: false # Phase B: Gateway API migration
 
   service:
     spec:

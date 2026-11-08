@@ -11,42 +11,30 @@ spec:
     - bandajoe.fr
     - www.bandajoe.fr
 ---
-apiVersion: gateway.networking.k8s.io/v1beta1
-kind: ReferenceGrant
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
 metadata:
-  name: traefik-gateway-certs
+  name: bandajoe-to-meteo
 spec:
-  from:
-    - group: gateway.networking.k8s.io
-      kind: Gateway
-      namespace: traefik
-  to:
-    - group: ""
-      kind: Secret
-      name: bandajoe-fr-tls
+  redirectRegex:
+    regex: .*
+    replacement: https://meteo.mangococo.fr/
+    permanent: false
 ---
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
 metadata:
   name: bandajoe
 spec:
-  parentRefs:
-    - name: traefik-gateway
-      namespace: traefik
-      sectionName: bandajoe
-    - name: traefik-gateway
-      namespace: traefik
-      sectionName: bandajoe-www
-  hostnames:
-    - bandajoe.fr
-    - www.bandajoe.fr
-  rules:
-    - filters:
-        - type: RequestRedirect
-          requestRedirect:
-            scheme: https
-            hostname: meteo.mangococo.fr
-            path:
-              type: ReplaceFullPath
-              replaceFullPath: /
-            statusCode: 302
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`bandajoe.fr`) || Host(`www.bandajoe.fr`)
+      kind: Rule
+      middlewares:
+        - name: bandajoe-to-meteo
+      services:
+        - name: noop@internal
+          kind: TraefikService
+  tls:
+    secretName: bandajoe-fr-tls
