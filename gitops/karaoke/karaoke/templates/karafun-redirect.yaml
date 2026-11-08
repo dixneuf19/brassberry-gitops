@@ -1,0 +1,39 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: karafun-dixneuf19-fr
+spec:
+  secretName: karafun-dixneuf19-fr-tls
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - karafun.dixneuf19.fr
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: karafun-to-karaoke
+spec:
+  redirectRegex:
+    regex: ^https?://karafun\.dixneuf19\.fr/(.*)
+    replacement: https://karaoke.dixneuf19.fr/${1}
+    permanent: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: karafun
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`karafun.dixneuf19.fr`)
+      kind: Rule
+      middlewares:
+        - name: karafun-to-karaoke
+      services:
+        - name: noop@internal
+          kind: TraefikService
+  tls:
+    secretName: karafun-dixneuf19-fr-tls
