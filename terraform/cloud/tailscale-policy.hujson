@@ -1,0 +1,92 @@
+// Example/default ACLs for unrestricted connections.
+{
+	// Declare static groups of users. Use autogroups for all users or users with a specific role.
+	"groups": {
+		// redondant with autogroup:admin
+		"group:admin": ["dixneuf19@github"],
+
+		"group:kubernetes-users": ["dixneuf19@github"],
+	},
+
+	// Define the tags which can be applied to devices and by which users.
+	"tagOwners": {
+		"tag:vm":           ["autogroup:admin"],
+		"tag:brassberry":   ["autogroup:admin"],
+		"tag:raspotify":    ["autogroup:admin"],
+		"tag:k8s-operator": [],
+		"tag:k8s":          ["tag:k8s-operator"],
+
+		// NAS VM
+		"tag:nas-vm": [],
+	},
+
+	// Define access control lists for users, groups, autogroups, tags,
+	// Tailscale IP addresses, and subnet ranges.
+	"acls": [
+		// Allow all connections.
+		// Comment this section out if you want to define specific restrictions.
+		// {"action": "accept", "src": ["*"], "dst": ["*:*"]},
+		// admin (my computer, but it may changed if i am on the go) has all rights
+		{
+			"action": "accept",
+			"src":    ["group:admin"],
+			"dst":    ["*:*"],
+		},
+		// machine of my cluster may contact themselves
+		{
+			"action": "accept",
+			"src":    ["tag:brassberry"],
+			"dst":    ["tag:brassberry:*"],
+		},
+		// VM to itself and funnel
+		{
+			"action": "accept",
+			"src":    ["tag:vm"],
+			"dst":    ["tag:vm:*", "tag:k8s:*"],
+		},
+		// Kubernetes users
+		{
+			"action": "accept",
+			"src":    ["tag:vm", "group:kubernetes-users"],
+			"dst":    ["tag:k8s-operator:*"],
+		},
+	],
+
+	// Define users and devices that can use Tailscale SSH.
+	"ssh": [
+		// Allow all users to SSH into their own devices in check mode.
+		// Comment this section out if you want to define specific restrictions.
+		{
+			"action": "check",
+			"src":    ["autogroup:member"],
+			"dst":    ["autogroup:self"],
+			"users":  ["autogroup:nonroot", "root"],
+		},
+		{
+			"src":         ["autogroup:admin"],
+			"dst":         ["autogroup:tagged"],
+			"users":       ["autogroup:nonroot", "root"],
+			"action":      "check",
+			"checkPeriod": "168h0m0s",
+		},
+	],
+
+	// Test access rules every time they're saved.
+	// "tests": [
+	//   {
+	//       "src": "alice@example.com",
+	//       "accept": ["tag:example"],
+	//       "deny": ["100.101.102.103:443"],
+	//   },
+	// ],
+	"nodeAttrs": [
+		{
+			"target": ["tag:vm"],
+			"attr":   ["funnel"],
+		},
+		{
+			"target": ["100.125.117.14"],
+			"attr":   ["mullvad"],
+		},
+	],
+}

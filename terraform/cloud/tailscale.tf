@@ -17,3 +17,12 @@ resource "tailscale_tailnet_key" "reverse_proxy" {
   recreate_if_invalid = "always"
   tags                = ["tag:brassberry"]
 }
+
+resource "tailscale_acl" "this" {
+  acl = file("${path.module}/tailscale-policy.hujson")
+}
+
+import {
+  to = tailscale_acl.this
+  id = "acl"
+}
