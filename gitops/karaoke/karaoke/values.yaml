@@ -39,7 +39,6 @@ generic:
         secretName: karaoke-dixneuf19-fr-tls
   configmap:
     KARAOKE_PUBLIC_URL: "https://karaoke.dixneuf19.fr"
-    KARAOKE_CHANNELS: "karafunfr,karafun"
     KARAOKE_CACHE_MAX_GB: "50"
     KARAOKE_DATA_DIR: "/data"
     KARAOKE_DB_HOST: "playground-rw.playground-db.svc"
