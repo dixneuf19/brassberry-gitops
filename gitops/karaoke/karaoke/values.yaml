@@ -13,6 +13,10 @@ generic:
         path: /healthz
       readiness:
         path: /readyz # also checks the database
+      startup:
+        path: /healthz
+        periodSeconds: 2
+        failureThreshold: 30
   resources:
     limits:
       # Measured: two parallel downloads (yt-dlp + deno + ffmpeg) peak around

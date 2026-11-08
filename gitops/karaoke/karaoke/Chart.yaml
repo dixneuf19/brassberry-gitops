@@ -6,5 +6,5 @@ home: https://github.com/dixneuf19/playground
 dependencies:
   - name: base-helm-chart
     alias: generic
-    version: 0.3.2
+    version: 0.4.0
     repository: https://dixneuf19.github.io/helm-charts-repo/
