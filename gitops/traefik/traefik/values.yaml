@@ -29,7 +29,7 @@ traefik:
 
   resources:
     requests:
-      cpu: 100m
+      cpu: 150m
       memory: 128Mi
     limits:
       memory: 256Mi
