@@ -8,5 +8,9 @@ argocd-image-updater:
     limits:
       memory: "200Mi"
 
+  extraArgs:
+    - --interval
+    - 30s
+
   config:
     log.level: debug
