@@ -5,6 +5,7 @@
     (with pkgsUnstable; [
       claude-code
       pi-coding-agent
+      rtk
     ])
     ++ (with pkgs; [
       git
@@ -21,6 +22,7 @@
       nodejs
       python3
       uv
+      kubectl
     ]);
 
   virtualisation.docker.enable = true;
@@ -30,4 +32,12 @@
   programs.nix-ld.enable = true;
 
   programs.direnv.enable = true;
+
+  programs.git = {
+    enable = true;
+    config.user = {
+      name = "Julen Dixneuf";
+      email = "1516762+dixneuf19@users.noreply.github.com";
+    };
+  };
 }
