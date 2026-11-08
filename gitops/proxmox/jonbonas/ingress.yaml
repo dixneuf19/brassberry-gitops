@@ -4,7 +4,7 @@ metadata:
   name: jonbonas
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    traefik.ingress.kubernetes.io/router.middlewares: proxmox-basic-auth@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-basic-auth@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:
