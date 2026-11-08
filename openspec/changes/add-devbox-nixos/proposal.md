@@ -29,7 +29,7 @@ None. `openspec/specs/` is empty.
 ## Impact
 
 - **Terraform:** `terraform/cloud` gains `tailscale_acl`, a tailnet key and an output, and is auto-applied by Burrito. `terraform/proxmox` gains a remote state, an image download and a VM, and is applied by hand.
-- **Tailscale:** the OAuth client used by Terraform needs the `policy_file` scope. After the import, every policy change goes through a PR.
+- **Tailscale:** the OAuth client used by Terraform already has the `policy_file` scope. After the import, every policy change goes through a PR.
 - **CI:** new workflow with a Nix installer and cache.
 - **Renovate:** `nix` manager enabled.
 - **jonbonas:** one more VM on fastpool (4 cores, 8 GiB, 64 GiB).

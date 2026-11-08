@@ -43,15 +43,15 @@ Alternatives: nixos-infect turns a running Ubuntu into NixOS on first boot. It i
 Cloud-init sets the hostname, the static IP and the Tailscale key file. Terraform stays the source of truth for VM addresses, as for `k8s-worker-1`. Users, SSH keys, services and packages live in Nix. My public SSH key goes in `base.nix`, because public keys are fine in git and that makes them declarative.
 
 ### New `tag:devbox` instead of `tag:brassberry`
-A tagged node's traffic is governed by its tag, not by the user logged into it. With `tag:brassberry`, devbox would be fully meshed with the cluster in both directions. `tag:devbox` gets exactly the grants below. `tagOwners` makes `tag:brassberry` the owner of `tag:devbox`, the pattern the Tailscale Kubernetes operator uses, so the existing OAuth client can mint devbox keys without a new client.
+The existing policy uses `acls`, not `grants`, so devbox rules follow that style. A tagged node's traffic is governed by its tag, not by the user logged into it. With `tag:brassberry`, devbox would be fully meshed with the cluster in both directions. `tag:devbox` gets exactly the grants below. `tagOwners` makes `tag:brassberry` the owner of `tag:devbox`, the pattern the Tailscale Kubernetes operator uses, so the existing OAuth client can mint devbox keys without a new client.
 
 ```jsonc
 "tagOwners": {
   "tag:devbox": ["tag:brassberry"],
 },
-"grants": [
-  { "src": ["group:admin"], "dst": ["tag:devbox"], "ip": ["tcp:443", "tcp:22"] },
-  { "src": ["tag:devbox"], "dst": ["tag:brassberry"], "ip": ["tcp:22", "tcp:6443", "tcp:8006"] },
+"acls": [
+  // group:admin -> *:* already covers devbox:443 and devbox:22
+  { "action": "accept", "src": ["tag:devbox"], "dst": ["tag:brassberry:22,6443,8006"] },
 ],
 "tests": [
   { "src": "dixneuf19@github", "accept": ["tag:devbox:443", "tag:devbox:22"] },
@@ -102,7 +102,6 @@ renovate.json
 - [Bad generation breaks Tailscale, so devbox drops off the tailnet] -> Rollback over LAN SSH (`192.168.1.50`) or from the boot menu in the Proxmox console. 10 generations are kept.
 - [Policy import differs from the console] -> Phase 1 is its own PR, merged only when the plan shows no change. Burrito applies it.
 - [Auto-applied policy change locks me out] -> Policy `tests` assert admin access. Tailscale rejects a policy whose tests fail, and the old one stays.
-- [OAuth client cannot gain the `policy_file` scope] -> Create a new client and rotate `TAILSCALE_OAUTH_*` where Burrito and direnv read them.
 - [Key spent or expired before devbox first boots] -> Apply `terraform/cloud` to mint a fresh one, then recreate devbox.
 - [Key left in the cloud-init snippet on jonbonas and in Terraform state] -> The key is single-use and spent at first boot.
 - [devbox builds on itself, using CPU and disk on jonbonas] -> Mostly binary cache downloads. Weekly `nix.gc` keeps the store bounded.
@@ -123,7 +122,5 @@ Rollback: destroy the devbox VM, revert the phase 2 PR (the tag and grants), and
 
 ## Open Questions
 
-- What is the exact content of the current console policy, including `group:admin` membership?
-- Can the existing OAuth client gain the `policy_file` scope, or does it need replacing?
 - Can Renovate run `nix flake update` in this setup?
 - What is the right nixpkgs attribute for the qcow2 image builder on the chosen nixpkgs release, and does the bpg provider accept the asset name and content type for download?
