@@ -6,7 +6,7 @@ burrito:
           driftDetection: 24h
           repositorySync: 24h
           failureGracePeriod: 1h
-        maxConcurrentRunnerPods: 2
+        maxConcurrentRunnerPods: 1
         terraformMaxRetries: 2
       datastore:
         storage:
