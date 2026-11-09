@@ -23,6 +23,7 @@
       python3
       uv
       kubectl
+      kubernetes-helm
     ]);
 
   virtualisation.docker.enable = true;
