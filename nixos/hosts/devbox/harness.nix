@@ -34,6 +34,11 @@
 
   programs.direnv.enable = true;
 
+  # Rex terminals open in ~ by default, where Claude Code never remembers folder trust
+  programs.bash.interactiveShellInit = ''
+    [[ -n $REX_SESSION && $PWD == "$HOME" ]] && cd ~/codes
+  '';
+
   programs.git = {
     enable = true;
     config.user = {
