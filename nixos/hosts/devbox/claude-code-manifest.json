@@ -1,0 +1,10 @@
+{
+  "version": "2.1.321",
+  "platforms": {
+    "linux-x64": {
+      "binary": "claude.zst",
+      "checksum": "ded331c1fbf8bdd00518599ac80a888a1d1aff3c799f3a15934adb96662094ff",
+      "size": 124473095
+    }
+  }
+}

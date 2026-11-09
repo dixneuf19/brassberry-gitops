@@ -1,9 +1,17 @@
 # Tooling for running coding agents and their harnesses on devbox
-{ pkgs, pkgsUnstable, ... }:
+{
+  lib,
+  pkgs,
+  pkgsUnstable,
+  ...
+}:
 {
   environment.systemPackages =
-    (with pkgsUnstable; [
-      claude-code
+    [
+      # Pinned ahead of nixpkgs (Fable 5.2 needs >= 2.1.321); drop the override once nixpkgs-unstable catches up
+      (pkgsUnstable.claude-code.override { manifest = lib.importJSON ./claude-code-manifest.json; })
+    ]
+    ++ (with pkgsUnstable; [
       pi-coding-agent
       rtk
     ])
