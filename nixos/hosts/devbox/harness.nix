@@ -7,7 +7,7 @@
 }:
 {
   environment.systemPackages = [
-    # Pinned ahead of nixpkgs (Fable 5.2 needs >= 2.1.321); drop the override once nixpkgs-unstable catches up
+    # Follows Anthropic releases ahead of nixpkgs; .github/workflows/claude-code-pin.yaml bumps the manifest
     (pkgsUnstable.claude-code.override { manifest = lib.importJSON ./claude-code-manifest.json; })
   ]
   ++ (with pkgsUnstable; [
