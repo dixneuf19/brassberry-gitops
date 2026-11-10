@@ -81,6 +81,8 @@
     enable = true;
     flake = "github:dixneuf19/brassberry-gitops?dir=nixos";
     dates = "*:0/15";
+    # Nix caches github: flake refs for an hour (tarball-ttl); refetch so each run sees the current main
+    flags = [ "--refresh" ];
     allowReboot = false;
   };
   systemd.timers.nixos-upgrade.timerConfig.OnBootSec = "2min";
