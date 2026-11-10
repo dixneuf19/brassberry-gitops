@@ -1,0 +1,68 @@
+name: Claude Code pin
+
+# Renovate can't refresh the manifest checksum, so this follows Anthropic's releases for the devbox pin
+on:
+  schedule:
+    - cron: "17 */3 * * *"
+  workflow_dispatch:
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    env:
+      MANIFEST: nixos/hosts/devbox/claude-code-manifest.json
+      BRANCH: chore/claude-code-pin
+      BASE_URL: https://downloads.claude.ai/claude-code-releases
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Fetch the latest release manifest
+        id: latest
+        run: |
+          set -euo pipefail
+          version=$(curl -fsSL "$BASE_URL/latest")
+          current=$(jq -r .version "$MANIFEST")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if [ "$version" = "$current" ]; then
+            echo "Pin is already at $current"
+            exit 0
+          fi
+          curl -fsSL "$BASE_URL/$version/manifest.zst.json" \
+            | jq '{version, platforms: (.platforms | with_entries(select(.key == "linux-x64")))}' \
+            > "$MANIFEST"
+          jq -e --arg v "$version" '.version == $v and (.platforms["linux-x64"].checksum | test("^[0-9a-f]{64}$"))' "$MANIFEST"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Open or update the PR
+        if: steps.latest.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.latest.outputs.version }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -C "$BRANCH"
+          git add "$MANIFEST"
+          git commit -m "chore(devbox): bump pinned Claude Code to $VERSION"
+          if git fetch origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"; then
+            lease="$BRANCH:origin/$BRANCH"
+          else
+            lease="$BRANCH:"
+          fi
+          git push --force-with-lease="$lease" origin "$BRANCH"
+
+          title="chore(devbox): bump pinned Claude Code to $VERSION"
+          body="Bumps the devbox Claude Code pin to $VERSION, from \`$BASE_URL/$VERSION/manifest.zst.json\`. Release notes: https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+          if [ "$(gh pr list --head "$BRANCH" --state open --json number --jq length)" = 0 ]; then
+            gh pr create --head "$BRANCH" --base main --title "$title" --body "$body"
+          else
+            gh pr edit "$BRANCH" --title "$title" --body "$body"
+          fi
+
+          # Pushes made with the workflow token don't trigger pull_request runs, so start the build check explicitly
+          gh workflow run nixos.yaml --ref "$BRANCH"
