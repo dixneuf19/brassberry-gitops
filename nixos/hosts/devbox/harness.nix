@@ -31,6 +31,7 @@
     uv
     kubectl
     kubernetes-helm
+    k0sctl
   ]);
 
   virtualisation.docker.enable = true;
