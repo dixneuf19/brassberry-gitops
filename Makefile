@@ -27,6 +27,9 @@ reboot:
 tailscale:
 	ansible-playbook -i $(ANSIBLE_INVENTORY) ansible/playbooks/tailscale.yaml
 
+ssh-keys:
+	ansible-playbook -i $(ANSIBLE_INVENTORY) ansible/playbooks/ssh-keys.yaml
+
 # --- Raspberry Pi playbooks (ansible/playbooks/pi-*) ---
 jellyfin:
 	ansible-playbook -i $(ANSIBLE_INVENTORY) ansible/playbooks/pi-jellyfin.yaml
@@ -83,4 +86,4 @@ proxmox-nfs:
 proxmox-node-exporter:
 	ansible-playbook -i $(ANSIBLE_INVENTORY) ansible/playbooks/proxmox-node-exporter.yaml
 
-.PHONY: all ping reboot tailscale jellyfin mounts kernel-modules upgrade nfs-server remove-nfs-server kubeconfig k0sctl proxmox-post-install proxmox-bootstrap proxmox-zfs proxmox-grub-aspm proxmox-nfs proxmox-node-exporter tailscale-hostmap-pull tailscale-hosts
+.PHONY: all ping reboot tailscale ssh-keys jellyfin mounts kernel-modules upgrade nfs-server remove-nfs-server kubeconfig k0sctl proxmox-post-install proxmox-bootstrap proxmox-zfs proxmox-grub-aspm proxmox-nfs proxmox-node-exporter tailscale-hostmap-pull tailscale-hosts

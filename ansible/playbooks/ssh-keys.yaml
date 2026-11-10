@@ -1,0 +1,10 @@
+#################################################
+# Authorize the devbox key on k0s nodes, so k0sctl runs from devbox
+#################################################
+---
+- hosts: master:workers:proxmox_workers
+  tasks:
+    - name: Authorize devbox key
+      ansible.posix.authorized_key:
+        user: "{{ ansible_ssh_user }}"
+        key: "{{ lookup('file', playbook_dir + '/../files/devbox.pub') }}"

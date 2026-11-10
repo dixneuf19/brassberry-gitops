@@ -41,6 +41,13 @@
 
   programs.direnv.enable = true;
 
+  programs.ssh.knownHosts = {
+    brassberry-24.publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAmvkxKA6IHgSlLqzAzikdSTiLPqNt0nfE3jOcXjgv+i";
+    brassberry-25.publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFTaYxjN26SOAoupsIstAUFSR12FKKo8/cOcH53Nzvcc";
+    brassberry-26.publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBCONY5QlfkpWf7WRI6rz8FQwu9fD4T8ZmmnMohzV37S";
+    brassberry-27.publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICISKC3U0js7Eor8X03WrN/zJdrW6ktILSwLl+Gz0WsG";
+  };
+
   # Rex terminals open in ~ by default, where Claude Code never remembers folder trust
   programs.bash.interactiveShellInit = ''
     [[ -n $REX_SESSION && $PWD == "$HOME" ]] && cd ~/codes
