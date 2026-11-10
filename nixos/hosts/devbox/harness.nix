@@ -1,30 +1,37 @@
 # Tooling for running coding agents and their harnesses on devbox
-{ pkgs, pkgsUnstable, ... }:
 {
-  environment.systemPackages =
-    (with pkgsUnstable; [
-      claude-code
-      pi-coding-agent
-      rtk
-    ])
-    ++ (with pkgs; [
-      git
-      gh
-      jq
-      ripgrep
-      fd
-      curl
-      htop
-      neovim
-      unzip
-      gnumake
-      gcc
-      nodejs
-      python3
-      uv
-      kubectl
-      kubernetes-helm
-    ]);
+  lib,
+  pkgs,
+  pkgsUnstable,
+  ...
+}:
+{
+  environment.systemPackages = [
+    # Follows Anthropic releases ahead of nixpkgs; .github/workflows/claude-code-pin.yaml bumps the manifest
+    (pkgsUnstable.claude-code.override { manifest = lib.importJSON ./claude-code-manifest.json; })
+  ]
+  ++ (with pkgsUnstable; [
+    pi-coding-agent
+    rtk
+  ])
+  ++ (with pkgs; [
+    git
+    gh
+    jq
+    ripgrep
+    fd
+    curl
+    htop
+    neovim
+    unzip
+    gnumake
+    gcc
+    nodejs
+    python3
+    uv
+    kubectl
+    kubernetes-helm
+  ]);
 
   virtualisation.docker.enable = true;
   users.users.dixneuf19.extraGroups = [ "docker" ];
