@@ -19,6 +19,16 @@ generic:
     enabled: false
   configmap:
     CHAT_ID: "-892338668"
+    DB_HOST: "playground-rw.playground-db.svc"
+    DB_PORT: "5432"
+    DB_NAME: "auberge"
   secrets:
     - name: vitry-auberge-bot
       key: BOT_TELEGRAM_TOKEN
+    # Copied from playground-db by templates/database-credentials.yaml
+    - name: auberge-db
+      key: username
+      alias: DB_USER
+    - name: auberge-db
+      key: password
+      alias: DB_PASSWORD
