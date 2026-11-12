@@ -25,6 +25,10 @@ generic:
   secrets:
     - name: vitry-auberge-bot
       key: BOT_TELEGRAM_TOKEN
+    - name: vitry-auberge-bot
+      key: LAFOURCHE_EMAIL
+    - name: vitry-auberge-bot
+      key: LAFOURCHE_PASSWORD
     # Copied from playground-db by templates/database-credentials.yaml
     - name: auberge-db
       key: username
