@@ -34,6 +34,7 @@ cd terraform/scaleway && terraform plan   # Scaleway S3 (TF state backend, backu
 cd terraform/proxmox && terraform plan    # Proxmox VMs, storage, users
 cd terraform/cloud && terraform plan      # Oracle Cloud ARM + DigitalOcean + Gandi DNS
 cd terraform/bitwarden && terraform plan  # Bitwarden Secrets Manager secrets
+cd terraform/cloudflare && terraform plan # Cloudflare Email Routing (mangococo.fr)
 ```
 
 All Terraform state is stored in a Scaleway S3 bucket. Credentials are injected via `direnv` from the `scw` CLI (see `.envrc.example`).
@@ -75,6 +76,7 @@ Image updates are handled by ArgoCD Image Updater (configured via ImageUpdater C
 - **`terraform/proxmox/`** — Proxmox VE resources (VMs, storage, users, cloud-init). Depends on secrets from Bitwarden Secrets Manager.
 - **`terraform/cloud/`** — Cloud worker nodes (Oracle Cloud ARM, DigitalOcean droplet, Gandi DNS).
 - **`terraform/bitwarden/`** — Secrets in Bitwarden Secrets Manager.
+- **`terraform/cloudflare/`** — Cloudflare Email Routing for mangococo.fr (multi-destination forwarding via an Email Worker).
 - **`cluster/`** — k0s cluster config (`k0sctl.yaml`).
 - **`raspberry-pi/`** — Pi provisioning (cloud-init templates, image customization scripts).
 - **`ansible/`** — Inventory and ALL playbooks, prefixed by area (`cluster-*`, `proxmox-*`, `pi-*`, generic). All nodes are on the Tailscale mesh VPN.

@@ -1,0 +1,19 @@
+apiVersion: config.terraform.padok.cloud/v1alpha1
+kind: TerraformLayer
+metadata:
+  name: cloudflare
+spec:
+  path: terraform/cloudflare
+  branch: main
+  repository:
+    name: brassberry-gitops
+    namespace: burrito-homelab
+  remediationStrategy:
+    autoApply: true
+  overrideRunnerSpec:
+    # arrays replace wholesale on merge, so re-list burrito-runner-common
+    envFrom:
+      - secretRef:
+          name: burrito-runner-common
+      - secretRef:
+          name: burrito-runner-cloudflare
