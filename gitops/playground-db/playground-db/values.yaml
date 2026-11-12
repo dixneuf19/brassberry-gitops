@@ -9,3 +9,5 @@
 databases:
   karaoke:
     appNamespace: karaoke
+  auberge:
+    appNamespace: vitry-auberge
