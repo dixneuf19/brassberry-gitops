@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-lafourche-history
+spec:
+  schedule: {{ .Values.lafourcheHistory.schedule | quote }}
+  timeZone: Europe/Paris
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 900
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: lafourche-history
+              image: "{{ .Values.generic.image.repository }}:{{ .Values.generic.image.tag }}"
+              command: ["python", "-m", "vitry_auberge_bot.lafourche_history"]
+              envFrom:
+                - configMapRef:
+                    name: {{ .Release.Name }}
+              env:
+                {{- range .Values.generic.secrets }}
+                {{- if ne .key "BOT_TELEGRAM_TOKEN" }}
+                - name: {{ .alias | default .key }}
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .name }}
+                      key: {{ .key }}
+                {{- end }}
+                {{- end }}
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  memory: 128Mi

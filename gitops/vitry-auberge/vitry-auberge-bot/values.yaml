@@ -36,3 +36,6 @@ generic:
     - name: auberge-db
       key: password
       alias: DB_PASSWORD
+
+lafourcheHistory:
+  schedule: "0 6 * * 1"
