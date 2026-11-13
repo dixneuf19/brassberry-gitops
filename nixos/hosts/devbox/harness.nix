@@ -23,6 +23,8 @@
     curl
     htop
     neovim
+    vim
+    helix
     unzip
     gnumake
     gcc
