@@ -2,6 +2,7 @@
   imports = [
     ./harness.nix
     ./orchestrator.nix
+    ./padoa.nix
   ];
 
   networking.hostName = "devbox";
