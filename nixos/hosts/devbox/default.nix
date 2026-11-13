@@ -3,6 +3,7 @@
     ./harness.nix
     ./orchestrator.nix
     ./shell.nix
+    ./work.nix
   ];
 
   networking.hostName = "devbox";
