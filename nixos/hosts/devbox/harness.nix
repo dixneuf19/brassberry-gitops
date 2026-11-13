@@ -34,7 +34,16 @@
     kubectl
     kubernetes-helm
     k0sctl
+    # IaC CLIs used by the repo .envrc; tfswitch installs the exact terraform pinned in each root
+    tfswitch
+    scaleway-cli
+    bws
   ]);
+
+  nixpkgs.config.allowUnfreePredicate = pkg: lib.getName pkg == "bws";
+
+  # tfswitch drops the terraform binary in ~/bin
+  environment.homeBinInPath = true;
 
   virtualisation.docker.enable = true;
   users.users.dixneuf19.extraGroups = [ "docker" ];
