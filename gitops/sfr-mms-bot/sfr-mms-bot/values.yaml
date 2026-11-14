@@ -1,0 +1,24 @@
+generic:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/dixneuf19/playground/sfr-mms-bot
+    tag: main
+  container:
+    port: 80
+    noProbes: true
+  resources:
+    limits:
+      memory: 128Mi
+    requests:
+      memory: 64Mi
+      cpu: 50m
+  service:
+    type: ClusterIP
+    port: 80
+  ingress:
+    enabled: false
+  configmap:
+    TELEGRAM_ALLOWED_USERS: "241646160"
+  secrets:
+    - name: sfr-mms-bot
+      key: TELEGRAM_BOT_TOKEN
