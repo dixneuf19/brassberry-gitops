@@ -1,6 +1,6 @@
 dependencies:
 - name: base-helm-chart
   repository: https://dixneuf19.github.io/helm-charts-repo/
-  version: 0.3.2
-digest: sha256:2d01586905eb74f7bd1d20d29f150f8f29c5566a1a8511f909ed80f22ecaadce
-generated: "2023-12-29T10:53:45.496670044Z"
+  version: 0.4.0
+digest: sha256:b381bb0922319b2e3f4e0496253b7fa79766d78d515f51295ccff68465004f61
+generated: "2026-11-14T17:31:37.896893693Z"
