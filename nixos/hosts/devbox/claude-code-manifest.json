@@ -1,10 +1,10 @@
 {
-  "version": "2.1.322",
+  "version": "2.1.325",
   "platforms": {
     "linux-x64": {
       "binary": "claude.zst",
-      "checksum": "9bb7558bd992ca457e6458bf1686572f7a3156b8331dd8443391dbfe590c1eed",
-      "size": 124485497
+      "checksum": "00b1b977bcc3f32eb69129f0ac3277aafb1aecbfb87c17c0af53806832ed436a",
+      "size": 132357990
     }
   }
 }
