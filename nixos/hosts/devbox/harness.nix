@@ -53,8 +53,8 @@
 
   programs.direnv.enable = true;
 
-  # Rex terminals open in ~ by default, where Claude Code never remembers folder trust
-  programs.bash.interactiveShellInit = ''
+  # Rex terminals open in ~ by default, where Claude Code never remembers folder trust (bash and zsh)
+  environment.interactiveShellInit = ''
     [[ -n $REX_SESSION && $PWD == "$HOME" ]] && cd ~/codes
   '';
 
