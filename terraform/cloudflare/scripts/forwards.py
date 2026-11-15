@@ -1,4 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.12"
+# dependencies = []
+# ///
 """Edit the mangococo.fr forwarding map stored in Bitwarden (secret mangococo-email-forwards).
 
 The map is JSON: {"src@mangococo.fr": ["dest", ...]}. Needs `bws` and BWS_ACCESS_TOKEN.
