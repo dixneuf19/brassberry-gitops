@@ -1,12 +1,11 @@
 # Tooling for work projects on devbox
 {
   config,
-  lib,
   pkgs,
   ...
 }:
 {
-  nixpkgs.config.allowUnfreePredicate = pkg: lib.getName pkg == "pritunl-client";
+  nixpkgs.config.allowUnfreePackages = [ "pritunl-client" ];
 
   environment.systemPackages = with pkgs; [
     pritunl-client
