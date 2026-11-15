@@ -51,31 +51,26 @@
   # Lets prebuilt Linux binaries run (npm native modules, pip wheels, Playwright, downloaded tools)
   programs.nix-ld.enable = true;
 
-  programs.direnv.enable = true;
+  programs.direnv = {
+    enable = true;
+    # git worktrees get a copy of the tracked .envrc at a path that was never `direnv allow`ed
+    settings.whitelist.prefix = [ "/home/dixneuf19/codes/perso" ];
+  };
 
-  # Loads the direnv environment of the session's directory into Claude Code's Bash commands
-  environment.etc."claude-code/managed-settings.json".text =
-    let
-      direnvHook = [
-        {
-          type = "command";
-          command = "${./claude-hooks/direnv-env.py}";
-          timeout = 10;
-        }
-      ];
-    in
-    builtins.toJSON {
-      hooks = {
-        SessionStart = [ { hooks = direnvHook; } ];
-        CwdChanged = [ { hooks = direnvHook; } ];
-        FileChanged = [
+  # Claude Code sources this line before every Bash command, so each one gets the direnv env of its own cwd
+  environment.etc."claude-code/managed-settings.json".text = builtins.toJSON {
+    hooks.SessionStart = [
+      {
+        hooks = [
           {
-            matcher = ".envrc";
-            hooks = direnvHook;
+            type = "command";
+            command = ''echo 'eval "$(direnv export bash 2>/dev/null)"' >> "$CLAUDE_ENV_FILE"'';
+            timeout = 5;
           }
         ];
-      };
-    };
+      }
+    ];
+  };
 
   # Rex terminals open in ~ by default, where Claude Code never remembers folder trust
   programs.bash.interactiveShellInit = ''
