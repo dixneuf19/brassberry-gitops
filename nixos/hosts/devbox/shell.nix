@@ -31,6 +31,9 @@
 
   programs.zoxide.enable = true;
 
+  # Skip commands typed with a leading space, like zsh with oh-my-zsh
+  programs.bash.interactiveShellInit = "HISTCONTROL=ignoreboth";
+
   environment.systemPackages = with pkgs; [
     k9s
     fzf
