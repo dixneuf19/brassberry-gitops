@@ -17,7 +17,6 @@
         "kubectl"
         "fzf"
         "terraform"
-        "z"
       ];
     };
     promptInit = ''
@@ -29,6 +28,8 @@
       gs = "git status";
     };
   };
+
+  programs.zoxide.enable = true;
 
   environment.systemPackages = with pkgs; [
     k9s
