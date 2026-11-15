@@ -25,8 +25,16 @@ locally, `burrito-runner-cloudflare` ExternalSecret in the cluster). The
 Worker gets it through a `secret_text` binding, and destination resources are
 keyed by a hash of the address, so plans only show the source addresses.
 
-To change it: `bws secret edit <id> --value '<json>'`, then `direnv reload`
-and apply (Burrito picks it up after the ExternalSecret refresh, within 1h).
+To change it, use `scripts/forwards.sh` (wraps `bws` and `jq`):
+
+```bash
+./scripts/forwards.sh list
+./scripts/forwards.sh set contact@mangococo.fr a@example.org b@example.net
+./scripts/forwards.sh rm contact@mangococo.fr
+```
+
+Then `direnv reload` and `terraform apply` here, or let Burrito pick it up
+(ExternalSecret refresh plus drift detection, within about 1h).
 
 A new destination gets a verification email from Cloudflare. Forwarding to it
 fails until its owner clicks the link.
