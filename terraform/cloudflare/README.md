@@ -25,12 +25,12 @@ locally, `burrito-runner-cloudflare` ExternalSecret in the cluster). The
 Worker gets it through a `secret_text` binding, and destination resources are
 keyed by a hash of the address, so plans only show the source addresses.
 
-To change it, use `scripts/forwards.sh` (wraps `bws` and `jq`):
+To change it, use `scripts/forwards.py` (wraps `bws`):
 
 ```bash
-./scripts/forwards.sh list
-./scripts/forwards.sh set contact@mangococo.fr a@example.org b@example.net
-./scripts/forwards.sh rm contact@mangococo.fr
+./scripts/forwards.py list
+./scripts/forwards.py set contact@mangococo.fr a@example.org b@example.net
+./scripts/forwards.py rm contact@mangococo.fr
 ```
 
 Then `direnv reload` and `terraform apply` here, or let Burrito pick it up
