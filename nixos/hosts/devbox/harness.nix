@@ -53,6 +53,30 @@
 
   programs.direnv.enable = true;
 
+  # Loads the direnv environment of the session's directory into Claude Code's Bash commands
+  environment.etc."claude-code/managed-settings.json".text =
+    let
+      direnvHook = [
+        {
+          type = "command";
+          command = "${./claude-hooks/direnv-env.py}";
+          timeout = 10;
+        }
+      ];
+    in
+    builtins.toJSON {
+      hooks = {
+        SessionStart = [ { hooks = direnvHook; } ];
+        CwdChanged = [ { hooks = direnvHook; } ];
+        FileChanged = [
+          {
+            matcher = ".envrc";
+            hooks = direnvHook;
+          }
+        ];
+      };
+    };
+
   # Rex terminals open in ~ by default, where Claude Code never remembers folder trust
   programs.bash.interactiveShellInit = ''
     [[ -n $REX_SESSION && $PWD == "$HOME" ]] && cd ~/codes
