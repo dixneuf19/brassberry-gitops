@@ -34,6 +34,7 @@ cd terraform/scaleway && terraform plan   # Scaleway S3 (TF state backend, backu
 cd terraform/proxmox && terraform plan    # Proxmox VMs, storage, users
 cd terraform/cloud && terraform plan      # Oracle Cloud ARM + DigitalOcean + Gandi DNS
 cd terraform/bitwarden && terraform plan  # Bitwarden Secrets Manager secrets
+cd terraform/cloudflare && terraform plan # Cloudflare Email Routing (mangococo.fr)
 ```
 
 All Terraform state is stored in a Scaleway S3 bucket. Credentials are injected via `direnv` from the `scw` CLI (see `.envrc.example`).
@@ -75,6 +76,7 @@ Image updates are handled by ArgoCD Image Updater (configured via ImageUpdater C
 - **`terraform/proxmox/`** — Proxmox VE resources (VMs, storage, users, cloud-init). Depends on secrets from Bitwarden Secrets Manager.
 - **`terraform/cloud/`** — Cloud worker nodes (Oracle Cloud ARM, DigitalOcean droplet, Gandi DNS).
 - **`terraform/bitwarden/`** — Secrets in Bitwarden Secrets Manager.
+- **`terraform/cloudflare/`**: Cloudflare Email Routing for mangococo.fr (multi-destination forwarding via an Email Worker).
 - **`cluster/`** — k0s cluster config (`k0sctl.yaml`).
 - **`raspberry-pi/`** — Pi provisioning (cloud-init templates, image customization scripts).
 - **`ansible/`** — Inventory and ALL playbooks, prefixed by area (`cluster-*`, `proxmox-*`, `pi-*`, generic). All nodes are on the Tailscale mesh VPN.
@@ -92,6 +94,16 @@ Two paths from Bitwarden Secrets Manager:
 2. Add a Makefile (copy from existing app — all follow the same pattern)
 3. Add an entry in `gitops/argocd/apps/values.yaml` with name, namespace, and path
 4. If secrets are needed: create secrets in Bitwarden Secrets Manager (via `bws` CLI or web UI) and add `ExternalSecret` in templates/
+
+### Email Forwarding (mangococo.fr)
+
+Addresses like `contact@mangococo.fr` forward to several mailboxes through a Cloudflare Email Worker (`terraform/cloudflare`). The map lives in the Bitwarden secret `mangococo-email-forwards`, never in git (public repo). To add or remove a destination, or a new source address:
+
+1. `terraform/cloudflare/scripts/forwards.py list`, then `set <src@mangococo.fr> <every destination>` (it replaces the whole list) or `rm <src>`
+2. `direnv reload`, then `terraform plan` and `terraform apply` in `terraform/cloudflare` (or let Burrito apply it within ~1h)
+3. Tell the user that each new destination must click the Cloudflare verification email before it receives anything
+
+A destination that already exists in Cloudflare (created by hand) needs an `import` block first, or the apply fails on a duplicate.
 
 ### CI/CD
 

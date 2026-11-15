@@ -194,3 +194,27 @@ resource "bitwarden-secrets_secret" "oci_api_private_key" {
     ignore_changes = [value, length]
   }
 }
+
+# ── Cloudflare layer (created with placeholder values, written with bws edit) ──
+
+resource "bitwarden-secrets_secret" "cloudflare_api_token" {
+  key        = "cloudflare-api-token"
+  project_id = var.bw_project_id
+  note       = "Cloudflare API token for the terraform cloudflare provider (cloudflare layer)"
+
+  lifecycle {
+    ignore_changes = [value, length]
+  }
+}
+
+resource "bitwarden-secrets_secret" "mangococo_email_forwards" {
+  key        = "mangococo-email-forwards"
+  project_id = var.bw_project_id
+  note       = "JSON map src@mangococo.fr => [destinations], TF_VAR_mangococo_email_forwards (cloudflare layer)"
+
+  value = "{}"
+
+  lifecycle {
+    ignore_changes = [value]
+  }
+}
