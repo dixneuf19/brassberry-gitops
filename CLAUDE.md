@@ -95,6 +95,16 @@ Two paths from Bitwarden Secrets Manager:
 3. Add an entry in `gitops/argocd/apps/values.yaml` with name, namespace, and path
 4. If secrets are needed: create secrets in Bitwarden Secrets Manager (via `bws` CLI or web UI) and add `ExternalSecret` in templates/
 
+### Email Forwarding (mangococo.fr)
+
+Addresses like `contact@mangococo.fr` forward to several mailboxes through a Cloudflare Email Worker (`terraform/cloudflare`). The map lives in the Bitwarden secret `mangococo-email-forwards`, never in git (public repo). To add or remove a destination, or a new source address:
+
+1. `terraform/cloudflare/scripts/forwards.py list`, then `set <src@mangococo.fr> <every destination>` (it replaces the whole list) or `rm <src>`
+2. `direnv reload`, then `terraform plan` and `terraform apply` in `terraform/cloudflare` (or let Burrito apply it within ~1h)
+3. Tell the user that each new destination must click the Cloudflare verification email before it receives anything
+
+A destination that already exists in Cloudflare (created by hand) needs an `import` block first, or the apply fails on a duplicate.
+
 ### CI/CD
 
 - **GitHub Actions**: `argo-cd-diff.yaml` runs on PRs to main — generates ArgoCD diff preview and posts as PR comment
