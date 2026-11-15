@@ -1,0 +1,8 @@
+helm:
+  parameters:
+  - name: generic.image.name
+    value: ghcr.io/dixneuf19/playground/sfr-mms-bot
+    forcestring: true
+  - name: generic.image.tag
+    value: main@sha256:9c6ece1c1e1cc713c62d53966a8465232ed1e746d413fba88f6f3db57b76070a
+    forcestring: true
