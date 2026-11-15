@@ -21,11 +21,12 @@
     };
     promptInit = ''
       source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
-      source ${./p10k.zsh}
+      source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/config/p10k-lean-8colors.zsh
+      # Plain glyphs, so the prompt renders over SSH without a Nerd Font
+      POWERLEVEL9K_MODE=ascii
     '';
     shellAliases = {
       ks = "k9s";
-      gs = "git status";
     };
   };
 
