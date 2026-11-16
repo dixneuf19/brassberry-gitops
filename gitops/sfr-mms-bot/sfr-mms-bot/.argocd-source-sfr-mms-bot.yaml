@@ -4,5 +4,5 @@ helm:
     value: ghcr.io/dixneuf19/playground/sfr-mms-bot
     forcestring: true
   - name: generic.image.tag
-    value: main@sha256:9c6ece1c1e1cc713c62d53966a8465232ed1e746d413fba88f6f3db57b76070a
+    value: main@sha256:e85074bc812026f161200c913de41c5276941db1d12a71181bc6365c87e50624
     forcestring: true
