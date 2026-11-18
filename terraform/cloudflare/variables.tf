@@ -8,3 +8,9 @@ variable "mangococo_email_forwards" {
     error_message = "Every source address must be on mangococo.fr."
   }
 }
+
+variable "ragots_members" {
+  description = "Members of ragots@mangococo.fr, the only senders allowed to post (bws secret ragots-members)"
+  type        = list(string)
+  sensitive   = true
+}

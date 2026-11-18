@@ -10,7 +10,7 @@ locals {
   forwards = { for src, dests in var.mangococo_email_forwards : lower(src) => [for d in dests : lower(d)] }
 
   # Destination mailboxes are private (public repo, plans posted on PRs): key them by hash
-  destinations = { for d in distinct(flatten(values(local.forwards))) : sha256(d) => d }
+  destinations = { for d in distinct(concat(flatten(values(local.forwards)), local.ragots_members)) : sha256(d) => d }
 }
 
 # Each destination must be verified by clicking the link Cloudflare emails to it

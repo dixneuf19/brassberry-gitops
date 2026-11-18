@@ -39,6 +39,26 @@ Then `direnv reload` and `terraform apply` here, or let Burrito pick it up
 A new destination gets a verification email from Cloudflare. Forwarding to it
 fails until its owner clicks the link.
 
+## Mailing list ragots@mangococo.fr
+
+`ragots.tf` and `worker/ragots.js`: a separate rule and Worker. A message
+sent to `ragots@mangococo.fr` by a member goes to every member, sender
+included (Gmail hides the copy of a message you sent). Anyone else gets a
+rejection. "Reply" answers the sender only, "Reply all" posts to the list.
+
+Members are checked on the envelope sender, so a member must post from the
+exact address listed. The members live in the Bitwarden secret
+`ragots-members` (JSON list), passed as `TF_VAR_ragots_members`:
+
+```bash
+./scripts/ragots.py list
+./scripts/ragots.py add a@example.org b@example.net
+./scripts/ragots.py rm a@example.org
+```
+
+Members share the destination addresses with the forwarding map, so each one
+verifies once, whichever feature added them first.
+
 ## One-time setup
 
 1. Create an API token in the Cloudflare dashboard (My Profile, API Tokens),
