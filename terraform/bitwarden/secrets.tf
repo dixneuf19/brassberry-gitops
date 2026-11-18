@@ -218,3 +218,15 @@ resource "bitwarden-secrets_secret" "mangococo_email_forwards" {
     ignore_changes = [value]
   }
 }
+
+resource "bitwarden-secrets_secret" "ragots_members" {
+  key        = "ragots-members"
+  project_id = var.bw_project_id
+  note       = "JSON list of ragots@mangococo.fr members, TF_VAR_ragots_members (cloudflare layer)"
+
+  value = "[]"
+
+  lifecycle {
+    ignore_changes = [value]
+  }
+}

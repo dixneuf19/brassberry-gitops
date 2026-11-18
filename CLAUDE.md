@@ -105,6 +105,8 @@ Addresses like `contact@mangococo.fr` forward to several mailboxes through a Clo
 
 A destination that already exists in Cloudflare (created by hand) needs an `import` block first, or the apply fails on a duplicate.
 
+`ragots@mangococo.fr` is a members-only mailing list (separate Worker, `terraform/cloudflare/ragots.tf`). Members live in the Bitwarden secret `ragots-members`: edit them with `terraform/cloudflare/scripts/ragots.py list|add|rm`, then apply the same way. New members also need to click the verification email.
+
 ### CI/CD
 
 - **GitHub Actions**: `argo-cd-diff.yaml` runs on PRs to main — generates ArgoCD diff preview and posts as PR comment
