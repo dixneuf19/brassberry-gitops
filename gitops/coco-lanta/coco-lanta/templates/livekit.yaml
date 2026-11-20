@@ -30,6 +30,9 @@ spec:
         checksum/config: {{ .Values.livekit | toJson | sha256sum }}
     spec:
       hostNetwork: true
+      # A Service named livekit would inject LIVEKIT_PORT=tcp://..., which
+      # livekit-server reads as its --port flag and crashes on.
+      enableServiceLinks: false
       dnsPolicy: ClusterFirstWithHostNet
       nodeSelector:
         kubernetes.io/hostname: {{ .Values.livekit.node }}
