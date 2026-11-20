@@ -268,6 +268,10 @@ applications:
     namespace: karaoke
     path: gitops/karaoke/karaoke
 
+  - name: coco-lanta
+    namespace: coco-lanta
+    path: gitops/coco-lanta/coco-lanta
+
   # Shared CNPG cluster for playground apps (one database per app)
   - name: playground-db
     namespace: playground-db

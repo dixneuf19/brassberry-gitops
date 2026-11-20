@@ -1,0 +1,105 @@
+{{- $labels := dict "app.kubernetes.io/name" "livekit" "app.kubernetes.io/instance" .Release.Name }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: livekit
+data:
+  livekit.yaml: |
+    port: 7880
+    rtc:
+      tcp_port: 7881
+      udp_port: 7882
+      use_external_ip: false
+      node_ip: {{ .Values.livekit.nodeIP }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: livekit
+  labels: {{- toYaml $labels | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate # host ports: the old pod must free them first
+  selector:
+    matchLabels: {{- toYaml $labels | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- toYaml $labels | nindent 8 }}
+      annotations:
+        checksum/config: {{ .Values.livekit | toJson | sha256sum }}
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      nodeSelector:
+        kubernetes.io/hostname: {{ .Values.livekit.node }}
+      containers:
+        - name: livekit
+          image: {{ .Values.livekit.image }}
+          args: ["--config", "/etc/livekit/livekit.yaml"]
+          env:
+            - name: LIVEKIT_KEYS
+              valueFrom:
+                secretKeyRef:
+                  name: coco-lanta-livekit
+                  key: keys
+          ports:
+            - name: http
+              containerPort: 7880
+            - name: rtc-tcp
+              containerPort: 7881
+            - name: rtc-udp
+              containerPort: 7882
+              protocol: UDP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources: {{- toYaml .Values.livekit.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/livekit
+      volumes:
+        - name: config
+          configMap:
+            name: livekit
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: livekit
+spec:
+  selector: {{- toYaml $labels | nindent 4 }}
+  ports:
+    - name: http
+      port: 7880
+      targetPort: http
+---
+# Signalling only (a WebSocket): the video itself goes to the node directly.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: livekit
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: {{ .Values.livekit.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: livekit
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - {{ .Values.livekit.host }}
+      secretName: cocolanta-live-dixneuf19-fr-tls
