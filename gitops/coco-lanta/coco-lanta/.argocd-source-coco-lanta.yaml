@@ -4,5 +4,5 @@ helm:
     value: ghcr.io/dixneuf19/playground/coco-lanta
     forcestring: true
   - name: generic.image.tag
-    value: main@sha256:aa893642509bd827c5f34198a40af8ff8238817364cc1d330ea6dbbacf15eda1
+    value: main@sha256:d8ea204e5c5a7ddcc86fdbbec59a858558a633e43c7add0bb1d73fff9890fa06
     forcestring: true
