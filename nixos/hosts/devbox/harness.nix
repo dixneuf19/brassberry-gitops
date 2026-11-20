@@ -5,6 +5,22 @@
   pkgsUnstable,
   ...
 }:
+let
+  # The claude-code wrapper prepends its own alsa-lib to LD_LIBRARY_PATH and every command it runs inherits it
+  withoutInheritedLibs =
+    pkg:
+    pkgs.symlinkJoin {
+      name = "${pkg.pname}-clean-env";
+      paths = [ pkg ];
+      nativeBuildInputs = [ pkgs.makeWrapper ];
+      postBuild = ''
+        for f in $out/bin/*; do
+          wrapProgram "$f" --unset LD_LIBRARY_PATH
+        done
+      '';
+      meta.mainProgram = pkg.meta.mainProgram;
+    };
+in
 {
   environment.systemPackages = [
     # Follows Anthropic releases ahead of nixpkgs; .github/workflows/claude-code-pin.yaml bumps the manifest
@@ -38,7 +54,11 @@
     tfswitch
     scaleway-cli
     bws
-  ]);
+  ])
+  ++ map withoutInheritedLibs [
+    pkgs.chromium
+    pkgs.playwright-mcp
+  ];
 
   nixpkgs.config.allowUnfreePredicate = pkg: lib.getName pkg == "bws";
 
