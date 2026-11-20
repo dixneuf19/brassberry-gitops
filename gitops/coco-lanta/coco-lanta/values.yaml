@@ -41,6 +41,8 @@ generic:
     - name: coco-lanta-livekit
       key: secret
       alias: COCO_LIVEKIT_API_SECRET
+    # Made by hand, the password is not in this repo:
+    # kubectl -n coco-lanta create secret generic coco-lanta-regie --from-literal=password=...
     - name: coco-lanta-regie
       key: password
       alias: COCO_REGIE_PASSWORD
