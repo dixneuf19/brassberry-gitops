@@ -1,0 +1,62 @@
+generic:
+  # The show state is in memory: one replica.
+  replicaCount: 1
+  image:
+    repository: ghcr.io/dixneuf19/playground/coco-lanta
+    tag: main
+  container:
+    port: 8000
+    probe:
+      liveness:
+        path: /healthz
+      readiness:
+        path: /healthz
+  resources:
+    limits:
+      memory: 256Mi
+    requests:
+      memory: 64Mi
+      cpu: 50m
+  service:
+    type: ClusterIP
+    port: 80
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+    hosts:
+      - host: cocolanta.dixneuf19.fr
+        paths:
+          - path: /
+    tls:
+      - hosts:
+          - cocolanta.dixneuf19.fr
+        secretName: cocolanta-dixneuf19-fr-tls
+  configmap:
+    COCO_PUBLIC_URL: "https://cocolanta.dixneuf19.fr"
+    COCO_LIVEKIT_URL: "wss://cocolanta-live.dixneuf19.fr"
+    COCO_LIVEKIT_API_KEY: "coco-lanta"
+  secrets:
+    - name: coco-lanta-livekit
+      key: secret
+      alias: COCO_LIVEKIT_API_SECRET
+    - name: coco-lanta-regie
+      key: password
+      alias: COCO_REGIE_PASSWORD
+  nodeSelector:
+    kubernetes.io/hostname: k8s-worker-1
+
+livekit:
+  image: livekit/livekit-server:v1.13.11
+  host: cocolanta-live.dixneuf19.fr
+  apiKey: coco-lanta
+  # Phones send their video straight to this node over the LAN (host network).
+  node: k8s-worker-1
+  nodeIP: 192.168.1.40
+  resources:
+    limits:
+      memory: 1Gi
+    requests:
+      memory: 128Mi
+      cpu: 250m
