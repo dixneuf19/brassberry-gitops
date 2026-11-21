@@ -43,6 +43,9 @@ Monorepo for my homelab infrastructure: from bare-metal provisioning to GitOps-m
 │
 ├── proxmox/             # Proxmox docs: README.md, ZFS.md, bios.md
 │
+├── docs/                # Cross-cutting documentation
+│   └── backups/         # Backup strategy: coverage recap, per-techno and per-tool pages
+│
 ├── raspberry-pi/        # Pi provisioning: image scripts + cloud-init templates
 │   ├── fix-ssh-on-pi.*  # Image customization
 │   └── templates/       # Cloud-init templates
@@ -122,6 +125,11 @@ All secrets are managed centrally in **[Bitwarden Secrets Manager](https://vault
 1. Add the secret in Bitwarden Secrets Manager
 2. For TF-consumed secrets: add the `TF_VAR_*` export to `.envrc`
 3. For K8s secrets: add an `ExternalSecret` resource in the app's chart templates
+
+## Backups
+
+What is backed up, how, and what is not: [docs/backups/README.md](docs/backups/README.md)
+(recap table first, then per-technology, per-tool and per-app pages).
 
 ## CI/CD
 
