@@ -1,0 +1,8 @@
+helm:
+  parameters:
+  - name: generic.image.name
+    value: ghcr.io/dixneuf19/playground/xy
+    forcestring: true
+  - name: generic.image.tag
+    value: main@sha256:2816d0e334db7bc8e2feb2774ef4cf7acaf61d77262b08c78a0d338d7312b392
+    forcestring: true
