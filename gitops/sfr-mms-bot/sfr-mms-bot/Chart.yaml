@@ -5,5 +5,5 @@ description: "Telegram bot fetching SFR MMS from vosmms.com"
 dependencies:
   - name: base-helm-chart
     alias: generic
-    version: 0.3.2
+    version: 0.5.0
     repository: https://dixneuf19.github.io/helm-charts-repo/
