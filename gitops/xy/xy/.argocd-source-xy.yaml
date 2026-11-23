@@ -4,5 +4,5 @@ helm:
     value: ghcr.io/dixneuf19/playground/xy
     forcestring: true
   - name: generic.image.tag
-    value: main@sha256:2816d0e334db7bc8e2feb2774ef4cf7acaf61d77262b08c78a0d338d7312b392
+    value: main@sha256:5f722f7a7bc591f06fb6cdc585327c07351fcc84b98bbee753e562d8db8221ad
     forcestring: true
