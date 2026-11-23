@@ -4,5 +4,5 @@ helm:
     value: ghcr.io/dixneuf19/vitry-auberge-bot
     forcestring: true
   - name: generic.image.tag
-    value: main@sha256:15e6944cd2e84a9519a2f9728315913f884b3c76bb93badc5471b53221ce0f19
+    value: main@sha256:c5da3d2a6f7b07edc655b5a1852b1f3e2cd1011645198a583d42061f2128e520
     forcestring: true
