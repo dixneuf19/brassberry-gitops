@@ -1,0 +1,10 @@
+apiVersion: v2
+name: xy
+version: 1.0.0
+description: "Deux axes: place candidates on a two-axis chart, compare with everyone"
+home: https://github.com/dixneuf19/playground
+dependencies:
+  - name: base-helm-chart
+    alias: generic
+    version: 0.4.0
+    repository: https://dixneuf19.github.io/helm-charts-repo/

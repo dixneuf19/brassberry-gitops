@@ -11,3 +11,5 @@ databases:
     appNamespace: karaoke
   auberge:
     appNamespace: vitry-auberge
+  xy:
+    appNamespace: xy

@@ -268,6 +268,13 @@ applications:
     namespace: karaoke
     path: gitops/karaoke/karaoke
 
+  # =============================================================================
+  # xy, Deux axes (playground)
+  # =============================================================================
+  - name: xy
+    namespace: xy
+    path: gitops/xy/xy
+
   # Shared CNPG cluster for playground apps (one database per app)
   - name: playground-db
     namespace: playground-db

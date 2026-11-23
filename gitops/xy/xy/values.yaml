@@ -1,0 +1,51 @@
+generic:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/dixneuf19/playground/xy
+    # Image updater pins main@sha256 in .argocd-source-xy.yaml after first sync
+    tag: main@sha256:22b04641b862085a115fea1109d61dedbc1a4063574560da351d903ba09b456b
+  container:
+    port: 8000
+    probe:
+      liveness:
+        path: /healthz
+      readiness:
+        path: /healthz
+      startup:
+        path: /healthz
+        periodSeconds: 2
+        failureThreshold: 30
+  resources:
+    limits:
+      memory: 128Mi
+    requests:
+      memory: 64Mi
+      cpu: 50m
+  service:
+    type: ClusterIP
+    port: 80
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+    hosts:
+      - host: xy.dixneuf19.fr
+        paths:
+          - path: /
+    tls:
+      - hosts:
+          - xy.dixneuf19.fr
+        secretName: xy-dixneuf19-fr-tls
+  configmap:
+    XY_DB_HOST: "playground-rw.playground-db.svc"
+    XY_DB_PORT: "5432"
+    XY_DB_NAME: "xy"
+  secrets:
+    # Copied from playground-db by templates/database-credentials.yaml
+    - name: xy-db
+      key: username
+      alias: XY_DB_USER
+    - name: xy-db
+      key: password
+      alias: XY_DB_PASSWORD
