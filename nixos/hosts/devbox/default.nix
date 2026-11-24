@@ -8,6 +8,8 @@
 
   networking.hostName = "devbox";
 
+  services.tailscale.extraSetFlags = [ "--operator=dixneuf19" ];
+
   services.rex.loginServer = {
     enable = true;
     accounts = {
