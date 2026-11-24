@@ -225,7 +225,7 @@ kube-prometheus-stack:
       # Runs on a specific node with local storage
       # NFS is not well supported and causes date corruption in the long run
       nodeSelector:
-        kubernetes.io/hostname: brassberry-27
+        kubernetes.io/hostname: k8s-worker-1
 
       storageSpec:
         volumeClaimTemplate:
