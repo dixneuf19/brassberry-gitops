@@ -1,6 +1,7 @@
 locals {
-  ragots_address = "ragots@mangococo.fr"
-  ragots_members = distinct([for m in var.ragots_members : lower(m)])
+  ragots_address   = "ragots@mangococo.fr"
+  ragots_addresses = [local.ragots_address, "cimetiere@mangococo.fr"]
+  ragots_members   = distinct([for m in var.ragots_members : lower(m)])
 }
 
 resource "cloudflare_workers_script" "ragots" {
@@ -17,15 +18,22 @@ resource "cloudflare_workers_script" "ragots" {
   }]
 }
 
+moved {
+  from = cloudflare_email_routing_rule.ragots
+  to   = cloudflare_email_routing_rule.ragots["ragots@mangococo.fr"]
+}
+
 resource "cloudflare_email_routing_rule" "ragots" {
+  for_each = toset(local.ragots_addresses)
+
   zone_id = data.cloudflare_zone.mangococo.zone_id
-  name    = "Mailing list ${local.ragots_address}"
+  name    = each.key == local.ragots_address ? "Mailing list ${each.key}" : "Mailing list ${local.ragots_address} (alias ${each.key})"
   enabled = true
 
   matchers = [{
     type  = "literal"
     field = "to"
-    value = local.ragots_address
+    value = each.key
   }]
 
   actions = [{
@@ -37,8 +45,8 @@ resource "cloudflare_email_routing_rule" "ragots" {
 
   lifecycle {
     precondition {
-      condition     = !contains(nonsensitive(keys(local.forwards)), local.ragots_address)
-      error_message = "${local.ragots_address} is the mailing list, remove it from mangococo_email_forwards."
+      condition     = !contains(nonsensitive(keys(local.forwards)), each.key)
+      error_message = "${each.key} is the mailing list, remove it from mangococo_email_forwards."
     }
   }
 }
