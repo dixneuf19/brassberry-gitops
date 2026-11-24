@@ -45,6 +45,7 @@ fails until its owner clicks the link.
 sent to `ragots@mangococo.fr` by a member goes to every member, sender
 included (Gmail hides the copy of a message you sent). Anyone else gets a
 rejection. "Reply" answers the sender only, "Reply all" posts to the list.
+`cimetiere@mangococo.fr` is an alias: it reaches the same list.
 
 Members are checked on the envelope sender, so a member must post from the
 exact address listed. The members live in the Bitwarden secret
