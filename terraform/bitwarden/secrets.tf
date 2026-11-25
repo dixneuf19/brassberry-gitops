@@ -145,6 +145,21 @@ resource "bitwarden-secrets_secret" "github_user" {
   }
 }
 
+import {
+  to = bitwarden-secrets_secret.gandi_pat_loudnaround
+  id = "23803e3c-e83a-498f-90ed-b50d01632aec"
+}
+
+resource "bitwarden-secrets_secret" "gandi_pat_loudnaround" {
+  key        = "gandi-pat-loudnaround"
+  project_id = var.bw_project_id
+  note       = "Gandi PAT for loudnaround.org DNS, TF_VAR_gandi_pat_loudnaround (cloud layer)"
+
+  lifecycle {
+    ignore_changes = [value, length]
+  }
+}
+
 resource "bitwarden-secrets_secret" "oci_compartment_id" {
   key        = "oci-compartment-id"
   project_id = var.bw_project_id
