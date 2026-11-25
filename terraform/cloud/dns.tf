@@ -72,12 +72,6 @@ resource "gandi_livedns_record" "loudnaround_root_txt" {
   zone = "loudnaround.org"
 }
 
-import {
-  provider = gandi.loudnaround
-  to       = gandi_livedns_record.loudnaround_root_txt
-  id       = "loudnaround.org/@/TXT"
-}
-
 # Generated in the Google Workspace admin console (Gmail > Authenticate email),
 # split in 255-character strings
 resource "gandi_livedns_record" "loudnaround_dkim" {
