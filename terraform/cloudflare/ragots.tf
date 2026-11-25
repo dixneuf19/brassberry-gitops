@@ -1,6 +1,6 @@
 locals {
-  ragots_address   = "ragots@mangococo.fr"
-  ragots_addresses = [local.ragots_address, "cimetiere@mangococo.fr"]
+  ragots_address   = "cimetiere@mangococo.fr"
+  ragots_addresses = [local.ragots_address, "ragots@mangococo.fr"]
   ragots_members   = distinct([for m in var.ragots_members : lower(m)])
 }
 
@@ -11,11 +11,29 @@ resource "cloudflare_workers_script" "ragots" {
   main_module        = "ragots.js"
   compatibility_date = "2026-11-01"
 
-  bindings = [{
-    name = "MEMBERS"
-    type = "secret_text"
-    text = jsonencode(local.ragots_members)
-  }]
+  bindings = [
+    {
+      name = "MEMBERS"
+      type = "secret_text"
+      text = jsonencode(local.ragots_members)
+    },
+    {
+      name                     = "SEND"
+      type                     = "send_email"
+      allowed_sender_addresses = [local.ragots_address]
+    },
+  ]
+
+  observability = {
+    enabled = true
+  }
+
+  depends_on = [cloudflare_email_sending_subdomain.mangococo]
+}
+
+resource "cloudflare_email_sending_subdomain" "mangococo" {
+  zone_id = data.cloudflare_zone.mangococo.zone_id
+  name    = "mangococo.fr"
 }
 
 moved {

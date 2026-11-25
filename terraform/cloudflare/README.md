@@ -39,13 +39,27 @@ Then `direnv reload` and `terraform apply` here, or let Burrito pick it up
 A new destination gets a verification email from Cloudflare. Forwarding to it
 fails until its owner clicks the link.
 
-## Mailing list ragots@mangococo.fr
+## Anonymous mailing list cimetiere@mangococo.fr
 
-`ragots.tf` and `worker/ragots.js`: a separate rule and Worker. A message
-sent to `ragots@mangococo.fr` by a member goes to every member, sender
-included (Gmail hides the copy of a message you sent). Anyone else gets a
-rejection. "Reply" answers the sender only, "Reply all" posts to the list.
-`cimetiere@mangococo.fr` is an alias: it reaches the same list.
+`ragots.tf` and `worker/ragots.js`: a separate rule and Worker.
+`ragots@mangococo.fr` is an alias of the same list. A message sent by a
+member is re-sent to every member, sender included, as a new message from
+`Cimetière <cimetiere@mangococo.fr>`: the original From, Received,
+Message-ID and signature headers are dropped, the body is left untouched (so
+a signature in the body still shows). Replies go back to the list. Anyone
+else, and automated replies, get a rejection.
+
+Sending goes through Cloudflare Email Sending (`send_email` binding,
+`cloudflare_email_sending_subdomain`), which signs for `mangococo.fr`. On the
+free plan it can only send to verified destination addresses, which every
+member is. The Cloudflare activity log still shows who sent each message.
+
+The Worker is plain JavaScript (Terraform uploads the file as is), type
+checked through JSDoc. CI runs the checks on PRs; locally:
+
+```bash
+cd worker && npm ci && npm run check && npm test
+```
 
 Members are checked on the envelope sender, so a member must post from the
 exact address listed. The members live in the Bitwarden secret
@@ -65,7 +79,7 @@ verifies once, whichever feature added them first.
 1. Create an API token in the Cloudflare dashboard (My Profile, API Tokens),
    scoped to the account and the `mangococo.fr` zone:
    - Account: Workers Scripts Edit, Email Routing Addresses Edit
-   - Zone: Zone Read, Email Routing Rules Edit
+   - Zone: Zone Read, Email Routing Rules Edit, Email Sending Edit
 2. Apply `terraform/bitwarden` to create `cloudflare-api-token` and
    `mangococo-email-forwards` (placeholder values)
 3. Write the real values: `bws secret list` to get the IDs, then
