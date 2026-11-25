@@ -11,6 +11,11 @@ variable "gandi_pat" {
   sensitive = true
 }
 
+variable "gandi_pat_loudnaround" {
+  type      = string
+  sensitive = true
+}
+
 variable "node_ips" {
   type = list(string)
 }

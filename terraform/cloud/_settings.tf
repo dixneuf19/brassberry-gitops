@@ -38,5 +38,11 @@ provider "gandi" {
   personal_access_token = var.gandi_pat
 }
 
+# loudnaround.org belongs to another Gandi organization
+provider "gandi" {
+  alias                 = "loudnaround"
+  personal_access_token = var.gandi_pat_loudnaround
+}
+
 # Credentials via TAILSCALE_OAUTH_CLIENT_ID / TAILSCALE_OAUTH_CLIENT_SECRET
 provider "tailscale" {}

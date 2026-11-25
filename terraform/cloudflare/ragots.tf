@@ -25,7 +25,19 @@ resource "cloudflare_workers_script" "ragots" {
   ]
 
   observability = {
-    enabled = true
+    enabled            = true
+    head_sampling_rate = 1
+    logs = {
+      enabled            = true
+      head_sampling_rate = 1
+      invocation_logs    = true
+      persist            = true
+    }
+    traces = {
+      enabled            = false
+      head_sampling_rate = 1
+      persist            = true
+    }
   }
 
   depends_on = [cloudflare_email_sending_subdomain.mangococo]
