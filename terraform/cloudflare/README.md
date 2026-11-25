@@ -54,6 +54,13 @@ Sending goes through Cloudflare Email Sending (`send_email` binding,
 free plan it can only send to verified destination addresses, which every
 member is. The Cloudflare activity log still shows who sent each message.
 
+The Worker is plain JavaScript (Terraform uploads the file as is), type
+checked through JSDoc. CI runs the checks on PRs; locally:
+
+```bash
+cd worker && npm ci && npm run check && npm test
+```
+
 Members are checked on the envelope sender, so a member must post from the
 exact address listed. The members live in the Bitwarden secret
 `ragots-members` (JSON list), passed as `TF_VAR_ragots_members`:

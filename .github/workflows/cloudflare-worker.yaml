@@ -1,0 +1,31 @@
+name: Cloudflare Email Workers
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - terraform/cloudflare/worker/**
+      - .github/workflows/cloudflare-worker.yaml
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: terraform/cloudflare/worker
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: terraform/cloudflare/worker/package-lock.json
+
+      - run: npm ci
+      - run: npm run check
+      - run: npm test

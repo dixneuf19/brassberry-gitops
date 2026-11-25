@@ -1,0 +1,13 @@
+{
+  "name": "mangococo-email-workers",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "tsc",
+    "test": "node --import ./test/register.mjs --test test/*.test.mjs"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20261125.1",
+    "typescript": "7.0.2"
+  }
+}

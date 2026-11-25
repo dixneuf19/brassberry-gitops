@@ -5,6 +5,9 @@
 // are dropped; the body is passed through untouched. Anything else is rejected.
 import { EmailMessage } from "cloudflare:email";
 
+/** @typedef {{ MEMBERS: string, SEND: SendEmail }} Env */
+/** @typedef {[name: string, value: string]} Header */
+
 const LIST_ADDRESS = "cimetiere@mangococo.fr";
 const LIST_NAME = "Cimetière";
 const LIST_DOMAIN = "mangococo.fr";
@@ -16,6 +19,7 @@ const KEPT_HEADERS = new Set(["subject", "mime-version", "content-type", "conten
 const THREAD_HEADERS = new Set(["in-reply-to", "references"]);
 
 // One char per byte, so the header block round-trips exactly whatever its encoding.
+/** @param {Uint8Array} bytes */
 const bytesToBinary = (bytes) => {
   let out = "";
   for (let i = 0; i < bytes.length; i += 0x8000) {
@@ -23,13 +27,19 @@ const bytesToBinary = (bytes) => {
   }
   return out;
 };
+/** @param {string} str */
 const binaryToBytes = (str) => Uint8Array.from(str, (c) => c.charCodeAt(0));
 
+/** @param {string} text */
 const encodeWord = (text) => {
   const utf8 = new TextEncoder().encode(text);
   return `=?UTF-8?B?${btoa(bytesToBinary(utf8))}?=`;
 };
 
+/**
+ * @param {Uint8Array} raw
+ * @returns {[Uint8Array, Uint8Array]} header block and body
+ */
 function splitMessage(raw) {
   for (let i = 0; i + 3 < raw.length; i++) {
     if (raw[i] === 13 && raw[i + 1] === 10 && raw[i + 2] === 13 && raw[i + 3] === 10) {
@@ -44,8 +54,13 @@ function splitMessage(raw) {
   return [raw, new Uint8Array()];
 }
 
-// Returns [name, value] pairs, keeping folded continuation lines in the value.
+/**
+ * Keeps folded continuation lines in the value.
+ * @param {Uint8Array} block
+ * @returns {Header[]}
+ */
 function parseHeaders(block) {
+  /** @type {Header[]} */
   const headers = [];
   for (const line of bytesToBinary(block).split(/\r?\n/)) {
     if (/^[ \t]/.test(line) && headers.length > 0) {
@@ -58,6 +73,10 @@ function parseHeaders(block) {
   return headers;
 }
 
+/**
+ * @param {Header[]} original
+ * @param {string} messageId
+ */
 function rewriteHeaders(original, messageId) {
   const out = [];
   for (const [name, value] of original) {
@@ -85,7 +104,10 @@ function rewriteHeaders(original, messageId) {
   return out.join("\r\n");
 }
 
-// Vacation replies and bounces sent back to the list must not be broadcast.
+/**
+ * Vacation replies and bounces sent back to the list must not be broadcast.
+ * @param {Headers} headers
+ */
 function isAutomated(headers) {
   const autoSubmitted = headers.get("Auto-Submitted");
   const precedence = (headers.get("Precedence") || "").toLowerCase();
@@ -96,9 +118,15 @@ function isAutomated(headers) {
   );
 }
 
+/** @satisfies {ExportedHandler<Env>} */
 export default {
+  /**
+   * @param {ForwardableEmailMessage} message
+   * @param {Env} env
+   */
   async email(message, env) {
-    const members = JSON.parse(env.MEMBERS).map((m) => m.toLowerCase());
+    /** @type {string[]} */
+    const members = JSON.parse(env.MEMBERS).map((/** @type {string} */ m) => m.toLowerCase());
 
     if (isAutomated(message.headers)) {
       message.setReject("Automated messages are not sent to this list");
@@ -119,7 +147,7 @@ export default {
     rebuilt.set(body, headers.length);
 
     const results = await Promise.allSettled(
-      members.map((m) => env.SEND.send(new EmailMessage(LIST_ADDRESS, m, new Response(rebuilt).body))),
+      members.map((m) => env.SEND.send(new EmailMessage(LIST_ADDRESS, m, new Blob([rebuilt]).stream()))),
     );
     const failures = results.filter((r) => r.status === "rejected");
     for (const failure of failures) {
