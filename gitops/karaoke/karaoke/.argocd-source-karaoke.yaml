@@ -4,5 +4,5 @@ helm:
     value: ghcr.io/dixneuf19/karaoke
     forcestring: true
   - name: generic.image.tag
-    value: main@sha256:f7a92e8ac94e78f6558b9151e02623c8f8b9cf6f982828a82ad372f2284cce1e
+    value: main@sha256:c77dd920dfe04e66b04712844026cc10e6b11d771bf2cfdd6f69ee789a66d405
     forcestring: true
