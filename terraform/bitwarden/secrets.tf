@@ -145,11 +145,6 @@ resource "bitwarden-secrets_secret" "github_user" {
   }
 }
 
-import {
-  to = bitwarden-secrets_secret.gandi_pat_loudnaround
-  id = "23803e3c-e83a-498f-90ed-b50d01632aec"
-}
-
 resource "bitwarden-secrets_secret" "gandi_pat_loudnaround" {
   key        = "gandi-pat-loudnaround"
   project_id = var.bw_project_id
