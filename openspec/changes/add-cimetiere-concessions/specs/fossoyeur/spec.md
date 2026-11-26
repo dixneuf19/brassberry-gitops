@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: Commands in the body
-The fossoyeur SHALL read commands from the plain-text body of mail to `fossoyeur@mangococo.fr`, one per line, ignoring case and accents, ignoring the subject, and stopping at a signature line (`-- `) or the first quoted line (`>`). It SHALL answer every mail once, by reply, with one result line per command.
+The fossoyeur SHALL read commands from the plain-text body of mail to `fossoyeur@mangococo.fr`, one per line, in French only, ignoring case and accents, ignoring the subject, and stopping at a signature line (`-- `) or the first quoted line (`>`). It SHALL answer every mail once, by reply, with one result line per command.
 
 #### Scenario: Several commands
 - **WHEN** a member sends `acheter apero` and `enterrer apero ed@x.org` on two lines
@@ -27,11 +27,15 @@ The fossoyeur SHALL answer with the help text, quoting the first line it did not
 - **THEN** the reply is the help text
 
 ### Requirement: acheter
-`acheter <concession>` SHALL create the concession with the sender as its only member, when the name is free, valid (2 to 32 characters of `a-z`, `0-9`, `-`) and not reserved (`cimetiere`, `ragots`, `fossoyeur`, `contact`). Anyone MAY run it.
+`acheter <concession>` SHALL create the concession with the sender as its only member, when the sender is a member of the main cimetière and the name is free, valid (2 to 32 characters of `a-z`, `0-9`, `-`) and not reserved (`cimetiere`, `ragots`, `fossoyeur`, `contact`).
 
 #### Scenario: New concession
-- **WHEN** anyone sends `acheter apero` and `apero` does not exist
+- **WHEN** a member of the main cimetière sends `acheter apero` and `apero` does not exist
 - **THEN** `apero` exists with the sender as member, the reply gives its address `cimetiere+apero@mangococo.fr`, and Julen is notified
+
+#### Scenario: Outside the cimetière
+- **WHEN** an address that is not in the main cimetière sends `acheter apero`
+- **THEN** nothing changes and the reply says only members of the cimetière can buy a concession
 
 #### Scenario: Taken or invalid name
 - **WHEN** someone sends `acheter apero` while `apero` exists, or `acheter Apéro!`
@@ -48,9 +52,28 @@ The fossoyeur SHALL answer with the help text, quoting the first line it did not
 - **WHEN** the address is already a verified destination (a member of another concession, or of `contact@`)
 - **THEN** it is added and receives the next post without any verification
 
+#### Scenario: Burial in the main cimetière
+- **WHEN** a member of the main cimetière sends `enterrer cimetiere ed@x.org`
+- **THEN** `ed@x.org` becomes a member of the main cimetière, as for any concession, and Julen is notified
+
 #### Scenario: Not a member
 - **WHEN** someone outside `apero` sends `enterrer apero ed@x.org`
 - **THEN** nothing changes and the reply says only members can bury people there
+
+### Requirement: Welcome once verified
+A cron trigger SHALL run the Worker every 15 minutes and, for every buried address that has become a verified destination since the last run, SHALL send it a welcome mail and notify Julen. An address still unverified 30 days after its burial SHALL stop being checked and SHALL be reported to Julen.
+
+#### Scenario: Newcomer verifies
+- **WHEN** `ed@x.org`, buried in `apero`, clicks the Cloudflare verification link
+- **THEN** within 15 minutes Ed receives a welcome mail naming his concessions and how to post, and Julen is told Ed is verified
+
+#### Scenario: Nobody pending
+- **WHEN** the cron runs and no buried address is waiting for verification
+- **THEN** the run makes no Cloudflare API call and sends nothing
+
+#### Scenario: Never verified
+- **WHEN** an address is still unverified 30 days after its burial
+- **THEN** Julen gets one mail about it and the cron stops checking it
 
 ### Requirement: exhumer
 `exhumer <concession>` SHALL remove the sender from the concession. Members SHALL NOT be able to remove anyone else. The concession SHALL be deleted when its last member leaves.
@@ -75,7 +98,7 @@ The fossoyeur SHALL answer with the help text, quoting the first line it did not
 - **THEN** the reply lists nobody
 
 ### Requirement: Julen is notified
-The Worker SHALL mail `julen@loudnaround.org` once per concession bought and once per address buried, naming who did it, the concession and the address.
+The Worker SHALL mail `julen@loudnaround.org` once per concession bought, once per address buried (in the main cimetière too) and once per address verified, naming who did it, the concession and the address.
 
 #### Scenario: Burial notification
 - **WHEN** a member buries two addresses in one command

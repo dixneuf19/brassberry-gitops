@@ -5,10 +5,11 @@
 ## What Changes
 
 - **Concessions:** a concession is a named, anonymous, members-only list inside the cimetière, reached at `cimetiere+<concession>@mangococo.fr`. A post is re-sent to the concession's members from that address, so replies come back to the concession.
-- **The fossoyeur:** `fossoyeur@mangococo.fr` takes commands written in the mail body, in cemetery words: `acheter` a concession, `enterrer` people in it, `exhumer` yourself, read its `registre`, see your `plan`. Anything it does not understand gets the help text back.
+- **The fossoyeur:** `fossoyeur@mangococo.fr` takes commands written in the mail body, in French cemetery words: `acheter` a concession (members of the main cimetière only), `enterrer` people in it (or in the main cimetière), `exhumer` yourself, read its `registre`, see your `plan`. Anything it does not understand gets the help text back.
 - **Members move to Workers KV:** the main cimetière and every concession keep their members in one KV namespace, written by the Worker. The Bitwarden secret `ragots-members`, `TF_VAR_ragots_members` and `scripts/ragots.py` go away; a new `scripts/cimetiere.py` gives Julen admin access to KV.
 - **Registration:** `enterrer` registers new addresses as Cloudflare destination addresses through the API, which sends them the verification email the free plan requires. The Worker gets its own API token, created by Terraform.
-- **Notifications:** Julen gets a mail for every concession bought and every person buried.
+- **Welcome:** a cron trigger checks every 15 minutes which buried people have verified their address, and sends them a welcome mail.
+- **Notifications:** Julen gets a mail for every concession bought, every person buried and every person verified.
 - **Subaddressing** is turned on for the zone, so `cimetiere+<concession>@` matches the existing `cimetiere@` rule. `contact@`'s Worker learns to ignore the `+` part.
 - `contact@mangococo.fr` keeps its forwarding map in Bitwarden, unchanged.
 

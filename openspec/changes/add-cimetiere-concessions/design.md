@@ -67,12 +67,12 @@ Rejected: D1 or Durable Objects. They remove the race, at the cost of a schema o
 
 ### The fossoyeur speaks cemetery
 
-Commands go in the mail body, one per line. The subject is ignored. Matching ignores case and accents.
+Commands go in the mail body, one per line, in French only. The subject is ignored. Matching ignores case and accents.
 
 | Command | Meaning | Who |
 | --- | --- | --- |
-| `acheter <concession>` | Create a concession; the buyer is its first member | Anyone |
-| `enterrer <concession> <adresse> [<adresse> ...]` | Add people | Members of that concession |
+| `acheter <concession>` | Create a concession; the buyer is its first member | Members of the main cimetière |
+| `enterrer <concession> <adresse> [<adresse> ...]` | Add people | Members of that concession (for the main cimetière, its members) |
 | `exhumer <concession>` | Leave it; the last one out frees the concession | Members of that concession |
 | `registre <concession>` | List its members, marking those not verified yet | Members of that concession |
 | `plan` | List the concessions you belong to | Anyone |
@@ -80,7 +80,7 @@ Commands go in the mail body, one per line. The subject is ignored. Matching ign
 
 Any line that is not a command makes the whole answer the help text, quoting the line it did not understand. Reading stops at a signature (`-- `) or a quoted line (`>`), so replying to a fossoyeur mail works. At most 10 commands per mail. A concession name is 2 to 32 characters of `a-z`, `0-9` and `-`; `cimetiere`, `ragots`, `fossoyeur` and `contact` are reserved.
 
-The fossoyeur answers with `message.reply()`, which can reach a sender who is not a verified address yet (a stranger buying a concession). Implementation confirms the conditions `reply()` puts on the incoming mail (DMARC).
+The fossoyeur answers with `message.reply()`, which can reach a sender who is not a verified address (someone outside the cimetière asking for `aide`, or refused). Implementation confirms the conditions `reply()` puts on the incoming mail (DMARC).
 
 ### Mail bodies are parsed with postal-mime
 
@@ -90,15 +90,19 @@ Rejected: an esbuild bundle (a committed build artefact and a CI check to keep i
 
 ### Registration goes through the Cloudflare API, with a Terraform-made token
 
-Free-plan Email Sending only reaches verified addresses, so `enterrer` (and `acheter` by an unknown sender) registers each new address with `POST /accounts/{id}/email/routing/addresses`, which makes Cloudflare send the verification email. An address already registered (the destination list is shared with `contact@`) is left alone.
+Free-plan Email Sending only reaches verified addresses, so `enterrer` registers each new address with `POST /accounts/{id}/email/routing/addresses`, which makes Cloudflare send the verification email. An address already registered (the destination list is shared with `contact@`) is left alone.
 
 The Worker's token is a `cloudflare_account_token` limited to Email Routing Addresses read and write, passed as a `secret_text` binding. Terraform creates it, so it never appears in git, Bitwarden or a plan; rotation is `terraform apply -replace`. The token Terraform itself uses needs "Account API Tokens Write" for this.
 
-The new person cannot be welcomed before they verify, since nothing reaches them before. The answer to `enterrer` tells the member to warn them ("dis-lui de chercher le mail de Cloudflare, spams compris").
+Nothing reaches the new person before they verify, so the answer to `enterrer` tells the member to warn them ("dis-lui de chercher le mail de Cloudflare, spams compris").
+
+### New people are welcomed once verified, by a cron trigger
+
+Cloudflare emits no event when an address is verified, so the Worker polls. `enterrer` adds every unverified address to a KV key `pending` (address, concession, who buried them). A `cloudflare_workers_cron_trigger` runs the Worker's `scheduled()` handler every 15 minutes: when `pending` is empty it stops after one KV read; otherwise it asks the API which pending addresses are verified, sends each one a welcome mail ("Bienvenue au cimetière", their concessions and how to post, `aide`), tells Julen, and removes them from `pending`. That is 96 runs a day, well inside the free tier. An address still pending after 30 days is dropped from `pending` and reported to Julen.
 
 ### Julen is notified through the same binding
 
-One short mail to `julen@loudnaround.org` (verified) per `acheter` and per address buried: who, which concession, which address. The address comes from a `plain_text` binding, not from the code.
+One short mail to `julen@loudnaround.org` (verified) per `acheter`, per address buried (the main cimetière included) and per address verified: who, which concession, which address. The address comes from a `plain_text` binding, not from the code.
 
 ### Admin access stays outside the mail interface
 
@@ -109,7 +113,7 @@ One short mail to `julen@loudnaround.org` (verified) per `acheter` and per addre
 - **Forged senders** can post to a concession or bury people in it → accepted; every burial notifies Julen, who can undo it with `scripts/cimetiere.py`.
 - **Members posting from another address** (an alias, a Gmail dot variant) are refused → the refusal says how to fix it: be buried under that address too.
 - **Email Sending rejects plus-address senders** → fallback headers above.
-- **Spam to `fossoyeur@`** buys concessions → each needs a reply-able sender and notifies Julen; KV's 1,000 free writes a day caps the damage.
+- **Spam to `fossoyeur@`** only gets the help text: buying and burying need a cimetière member as sender. A forged member address can still do both, and each notifies Julen.
 - **Email Sending free allowance** is not known yet → check before rollout; a post costs one send per member.
 - **Subaddressing reaches `contact@`**: `contact+x@` would be rejected as unknown → the forwarding Worker strips the `+` part in the same change.
 - **KV races** → accepted at band scale (see above).
@@ -126,8 +130,4 @@ Rollback: before step 4, reverting PR 1 restores the Bitwarden path untouched. A
 
 ## Open Questions
 
-- Can members of the main cimetière `enterrer` new people in it, or does the main list stay admin-only (Julen, through the script)?
-- Must someone already be in the main cimetière to `acheter` a concession, or can anyone, as decided so far?
-- Keep the `[apero]` subject prefix, or rely on the display name alone?
-- Commands in French only, or also English synonyms?
-- A daily cron that welcomes people once they verify (and tells Julen): worth the extra code?
+None left. Settled with Julen on 2026-11-26: members of the main cimetière can bury people in it (Julen is notified), only they can buy concessions, the `[name]` subject prefix stays, commands are French only, and verified newcomers are welcomed by the cron trigger.

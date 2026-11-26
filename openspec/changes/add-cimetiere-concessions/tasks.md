@@ -23,9 +23,10 @@
 - [ ] 3.5 `acheter`, `enterrer`, `exhumer`, `registre`, `plan`, `aide`, with KV `member:` index kept in sync; unit tests
 - [ ] 3.6 Address registration through the Cloudflare API; `cloudflare_account_token.fossoyeur` and its `secret_text` binding
 - [ ] 3.7 Notifications to Julen (`plain_text` binding for the address)
-- [ ] 3.8 `fossoyeur@` added to the `ragots` rule set; `allowed_sender_addresses` changed per 1.3
-- [ ] 3.9 Remove `MEMBERS`, `var.ragots_members`, `scripts/ragots.py`, the `.envrc` export and the ExternalSecret key; update `README.md` and `CLAUDE.md`
-- [ ] 3.10 `terraform plan`, apply; delete `ragots-members` from Bitwarden
+- [ ] 3.8 KV `pending` list, `scheduled()` handler and `cloudflare_workers_cron_trigger` every 15 minutes: welcome mail and notification on verification, drop and report after 30 days; tests
+- [ ] 3.9 `fossoyeur@` added to the `ragots` rule set; `allowed_sender_addresses` changed per 1.3
+- [ ] 3.10 Remove `MEMBERS`, `var.ragots_members`, `scripts/ragots.py`, the `.envrc` export and the ExternalSecret key; update `README.md` and `CLAUDE.md`
+- [ ] 3.11 `terraform plan`, apply; delete `ragots-members` from Bitwarden
 
 ## 4. Acceptance
 
@@ -33,4 +34,5 @@
 - [ ] 4.2 A post to `cimetiere+test-tombe@` reaches both, anonymised, from `Cimetière · test-tombe`; Reply goes back to the concession
 - [ ] 4.3 A post from an outside address is refused; `registre`, `plan`, `exhumer` and a nonsense mail behave as specified
 - [ ] 4.4 Julen's notifications arrive
-- [ ] 4.5 `exhumer` both addresses (the concession disappears), then send the band the how-to on the main list
+- [ ] 4.5 Bury a new address of Julen's, verify it, and get the welcome mail within 15 minutes
+- [ ] 4.6 `exhumer` both addresses (the concession disappears), then send the band the how-to on the main list
