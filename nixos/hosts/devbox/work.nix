@@ -11,6 +11,8 @@
     pritunl-client
     azure-cli
     argocd
+    go
+    (callPackage ./tsh.nix { })
   ];
 
   # The CLI only talks to this daemon, which owns the OpenVPN tunnels
