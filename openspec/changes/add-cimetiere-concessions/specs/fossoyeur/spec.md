@@ -4,14 +4,14 @@
 The fossoyeur SHALL read commands from the plain-text body of mail to `fossoyeur@mangococo.fr`, one per line, in French only, ignoring case and accents, ignoring the subject, and stopping at a signature line (`-- `) or the first quoted line (`>`). It SHALL answer every mail once, by reply, with one result line per command.
 
 #### Scenario: Several commands
-- **WHEN** a member sends `acheter apero` and `enterrer apero ed@x.org` on two lines
+- **WHEN** a member sends `acheter apero` and `enterrer apero Ed` on two lines
 - **THEN** one reply reports both results in order
 
 #### Scenario: Reply to a fossoyeur mail
 - **WHEN** a member answers a fossoyeur reply with `plan` above the quoted text
 - **THEN** only `plan` runs
 
-#### Scenario: HTML-only or encoded mail
+#### Scenario: Encoded mail
 - **WHEN** the body arrives as quoted-printable, base64 or multipart with an HTML part
 - **THEN** the commands are read from the decoded text
 
@@ -22,87 +22,86 @@ The fossoyeur SHALL answer with the help text, quoting the first line it did not
 - **WHEN** someone writes `creuser apero`
 - **THEN** the reply quotes `creuser apero` and gives the help text, and nothing changes
 
-#### Scenario: Empty mail
-- **WHEN** someone sends a mail with an empty body
-- **THEN** the reply is the help text
+#### Scenario: Outsider
+- **WHEN** an address outside the cimetière sends any command other than `aide`
+- **THEN** the reply is the help text and nothing changes
 
-### Requirement: acheter
-`acheter <concession>` SHALL create the concession with the sender as its only member, when the sender is a member of the main cimetière and the name is free, valid (2 to 32 characters of `a-z`, `0-9`, `-`) and not reserved (`cimetiere`, `ragots`, `fossoyeur`, `contact`).
-
-#### Scenario: New concession
-- **WHEN** a member of the main cimetière sends `acheter apero` and `apero` does not exist
-- **THEN** `apero` exists with the sender as member, the reply gives its address `cimetiere+apero@mangococo.fr`, and Julen is notified
-
-#### Scenario: Outside the cimetière
-- **WHEN** an address that is not in the main cimetière sends `acheter apero`
-- **THEN** nothing changes and the reply says only members of the cimetière can buy a concession
-
-#### Scenario: Taken or invalid name
-- **WHEN** someone sends `acheter apero` while `apero` exists, or `acheter Apéro!`
-- **THEN** nothing changes and the reply says why
-
-### Requirement: enterrer
-`enterrer <concession> <address> [<address> ...]` SHALL add the addresses to the concession when the sender is one of its members, and SHALL register every address not yet known to Cloudflare as an Email Routing destination address.
+### Requirement: Entering the cimetière
+`enterrer cimetiere <address> <nickname>` SHALL make the address a cimetière member with that nickname, when the sender is a cimetière member and the nickname is free, register the address as an Email Routing destination when Cloudflare does not know it, and notify Julen.
 
 #### Scenario: New person
-- **WHEN** a member of `apero` sends `enterrer apero ed@x.org` and Cloudflare does not know `ed@x.org`
-- **THEN** `ed@x.org` is a member of `apero`, Cloudflare sends it a verification email, the reply tells the member to warn Ed, and Julen is notified
+- **WHEN** a cimetière member sends `enterrer cimetiere ed@x.org Ed`
+- **THEN** `ed@x.org` is a cimetière member nicknamed `Ed`, Cloudflare sends it a verification email, the reply tells the member to warn Ed, and Julen is told who buried whom
 
-#### Scenario: Already verified person
-- **WHEN** the address is already a verified destination (a member of another concession, or of `contact@`)
-- **THEN** it is added and receives the next post without any verification
+#### Scenario: Taken nickname
+- **WHEN** the nickname is already used by another member
+- **THEN** nothing changes and the reply asks for another nickname
 
-#### Scenario: Burial in the main cimetière
-- **WHEN** a member of the main cimetière sends `enterrer cimetiere ed@x.org`
-- **THEN** `ed@x.org` becomes a member of the main cimetière, as for any concession, and Julen is notified
+### Requirement: Inviting into a concession
+`enterrer <concession> <nickname or address>` SHALL add a cimetière member to the concession when the sender is a member of that concession. Julen SHALL NOT be notified.
 
-#### Scenario: Not a member
-- **WHEN** someone outside `apero` sends `enterrer apero ed@x.org`
-- **THEN** nothing changes and the reply says only members can bury people there
+#### Scenario: Invite by nickname
+- **WHEN** a member of `apero` sends `enterrer apero Ed`
+- **THEN** the member nicknamed `Ed` receives the next `apero` posts
 
-### Requirement: Welcome once verified
-A cron trigger SHALL run the Worker every 15 minutes and, for every buried address that has become a verified destination since the last run, SHALL send it a welcome mail and notify Julen. An address still unverified 30 days after its burial SHALL stop being checked and SHALL be reported to Julen.
+#### Scenario: Not in the cimetière
+- **WHEN** the person named is not a cimetière member
+- **THEN** nothing changes and the reply says to bury them in the cimetière first
 
-#### Scenario: Newcomer verifies
-- **WHEN** `ed@x.org`, buried in `apero`, clicks the Cloudflare verification link
-- **THEN** within 15 minutes Ed receives a welcome mail naming his concessions and how to post, and Julen is told Ed is verified
+### Requirement: Leaving
+`exhumer cimetiere` SHALL remove the sender from the cimetière and every concession, and notify Julen. `exhumer <concession>` SHALL remove the sender from that concession only, and SHALL free the name when the last member leaves. Members SHALL NOT be able to remove anyone else.
 
-#### Scenario: Nobody pending
-- **WHEN** the cron runs and no buried address is waiting for verification
-- **THEN** the run makes no Cloudflare API call and sends nothing
-
-#### Scenario: Never verified
-- **WHEN** an address is still unverified 30 days after its burial
-- **THEN** Julen gets one mail about it and the cron stops checking it
-
-### Requirement: exhumer
-`exhumer <concession>` SHALL remove the sender from the concession. Members SHALL NOT be able to remove anyone else. The concession SHALL be deleted when its last member leaves.
-
-#### Scenario: Leaving
+#### Scenario: Leaving a concession
 - **WHEN** a member of `apero` sends `exhumer apero`
-- **THEN** they no longer receive `apero` posts
+- **THEN** they no longer receive `apero` posts and stay in the cimetière
 
 #### Scenario: Last member
 - **WHEN** the only member of `apero` sends `exhumer apero`
 - **THEN** `apero` no longer exists and its name can be bought again
 
-### Requirement: registre and plan
-`registre <concession>` SHALL list the concession's members, marking those not verified yet, to its members only. `plan` SHALL list the concessions the sender belongs to.
+### Requirement: Buying a concession
+`acheter <concession>` SHALL create the concession with the sender as its only member, when the sender is a cimetière member and the name is valid (2 to 32 characters of `a-z`, `0-9`, `-`), not reserved (`cimetiere`, `ragots`, `fossoyeur`, `contact`) and not in use. Julen SHALL NOT be notified.
 
-#### Scenario: Member reads the register
+#### Scenario: New concession
+- **WHEN** a cimetière member sends `acheter apero` and the name is free
+- **THEN** `apero` exists with the sender as member and the reply gives `cimetiere+apero@mangococo.fr`
+
+#### Scenario: Name in use or reserved
+- **WHEN** someone sends `acheter apero` while `apero` exists, or `acheter fossoyeur`
+- **THEN** nothing changes and both replies read "nom indisponible"
+
+### Requirement: Registers and plan
+`registre` SHALL list the cimetière's members with their nicknames, to cimetière members. `registre <concession>` SHALL list that concession's members with their nicknames, to its members only. `plan` SHALL list the sender's own concessions.
+
+#### Scenario: Cimetière register
+- **WHEN** a cimetière member sends `registre`
+- **THEN** the reply lists every cimetière member as `nickname <address>`, marking those not verified yet
+
+#### Scenario: Concession register
 - **WHEN** a member of `apero` sends `registre apero`
-- **THEN** the reply lists every member and which ones still have to click the verification email
+- **THEN** the reply lists the members of `apero`
 
-#### Scenario: Outsider asks for the register
-- **WHEN** someone outside `apero` sends `registre apero`
-- **THEN** the reply lists nobody
+#### Scenario: Plan
+- **WHEN** a member of `apero` and `velo` sends `plan`
+- **THEN** the reply lists `apero` and `velo` with their addresses, and no other concession
 
-### Requirement: Julen is notified
-The Worker SHALL mail `julen@loudnaround.org` once per concession bought, once per address buried (in the main cimetière too) and once per address verified, naming who did it, the concession and the address.
+### Requirement: Nicknames
+Every cimetière member SHALL have a unique nickname (2 to 24 characters: letters with accents, digits, space, `-`; unique ignoring case and accents). `surnom <nickname>` SHALL change the sender's own nickname.
 
-#### Scenario: Burial notification
-- **WHEN** a member buries two addresses in one command
-- **THEN** Julen receives a mail naming the member, the concession and both addresses
+#### Scenario: Change of nickname
+- **WHEN** a member sends `surnom Eddy` and `Eddy` is free
+- **THEN** registers show `Eddy` for that member and `enterrer apero Eddy` reaches them
+
+### Requirement: Welcome once verified
+A cron trigger SHALL run the Worker every 15 minutes and, for each address buried in the cimetière that has become a verified destination, SHALL send it a welcome mail and notify Julen. An address still unverified 30 days after its burial SHALL stop being checked, and Julen SHALL be told.
+
+#### Scenario: Newcomer verifies
+- **WHEN** `ed@x.org`, buried in the cimetière, clicks the Cloudflare verification link
+- **THEN** within 15 minutes Ed receives a welcome mail explaining how to post and how to use the fossoyeur, and Julen is told Ed is verified
+
+#### Scenario: Nobody pending
+- **WHEN** the cron runs and nobody is waiting for verification
+- **THEN** the run makes no Cloudflare API call and sends nothing
 
 ### Requirement: Worker token made by Terraform
 The token the Worker uses to register addresses SHALL be a `cloudflare_account_token` limited to Email Routing Addresses read and write on the account, created by Terraform and passed as a `secret_text` binding.
